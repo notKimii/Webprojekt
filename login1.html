@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cockpit Corner Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background-image: url('./pictures/sky.jpg'); /* Ersetze durch den tatsächlichen Bildpfad */
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        main{
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .login-box {
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .login-box h2 {
+            font-weight: 700;
+            font-size: 22px;
+            margin-bottom: 20px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        input[type="email"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            outline: none;
+        }
+        .input-group label{
+            margin-bottom: 8px;
+            display: block;
+        }
+        input[type="email"]:focus,
+        input[type="password"]:focus {
+        border: 1px solid #081e83;
+        }
+        .checkbox {
+            margin-bottom: 15px;
+        }
+        .btn {
+            width: 100%;
+            background-color: #092291;
+            border: none;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+        }
+        .bottom-link, .link {
+            margin-top: 10px;
+            font-size: 14px;
+            text-align: center;
+        }
+        .bottom-link a{
+            text-decoration: none;
+        }
+        .link a {
+            color: #333;
+            text-decoration: none;
+        }
+        .register-box {
+            margin-top: 20px;
+            padding: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body style="flex-direction: column;">
+    <header>
+        <nav>
+            <a href="#"><img src="./pictures/planelogo.png" alt="logo" style="width: 100px;"></a>
+        </nav>
+    </header>
+    <main>
+        <div class="login-box">
+            <form action="">
+                <h2>In mein Kundenkonto einloggen</h2>
+                <div class="input-group">
+                    <label for="email">E-Mail</label>
+                    <input type="email" id="email">
+                </div>
+                <div class="input-group">
+                    <label for="password">Passwort</label>
+                    <input type="password" id="password">
+                </div>
+                <div class="checkbox">
+                    <input type="checkbox" id="remember"> <label for="remember">Angemeldet bleiben</label>
+                </div>
+                <input type="submit" name="login" class="btn" value="Login"></input>
+                <div class="bottom-link">
+                    <a href="#">Passwort vergessen?</a>
+                </div>
+                <div class="register-box">
+                    <h3><strong>Neu bei Cockpit Corner?</strong></h3>
+                    <button class="btn" style="background-color: white; color: black; border: 1px solid rgb(134, 134, 134);">KUNDENKONTO ANLEGEN</button>
+                </div>
+            </form>
+        </div>
+    </main>
+    <footer style="margin-top: auto; background-color: rgba(255, 255, 255, 0.9); padding: 10px 0; width: 100%; text-align: center; font-size: 14px;">
+    © 2025 Cockpit Corner - Alle Rechte vorbehalten
+    </footer>
+</body>
+</html>
