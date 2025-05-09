@@ -50,7 +50,7 @@
 
 	else
 	{
-		header("Location: ../login.html");
+		header("Location: ../login1.html");
 	}
 
 ?>
