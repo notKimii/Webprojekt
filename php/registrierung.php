@@ -21,7 +21,7 @@
 	$adresse = $_POST["adresse"];
 	$plz = $_POST["plz"];
 	$ort = $_POST["ort"];
-	$passwort = hash('sha256', $_POST["password"]); //Passwort mit sha256 verschlüsselt
+	$passwort = hash('sha512', $_POST["password"]); //Passwort mit sha256 verschlüsselt
 
 	//Verbindung zur DB aufbauen
 	$pdo = new PDO("mysql:host=localhost;dbname=dbPilotenshop","root","");
