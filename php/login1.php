@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once __DIR__ . '/vendor/autoload.php';
+
 
 // 1) DB-Verbindung mit Fehler-Reporting
 try {

@@ -1,5 +1,7 @@
 {
     "require": {
-        "phpmailer/phpmailer": "^6.10"
-    }
-}
+      "phpgangsta/googleauthenticator": "^1.0"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+  }
