@@ -76,16 +76,16 @@
 					    //$Mailer->SMTPDebug = 1;                             
 					    //$Mailer->CharSet="UTF-8";
 					    $Mailer->isSMTP();                                    
-					    $Mailer->Host = 'smtp-mail.outlook.com';  					 
+					    $Mailer->Host = 'smtp.mailbox.org';  					 
 					    $Mailer->SMTPAuth = true;                             
-					    $Mailer->Username = 'CockpitCorner';        
-					    $Mailer->Password = 'Andy.123';                  
+					    $Mailer->Username = 'cockpitcorner@mailbox.org';        
+					    $Mailer->Password = 'Mondy.123';                  
 					    $Mailer->SMTPSecure = 'tls';                         
 					    $Mailer->Port = 587;                                  
 
-					    $Mailer->setFrom('CockpitCorner@outlook.de', 'Cockpit Corner');
+					    $Mailer->setFrom('cockpitcorner@mailbox.org', 'Cockpit Corner');
 					    $Mailer->addAddress($mail);    	   
-					    $Mailer->addReplyTo('CockpitCorner@outlook.de');
+					    $Mailer->addReplyTo('cockpitcorner@mailbox.org');
 					 	
 					 	//Standard Nachricht -- mit HTML
 					 	//evtl. kann noch ein Bild (als Banner oder so) eingefügt werden
