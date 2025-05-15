@@ -1,30 +1,70 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<title>Willkommen</title>
-	<meta charset="utf-8">
-
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cockpit Corner - Alles was ein Flieger braucht</title>
+    <link rel="stylesheet" href="style1.css">
 </head>
 <body>
-	<center>
-		<img src="images/logo.png" style="width:40%"><br><br>
-		<h1> Herzlich Willkommen bei Pferdeshop</h1><br>
-		<h2>- dem Onlineshop für Pferdebedarf und Zubehör - </h2><br><br>
-		<h3>Sind Sie bereits Kunde? </h3>
-		<form action="login.html" method="post" > <input type="submit" name="Login" class="btn btn-outline-success" value="Login"></form><br>
-		<h3>Sind Sie noch kein Kunde?</h3>
-		<form action="registrierung.html" method="post" > <input type="submit" name="registrieren" class="btn btn-outline-success" value="Registrieren"></form>
-	</center>
+    <header>
+        <div id="top-nav">
+            <div id="logo"><a href=""><img src="./pictures/Logo_2.png" alt="Logo"></a></div>
+            <div class="search-container">
+                <!-- Such-Icon als SVG -->
+                <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M10.5 3a7.5 7.5 0 015.99 12.134l4.188 4.188a1 1 0 01-1.414 1.414l-4.188-4.188A7.5 7.5 0 1110.5 3zm0 2a5.5 5.5 0 100 11 5.5 5.5 0 000-11z"/>
+                </svg>
+                <input
+                  class="search-input"
+                  type="text"
+                  placeholder="Suche nach Headset, Karten..."
+                />
+              </div>
+              <div class="button-group">
+                <!-- Such-Button -->
+                <button class="icon-button" aria-label="Suche">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M10.5 3a7.5 7.5 0 015.99 12.134l4.188 4.188a1 1 0 01-1.414 1.414l-4.188-4.188A7.5 7.5 0 1110.5 3zm0 2a5.5 5.5 0 100 11 5.5 5.5 0 000-11z"/>
+                  </svg>
+                </button>
+            
+                <!-- Warenkorb-Button -->
+                <button class="icon-button" aria-label="Warenkorb">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M6 6h15l-1.5 9h-13L6 6zm0 0L4 2H1v2h2l3.6 7.59-1.35 2.44C5.09 18.37 6.23 20 7.75 20h12v-2h-12l1.1-2h9.45a1 1 0 00.98-.8l1.5-9a1 1 0 00-.98-1.2H6z"/>
+                  </svg>
+                </button>
+              </div>
+        </div>
+        <nav id="navbar">
+            <ul id="nav-items">
+                <li><a href="">Headsets</a></li>|
+                <li><a href="">Flugtaschen</a></li>|
+                <li><a href="">Kneeboards & Clipboards</a></li>|
+                <li><a href="">Karten & Navigationshilfen</a></li>|
+                <li><a href="">Sonnenbrillen</a></li>|
+                <li><a href="">Pilotenbekleidung</a></li>
+            </ul>
+        </nav>
+        
+    </header>
+    <main>
+        <section id="hero-section">
+            <div id="hero-wrapper">
+                <div>
+                  <img class="hero-banner" alt="">
+                  <button class="hero-btn">Jetzt entdecken</button>
+                </div>
+            </div>
+        </section>
+        <section id="bestseller">
+          <div class="product-wrapper">
 
-	<!--Fußzeile-->
-	<br><br>
-      <center><footer class="col-sm" style="background-color:  #D8D8D8;"><br>
-         <a href="index.html" style="color: black;">Zurück nach oben</a>
-        <p>&copy; Janine Reiff  &amp; Ellena Schorpp &middot; 
-        	<a href="#" style="color: black;">Datenschutz</a> &middot; <a href="#" style="color: black;">AGBs</a> &middot;
-        <a href="php/kontakt.php" style="color: black;">Kontakt</a></p><br>
-      </footer></center>
+
+          </div>
+        </section>
+    </main>
+    <script src="index.js"></script>
 </body>
 </html>
