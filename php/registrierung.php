@@ -24,7 +24,7 @@
 	$passwort = hash('sha256', $_POST["password"]); //Passwort mit sha256 verschlüsselt
 
 	//Verbindung zur DB aufbauen
-	$pdo = new PDO("mysql:host=localhost;dbname=dbpferdeshop","root","");
+	$pdo = new PDO("mysql:host=localhost;dbname=dbPilotenshop","root","");
 	$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 	//Prüfen auf doppelte Registrierung --> keine gleiche Email Adresse!
@@ -76,22 +76,22 @@
 					    //$Mailer->SMTPDebug = 1;                             
 					    //$Mailer->CharSet="UTF-8";
 					    $Mailer->isSMTP();                                    
-					    $Mailer->Host = 'smtp.web.de';  					 
+					    $Mailer->Host = 'smtp-mail.outlook.com';  					 
 					    $Mailer->SMTPAuth = true;                             
-					    $Mailer->Username = 'derpferdeshop@web.de';        
-					    $Mailer->Password = 'pferdeshop123';                  
+					    $Mailer->Username = 'CockpitCorner';        
+					    $Mailer->Password = 'Andy.123';                  
 					    $Mailer->SMTPSecure = 'tls';                         
 					    $Mailer->Port = 587;                                  
 
-					    $Mailer->setFrom('derpferdeshop@web.de', 'Pferdeshop Service');
+					    $Mailer->setFrom('CockpitCorner@outlook.de', 'Cockpit Corner');
 					    $Mailer->addAddress($mail);    	   
-					    $Mailer->addReplyTo('derpferdeshop@web.de');
+					    $Mailer->addReplyTo('CockpitCorner@outlook.de');
 					 	
 					 	//Standard Nachricht -- mit HTML
 					 	//evtl. kann noch ein Bild (als Banner oder so) eingefügt werden
 					    $body = "<p>Herzlich Willkommen $vorname $nachname! 
 					    	<br><br>
-					    	Sie haben sich erfolgreich bei <i>'Der-Pferdeshop' </i>registriert.
+					    	Sie haben sich erfolgreich bei <i>'Cockpit Corner' </i>registriert.
 					    	<br><br><br> 
 					    	Ihre <strong>Anmeldedaten</strong> lauten wie folgt: <br>
 					    		Vorname: $vorname <br>
