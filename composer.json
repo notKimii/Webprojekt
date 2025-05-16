@@ -1,7 +1,5 @@
 {
-    "require": {
-      "phpgangsta/googleauthenticator": "^1.0"
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": true
+  "require": {
+      "phpgangsta/googleauthenticator": "dev-master"
   }
+}
