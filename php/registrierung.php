@@ -118,7 +118,7 @@
 						}
 
 			//neuer Eintrag erfolgreich (Registrierung erfolgreich) --> Wechsel auf Basisseite
-			header("Location: basis.php");
+			header("Location: portal.php");
 			exit;
 	}
 	
@@ -133,7 +133,7 @@ $gAuth = new PHPGangsta_GoogleAuthenticator();
 $secret = $gAuth->createSecret();
 
 // QR-Code URL für Google Authenticator
-$websiteName = 'PferdeShop'; // Oder dein Projektname
+$websiteName = 'Pilotenshop'; // Oder dein Projektname
 $qrCodeUrl = $gAuth->getQRCodeGoogleUrl($websiteName, $secret);
 
 // User speichern
