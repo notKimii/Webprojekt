@@ -1,0 +1,737 @@
+/* ==========================
+   APPLE-LIKE MODERN & MINIMALIST STYLES
+   ========================== */
+
+   :root {
+    /* Farbpalette (inspiriert von Apple, aber anpassbar) */
+    --primary-color: #007aff; /* Apple's typisches Blau */
+    --secondary-color: #8e8e93; /* Mittleres Grau für Text/Sekundäre Elemente */
+    --accent-color: #007aff; /* Kann gleich der Primärfarbe sein oder eine andere */
+    --light-color: #f5f5f7;  /* Sehr helles Grau für Hintergründe (Apple-ähnlich) */
+    --dark-color: #1d1d1f;   /* Sehr dunkles Grau / fast Schwarz (Apple-ähnlich) */
+    --text-color: #1d1d1f;
+    --body-bg: #ffffff;
+    --container-max-width: 1280px; /* Etwas breiter für modernen Look */
+    --spacing-unit: 1rem; /* ca. 16px */
+    --border-radius-soft: 8px; /* Weiche Rundung */
+    --border-radius-pill: 30px; /* Für Buttons im Pillen-Stil */
+    --font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    --transition-speed: 0.3s;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-family-sans-serif);
+    line-height: 1.65; /* Etwas mehr Zeilenhöhe für Lesbarkeit */
+    color: var(--text-color);
+    background-color: var(--body-bg);
+    font-size: 17px; /* Apple verwendet oft 17px als Basis auf iOS */
+    -webkit-font-smoothing: antialiased; /* Bessere Schriftglättung */
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.container {
+    width: 90%;
+    max-width: var(--container-max-width);
+    margin: 0 auto;
+    padding: 0 calc(var(--spacing-unit)); /* Mehr Padding im Container */
+}
+
+a {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: color var(--transition-speed) ease;
+}
+
+a:hover {
+    color: darken(var(--primary-color), 10%);
+    text-decoration: none; /* Oft keine Unterstreichung bei Apple */
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    border-radius: var(--border-radius-soft); /* Bilder auch leicht abrunden */
+}
+
+ul {
+    list-style: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin-bottom: calc(var(--spacing-unit) * 1);
+    line-height: 1.2;
+    font-weight: 600; /* Etwas kräftiger für Titel */
+}
+
+h1 { font-size: 3rem; letter-spacing: -0.02em; } /* Größer und enger */
+h2 { font-size: 2.25rem; letter-spacing: -0.015em; margin-bottom: calc(var(--spacing-unit) * 2); }
+h3 { font-size: 1.5rem; font-weight: 500; }
+
+section {
+    padding: calc(var(--spacing-unit) * 3) 0; /* Mehr vertikaler Abstand */
+}
+
+/* Buttons im Apple-Stil */
+.cta-button,
+.button-secondary,
+.add-to-cart-button,
+.newsletter-signup button {
+    display: inline-block;
+    padding: calc(var(--spacing-unit) * 0.8) calc(var(--spacing-unit) * 1.8);
+    border-radius: var(--border-radius-pill); /* Pillenform */
+    text-align: center;
+    cursor: pointer;
+    transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease, transform var(--transition-speed) ease;
+    font-weight: 500;
+    border: none;
+    font-size: 0.95rem;
+}
+.cta-button:hover,
+.button-secondary:hover,
+.add-to-cart-button:hover,
+.newsletter-signup button:hover {
+    transform: translateY(-2px); /* Leichter Hover-Effekt */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.cta-button {
+    background-color: var(--primary-color);
+    color: white;
+}
+.cta-button:hover {
+    background-color: lighten(var(--primary-color), 5%);
+}
+
+.button-secondary {
+    background-color: var(--light-color);
+    color: var(--primary-color);
+    border: 1px solid var(--light-color); /* kaum sichtbarer Rand */
+}
+.button-secondary:hover {
+    background-color: darken(var(--light-color), 5%);
+}
+
+/* ==========================
+   ANKÜNDIGUNGSLEISTE
+   ========================== */
+.announcement-bar {
+    background-color: var(--primary-color); /* Oder ein dezentes Grau */
+    color: white;
+    text-align: center;
+    padding: calc(var(--spacing-unit) * 0.6) 0;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* ==========================
+   HEADER
+   ========================== */
+header {
+    background-color: rgba(255,255,255,0.8); /* Leicht transparent, wenn sticky */
+    backdrop-filter: blur(10px); /* Glassmorphism-Effekt für den Header */
+    box-shadow: none; /* Apple-Header haben oft keinen Schatten oder nur sehr dezent */
+    border-bottom: 1px solid rgba(0,0,0,0.07); /* Sehr feine Linie */
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    padding: calc(var(--spacing-unit) * 0.5) 0; /* Weniger Padding im Header selbst */
+}
+
+.header-top { /* Kann für Minimalismus entfernt oder integriert werden */
+    display: none; /* Für einen noch minimalistischeren Look */
+}
+
+.header-main .container {
+    display: flex;
+    justify-content: space-between; /* Behält Logo links und Aktionen rechts */
+    align-items: center;
+    padding-top: calc(var(--spacing-unit)*0.5);
+    padding-bottom: calc(var(--spacing-unit)*0.5);
+}
+
+.logo img {
+    max-height: 85px; /* Kleineres, dezenteres Logo */
+    border-radius: 0; /* Logos meist nicht abgerundet */
+}
+
+.search-bar {
+    display: flex;
+    flex-grow: 1; /* Erlaubt der Suchleiste, den verfügbaren Platz einzunehmen */
+    flex-shrink: 1; /* Erlaubt der Suchleiste bei Bedarf zu schrumpfen */
+    /* margin: 0 calc(var(--spacing-unit) * 2);  ENTFERNE DIE FIXEN HORIZONTALEN RÄNDER */
+    margin-left: calc(var(--spacing-unit) * 1.5); /* Optional: Mindestabstand zum Logo */
+    margin-right: calc(var(--spacing-unit) * 1.5); /* Optional: Mindestabstand zu den Aktionen */
+    max-width: 500px; /* Behalte eine maximale Breite für die Suchleiste bei */
+    /* Die Suchleiste selbst (das div) wird nun durch flex-grow und max-width
+       zentriert im verfügbaren Raum zwischen Logo und Aktionen platziert. */
+}
+
+.search-bar input[type="search"] {
+    flex-grow: 1;
+    padding: calc(var(--spacing-unit) * 0.6) var(--spacing-unit);
+    border: 1px solid #ddd; /* Dezenter Rand */
+    border-right: none;
+    border-radius: var(--border-radius-soft) 0 0 var(--border-radius-soft);
+    background-color: var(--light-color);
+    font-size: 0.9rem;
+}
+.search-bar input[type="search"]:focus {
+    background-color: white;
+    border-color: var(--primary-color);
+    outline: none;
+}
+
+.search-bar button {
+    padding: calc(var(--spacing-unit) * 0.6) var(--spacing-unit);
+    border: 1px solid #ddd;
+    border-left: none;
+    background-color: var(--light-color);
+    color: var(--secondary-color);
+    cursor: pointer;
+    border-radius: 0 var(--border-radius-soft) var(--border-radius-soft) 0;
+}
+.search-bar button:hover {
+    color: var(--primary-color);
+}
+
+
+.header-actions {
+    flex-shrink: 0; /* Verhindert, dass die Aktionen schrumpfen */
+    /* Keine explizite flex-grow Eigenschaft */
+    display: flex; /* Stellt sicher, dass die Icons innerhalb der Aktionen korrekt ausgerichtet sind */
+    align-items: center;
+}
+
+
+.cart-icon {
+    font-size: 1.3rem;
+    position: relative;
+    margin-left: var(--spacing-unit);
+    color: var(--text-color);
+}
+.cart-icon:hover {
+    color: var(--primary-color);
+}
+
+.cart-count {
+    position: absolute;
+    top: -8px;
+    right: -12px;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 10px;
+    padding: 1px 6px;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+/* Navigation im Apple-Stil (sehr dezent) */
+.main-navigation {
+    background-color: transparent; /* Keine eigene Hintergrundfarbe mehr */
+}
+
+.main-navigation .container ul {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-unit); /* Abstand zwischen Links */
+}
+
+.main-navigation ul li a {
+    display: block;
+    padding: calc(var(--spacing-unit) * 0.5) calc(var(--spacing-unit) * 0.8);
+    color: var(--text-color);
+    text-transform: none; /* Keine Großbuchstaben */
+    font-size: 0.9rem;
+    font-weight: 500; /* Mittlere Stärke */
+    border-radius: var(--border-radius-soft);
+}
+
+.main-navigation ul li a:hover,
+.main-navigation ul li a.active {
+    background-color: transparent;
+    color: var(--primary-color); /* Nur Textfarbe ändern */
+    text-decoration: none;
+}
+
+.main-navigation .dropdown {
+    display: none;
+    position: absolute;
+    left: 0;
+    top: calc(100% + 5px); /* Etwas Abstand */
+    background-color: white;
+    min-width: 220px;
+    z-index: 1001;
+    border-radius: var(--border-radius-soft);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1); /* Dezenter, moderner Schatten */
+    border: 1px solid rgba(0,0,0,0.07);
+}
+.main-navigation li:hover > .dropdown { display: block; }
+.main-navigation .dropdown li a {
+    padding: calc(var(--spacing-unit) * 0.8);
+    color: var(--text-color);
+}
+.main-navigation .dropdown li a:hover {
+    background-color: var(--light-color);
+    color: var(--primary-color);
+}
+
+/* ==========================
+   MAIN CONTENT
+   ========================== */
+
+/* HERO SECTION */
+.hero-section {
+    padding: calc(var(--spacing-unit)*2) 0; /* Weniger Padding wenn Bild full-width */
+    background-color: var(--light-color); /* Hintergrund für die gesamte Sektion */
+}
+.hero-banner {
+    background-size: cover;
+    background-position: center center;
+    color: var(--text-color); /* Textfarbe anpassen, wenn Bild hell/dunkel */
+    padding: calc(var(--spacing-unit) * 5) 0;
+    text-align: center;
+    min-height: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: calc(var(--border-radius-soft) * 2); /* Größere Rundung für Hero */
+    /* Overlay entfernt, stattdessen helle Bilder oder Textkontrast sicherstellen */
+}
+
+.hero-content {
+    max-width: 650px;
+    background-color: rgba(255,255,255,0.3); /* Optional: leichter Text-Hintergrund für Lesbarkeit */
+    backdrop-filter: blur(5px);
+    padding: var(--spacing-unit);
+    border-radius: var(--border-radius-soft);
+}
+.hero-content h1 {
+    color: var(--dark-color); /* Apple oft dunkle Schrift auf hellen Bildern */
+    margin-bottom: var(--spacing-unit);
+    text-shadow: none; /* Kein Textschatten für klaren Look */
+    font-weight: 700; /* Kräftige Headline */
+}
+.hero-content p {
+    font-size: 1.25rem; /* Etwas größerer Text */
+    margin-bottom: calc(var(--spacing-unit) * 2);
+    color: var(--secondary-color);
+    text-shadow: none;
+    font-weight: 400;
+}
+.hero-banner .cta-button { /* Button im Hero kann dunkler sein für Kontrast */
+    background-color: var(--dark-color);
+    color: white;
+}
+.hero-banner .cta-button:hover {
+    background-color: lighten(var(--dark-color), 10%);
+}
+
+
+/* USP BAR */
+.usp-bar {
+    background-color: transparent; /* Kein eigener Hintergrund */
+    padding: calc(var(--spacing-unit)*1.5) 0;
+    border-top: 1px solid rgba(0,0,0,0.07);
+    border-bottom: 1px solid rgba(0,0,0,0.07);
+}
+.usp-bar .container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.usp-item {
+    margin: calc(var(--spacing-unit) * 0.5);
+    text-align: center;
+    font-size: 0.85rem; /* Kleiner, dezenter */
+    color: var(--secondary-color);
+    font-weight: 500;
+}
+
+/* PRODUKT-/KATEGORIE-GRIDS */
+.featured-categories,
+.new-arrivals,
+.bestsellers,
+.blog-teaser {
+    background-color: var(--body-bg); /* Oder var(--light-color) für Sektionshintergrund */
+}
+
+.featured-categories h2,
+.new-arrivals h2,
+.bestsellers h2,
+.blog-teaser h2,
+.testimonials h2,
+.newsletter-signup h2,
+.brand-logos h2 {
+    text-align: center;
+    margin-bottom: calc(var(--spacing-unit) * 2.5); /* Mehr Abstand unter Titeln */
+    font-weight: 600;
+}
+
+.category-grid,
+.product-grid,
+.article-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Etwas größere Min-Breite */
+    gap: calc(var(--spacing-unit) * 2); /* Mehr Abstand zwischen Karten */
+}
+
+.category-item,
+.product-item,
+.article-item {
+    background-color: white; /* Karten auf hellem Sektionshintergrund */
+    border: 1px solid rgba(0,0,0,0.07); /* Sehr dezenter Rand */
+    border-radius: var(--border-radius-soft);
+    padding: calc(var(--spacing-unit) * 1.5); /* Mehr Innenabstand */
+    text-align: center;
+    transition: box-shadow var(--transition-speed) ease, transform var(--transition-speed) ease;
+}
+
+.category-item:hover,
+.product-item:hover,
+.article-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08); /* Etwas stärkerer Schatten im Hover */
+}
+
+.category-item img, /* Bilder in Karten */
+.product-item img,
+.article-item img {
+    margin-bottom: var(--spacing-unit);
+    border-radius: calc(var(--border-radius-soft) / 2) ; /* Leichte Rundung, wenn Karte auch gerundet */
+    aspect-ratio: 1/1; /* Quadratische Bilder sind modern */
+    object-fit: cover;
+}
+
+.product-item h3, .category-item h3, .article-item h3 {
+    font-size: 1.1rem; /* Etwas kleiner für Produktnamen */
+    font-weight: 500;
+    margin-bottom: calc(var(--spacing-unit) * 0.4);
+}
+.article-item p {
+    font-size: 0.9rem;
+    color: var(--secondary-color);
+    margin-bottom: var(--spacing-unit);
+}
+.article-item span {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--primary-color);
+}
+
+.product-item .price {
+    font-size: 1rem;
+    font-weight: 600; /* Preis etwas hervorheben */
+    color: var(--text-color);
+    margin-bottom: var(--spacing-unit);
+}
+
+.add-to-cart-button { /* Button in Produktkarten */
+    background-color: var(--light-color);
+    color: var(--primary-color);
+    font-size: 0.85rem;
+    padding: calc(var(--spacing-unit) * 0.6) calc(var(--spacing-unit) * 1.2);
+}
+.add-to-cart-button:hover {
+    background-color: darken(var(--light-color), 5%);
+}
+
+
+.view-all-link {
+    text-align: center;
+    margin-top: calc(var(--spacing-unit) * 2);
+}
+.view-all-link .button-secondary { /* Spezifischer Stil für "Alle anzeigen" */
+     background-color: transparent;
+     color: var(--primary-color);
+     border: 1px solid var(--primary-color);
+}
+.view-all-link .button-secondary:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* SPECIAL OFFER BANNER */
+.special-offer-banner {
+    background-color: var(--dark-color);
+    color: white;
+    padding: calc(var(--spacing-unit) * 4) 0;
+    text-align: center;
+    border-radius: calc(var(--border-radius-soft) * 2);
+    margin-left: var(--spacing-unit); /* Damit es im Container ist, aber rund */
+    margin-right: var(--spacing-unit);
+}
+.special-offer-banner h2 {
+    color: white;
+    font-weight: 700;
+    margin-bottom: var(--spacing-unit);
+}
+.special-offer-banner p {
+    margin-bottom: calc(var(--spacing-unit) * 1.5);
+    font-size: 1.1rem;
+    color: rgba(255,255,255,0.8);
+}
+.special-offer-banner .cta-button {
+    background-color: var(--primary-color); /* Oder White mit dark-color Text */
+    color: white;
+}
+
+
+/* BRAND LOGOS */
+.brand-logos { background-color: var(--light-color); }
+.brand-logos .logo-slider {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: calc(var(--spacing-unit) * 3);
+}
+.brand-logos .logo-slider img {
+    max-height: 40px;
+    opacity: 0.6; /* Dezenter */
+    transition: opacity var(--transition-speed) ease;
+    filter: grayscale(100%); /* Graustufen für minimalistischen Look */
+}
+.brand-logos .logo-slider img:hover {
+    opacity: 1;
+    filter: grayscale(0%);
+}
+
+/* TESTIMONIALS */
+.testimonials {
+    /* background-color: var(--light-color); */ /* Sektion kann auch weiß bleiben */
+}
+.testimonial-slider {
+    display: grid; /* Besser als Flex für gleichmäßige Spalten */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: calc(var(--spacing-unit) * 1.5);
+}
+.testimonial-item {
+    background-color: var(--light-color); /* Kartenhintergrund */
+    border: none; /* Kein Rand, wenn Hintergrundfarbe da ist */
+    border-radius: var(--border-radius-soft);
+    padding: calc(var(--spacing-unit) * 2); /* Mehr Innenabstand */
+}
+.testimonial-item p {
+    font-style: normal; /* Kein kursiv für modernen Look */
+    font-size: 1.1rem; /* Etwas größer */
+    line-height: 1.5;
+    margin-bottom: var(--spacing-unit);
+    color: #555; /* Etwas helleres Grau */
+}
+.testimonial-item span { /* Autor */
+    font-weight: 500;
+    color: var(--text-color);
+    display: block;
+    text-align: left; /* Links ausgerichtet */
+    font-size: 0.9rem;
+}
+.testimonial-item span::before { /* Kleiner Strich vor dem Namen */
+    content: "— ";
+}
+
+
+/* NEWSLETTER SIGNUP */
+.newsletter-signup {
+    background-color: var(--light-color); /* Heller Hintergrund */
+    text-align: center;
+    padding: calc(var(--spacing-unit) * 4) 0; /* Großzügiges Padding */
+}
+.newsletter-signup h2 { color: var(--dark-color); }
+.newsletter-signup p {
+    margin-bottom: calc(var(--spacing-unit) * 1.5);
+    max-width: 550px;
+    margin-left: auto;
+    margin-right: auto;
+    color: var(--secondary-color);
+    font-size: 1rem;
+}
+.newsletter-signup form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 450px;
+    margin: 0 auto;
+    gap: calc(var(--spacing-unit) * 0.5);
+}
+.newsletter-signup input[type="email"] {
+    flex-grow: 1;
+    padding: calc(var(--spacing-unit) * 0.8);
+    border: 1px solid #ccc; /* Dezenter Rand */
+    border-radius: var(--border-radius-pill); /* Auch Pillenform */
+    outline: none;
+    font-size: 0.95rem;
+    transition: border-color var(--transition-speed) ease;
+}
+.newsletter-signup input[type="email"]:focus {
+    border-color: var(--primary-color);
+}
+.newsletter-signup button {
+    background-color: var(--dark-color); /* Dunkler Button für Kontrast */
+    color: white;
+}
+.newsletter-signup button:hover {
+    background-color: lighten(var(--dark-color), 10%);
+}
+
+
+/* ==========================
+   FOOTER (Apple-like dark footer)
+   ========================== */
+footer {
+    background-color: var(--dark-color);
+    color: #ccc; /* Helles Grau für Text */
+    padding: calc(var(--spacing-unit) * 3) 0 0;
+    font-size: 0.9rem;
+}
+
+.footer-columns {
+    display: grid; /* Grid für bessere Kontrolle */
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: calc(var(--spacing-unit) * 2.5);
+    margin-bottom: calc(var(--spacing-unit) * 2.5);
+}
+
+.footer-column h3 {
+    font-size: 1rem; /* Kleinere Titel im Footer */
+    margin-bottom: calc(var(--spacing-unit) * 1.2);
+    color: white;
+    font-weight: 500;
+}
+
+.footer-column ul li {
+    margin-bottom: calc(var(--spacing-unit) * 0.6);
+}
+
+.footer-column ul li a {
+    color: #ccc; /* Helles Grau */
+    opacity: 1;
+}
+.footer-column ul li a:hover {
+    color: white;
+    text-decoration: underline;
+}
+
+.footer-column p {
+    color: #ccc;
+    line-height: 1.5;
+}
+
+.social-media-icons a {
+    color: #ccc;
+    font-size: 1.3rem;
+    margin-right: calc(var(--spacing-unit) * 0.8);
+}
+.social-media-icons a:hover {
+    color: white;
+}
+
+.payment-title {
+    margin-top: var(--spacing-unit);
+    color: white;
+}
+
+.payment-methods-icons img {
+    max-height: 22px;
+    margin-right: calc(var(--spacing-unit) * 0.4);
+    margin-top: calc(var(--spacing-unit) * 0.5);
+    background-color: transparent; /* Kein weißer Hintergrund mehr, wenn Logos passen */
+    border-radius: 3px;
+    padding: 0;
+    filter: grayscale(100%) brightness(150%); /* Macht sie heller und grau */
+}
+
+.footer-bottom {
+    text-align: center;
+    padding: calc(var(--spacing-unit) * 1.5) 0;
+    border-top: 1px solid rgba(255,255,255,0.1); /* Sehr dezente Linie */
+    font-size: 0.8rem;
+    color: var(--secondary-color);
+}
+
+/* ==========================
+   RESPONSIVE ANPASSUNGEN (Beibehalten und ggf. verfeinern)
+   ========================== */
+
+@media (max-width: 992px) {
+    body { font-size: 16px; }
+    h1 { font-size: 2.5rem; }
+    h2 { font-size: 2rem; }
+
+    .header-main .container {
+        /* flex-direction: column; Beibehalten oder anpassen */
+        gap: var(--spacing-unit);
+    }
+     .main-navigation .container ul {
+        gap: calc(var(--spacing-unit) * 0.5); /* Weniger Gap auf Tablets */
+    }
+}
+
+@media (max-width: 768px) {
+    h1 { font-size: 2rem; }
+    h2 { font-size: 1.75rem; }
+
+    .header-main .container {
+        flex-wrap: wrap; /* Logo oben, Rest darunter */
+        justify-content: center;
+    }
+    .logo { width: 100%; text-align: center; margin-bottom: var(--spacing-unit); }
+    .search-bar { order: 2; width: 100%; margin: 0 0 var(--spacing-unit) 0;}
+    .header-actions { order: 1; margin-bottom: var(--spacing-unit); }
+
+
+    .main-navigation {
+        border-top: 1px solid rgba(0,0,0,0.07);
+        padding-top: calc(var(--spacing-unit) * 0.5);
+    }
+    .main-navigation .container ul {
+        flex-direction: row; /* Wieder horizontal, aber scrollbar */
+        overflow-x: auto; /* Horizontales Scrollen für Menü auf Mobile */
+        justify-content: flex-start; /* Links anfangen */
+        padding-bottom: calc(var(--spacing-unit) * 0.5); /* Platz für Scrollbar */
+    }
+    .main-navigation ul li a {
+        white-space: nowrap; /* Verhindert Umbruch der Menüpunkte */
+    }
+     .main-navigation .dropdown { /* Dropdowns auf Mobilgeräten anpassen */
+        position: static;
+        width: 100%;
+        box-shadow: none;
+        border: none;
+        border-top: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .footer-columns {
+        grid-template-columns: 1fr 1fr; /* Zweispaltig auf Tablets */
+    }
+}
+
+@media (max-width: 480px) {
+    body { font-size: 15px; }
+    .product-grid, .category-grid, .article-grid, .testimonial-slider {
+        grid-template-columns: 1fr; /* Einspaltig */
+    }
+    .hero-content h1 {
+        font-size: 1.8rem;
+    }
+    .hero-content p {
+        font-size: 1rem;
+    }
+    .newsletter-signup form {
+        flex-direction: column;
+    }
+    .newsletter-signup input[type="email"],
+    .newsletter-signup button {
+        width: 100%;
+    }
+    .footer-columns {
+        grid-template-columns: 1fr; /* Einspaltig auf kleinen Handys */
+    }
+}

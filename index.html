@@ -1,70 +1,353 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cockpit Corner - Alles was ein Flieger braucht</title>
-    <link rel="stylesheet" href="style1.css">
+    <title>[Shop-Name] - Deine erste Adresse für [Produkttyp/Nische]</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+    <div class="announcement-bar">
+        <p>🎉 Sommer Sale: Bis zu 50% Rabatt auf ausgewählte Artikel! Nur für kurze Zeit! | Kostenloser Versand ab 50€ Bestellwert 🎉</p>
+    </div>
+
     <header>
-        <div id="top-nav">
-            <div id="logo"><a href=""><img src="./pictures/Logo_2.png" alt="Logo"></a></div>
-            <div class="search-container">
-                <!-- Such-Icon als SVG -->
-                <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M10.5 3a7.5 7.5 0 015.99 12.134l4.188 4.188a1 1 0 01-1.414 1.414l-4.188-4.188A7.5 7.5 0 1110.5 3zm0 2a5.5 5.5 0 100 11 5.5 5.5 0 000-11z"/>
-                </svg>
-                <input
-                  class="search-input"
-                  type="text"
-                  placeholder="Suche nach Headset, Karten..."
-                />
-              </div>
-              <div class="button-group">
-                <!-- Such-Button -->
-                <button class="icon-button" aria-label="Suche">
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M10.5 3a7.5 7.5 0 015.99 12.134l4.188 4.188a1 1 0 01-1.414 1.414l-4.188-4.188A7.5 7.5 0 1110.5 3zm0 2a5.5 5.5 0 100 11 5.5 5.5 0 000-11z"/>
-                  </svg>
-                </button>
-            
-                <!-- Warenkorb-Button -->
-                <button class="icon-button" aria-label="Warenkorb">
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M6 6h15l-1.5 9h-13L6 6zm0 0L4 2H1v2h2l3.6 7.59-1.35 2.44C5.09 18.37 6.23 20 7.75 20h12v-2h-12l1.1-2h9.45a1 1 0 00.98-.8l1.5-9a1 1 0 00-.98-1.2H6z"/>
-                  </svg>
-                </button>
-              </div>
+        <div class="header-top">
+            <div class="container">
+                <div class="header-top-left">
+                    <a href="/hilfe">Hilfe & FAQ</a> |
+                    <a href="/versand">Versand & Lieferung</a>
+                </div>
+                <div class="header-top-right">
+                    <a href="/mein-konto">Mein Konto</a> |
+                    <a href="/wunschliste">Wunschliste ❤️</a>
+                </div>
+            </div>
         </div>
-        <nav id="navbar">
-            <ul id="nav-items">
-                <li><a href="">Headsets</a></li>|
-                <li><a href="">Flugtaschen</a></li>|
-                <li><a href="">Kneeboards & Clipboards</a></li>|
-                <li><a href="">Karten & Navigationshilfen</a></li>|
-                <li><a href="">Sonnenbrillen</a></li>|
-                <li><a href="">Pilotenbekleidung</a></li>
-            </ul>
+
+        <div class="header-main">
+            <div class="container">
+                <div class="logo">
+                    <a href="/">
+                        <img src="./images/pictures/logo_grey.png" alt="[Shop-Name] Logo">
+                    </a>
+                </div>
+
+                <div class="search-bar">
+                    <form action="/suche" method="get">
+                        <input type="search" name="query" placeholder="Produkte suchen...">
+                        <button type="submit">Suchen</button>
+                    </form>
+                </div>
+
+                <div class="header-actions">
+                    <a href="/warenkorb" class="cart-icon">
+                        🛒 <span class="cart-count">0</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <nav class="main-navigation">
+            <div class="container">
+                <ul>
+                    <li><a href="/kategorie/neuheiten">Neuheiten</a></li>
+                    <li><a href="/kategorie/kategorie-1">Headsets</a></li>
+                    <li><a href="/kategorie/kategorie-2">Flugtaschen</a></li>
+                    <li><a href="/kategorie/kategorie-3">Kneeboards & Clipboards</a></li>
+                    <li><a href="/angebote">Karten & Navigationshilfen</a></li>
+                    <li><a href="/blog">Sonnenbrillen</a></li>
+                    <li><a href="/ueber-uns">Über uns</a></li>
+                </ul>
+            </div>
         </nav>
-        
     </header>
+
     <main>
-        <section id="hero-section">
-            <div id="hero-wrapper">
-                <div>
-                  <img class="hero-banner" alt="">
-                  <button class="hero-btn">Jetzt entdecken</button>
+
+        <section class="hero-section">
+            <div class="hero-banner" style="background-image: url(./images/pictures/plane_hero.png);">
+                <div class="hero-content">
+                    <h1>Entdecke die neue Frühjahrskollektion!</h1>
+                    <p>Frische Styles und unwiderstehliche Angebote warten auf dich.</p>
+                    <a href="/kategorie/neuheiten" class="cta-button">Jetzt Entdecken</a>
                 </div>
             </div>
         </section>
-        <section id="bestseller">
-          <div class="product-wrapper">
 
-
-          </div>
+        <section class="usp-bar">
+            <div class="container">
+                <div class="usp-item">✓ Kostenloser Versand ab 50€</div>
+                <div class="usp-item">✓ Schnelle Lieferung</div>
+                <div class="usp-item">✓ 30 Tage Rückgaberecht</div>
+                <div class="usp-item">✓ Sichere Bezahlung</div>
+            </div>
         </section>
+
+        <section class="featured-categories">
+            <div class="container">
+                <h2>Unsere Top-Kategorien</h2>
+                <div class="category-grid">
+                    <div class="category-item">
+                        <a href="/kategorie/bekleidung">
+                            <img src="https://picsum.photos/seed/catbekleidung/400/300" alt="Bekleidung">
+                            <h3>Headsets</h3>
+                        </a>
+                    </div>
+                    <div class="category-item">
+                        <a href="/kategorie/schuhe">
+                            <img src="https://picsum.photos/seed/catschuhe/400/300" alt="Schuhe">
+                            <h3>Sonnenbrillen</h3>
+                        </a>
+                    </div>
+                    <div class="category-item">
+                        <a href="/kategorie/accessoires">
+                            <img src="https://picsum.photos/seed/cataccessoires/400/300" alt="Accessoires">
+                            <h3>Flugtaschen</h3>
+                        </a>
+                    </div>
+                    <div class="category-item">
+                        <a href="/kategorie/wohnene">
+                            <img src="https://picsum.photos/seed/catwohnen/400/300" alt="Wohnen">
+                            <h3>Kneeboards & Clipboards</h3>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="new-arrivals">
+            <div class="container">
+                <h2>Neuheiten</h2>
+                <div class="product-grid">
+                    <div class="product-item">
+                        <a href="/produkt/stylisches-tshirt">
+                            <img src="https://picsum.photos/seed/produktA/300/350" alt="Stylisches T-Shirt">
+                            <h3>Stylisches T-Shirt</h3>
+                            <p class="price">29,99 €</p>
+                        </a>
+                        <button class="add-to-cart-button">In den Warenkorb</button>
+                    </div>
+                    <div class="product-item">
+                        <a href="/produkt/bequeme-sneaker">
+                            <img src="https://picsum.photos/seed/produktB/300/350" alt="Bequeme Sneaker">
+                            <h3>Bequeme Sneaker</h3>
+                            <p class="price">89,90 €</p>
+                        </a>
+                        <button class="add-to-cart-button">In den Warenkorb</button>
+                    </div>
+                    <div class="product-item">
+                        <a href="/produkt/elegante-handtasche">
+                            <img src="https://picsum.photos/seed/produktC/300/350" alt="Elegante Handtasche">
+                            <h3>Elegante Handtasche</h3>
+                            <p class="price">120,00 €</p>
+                        </a>
+                        <button class="add-to-cart-button">In den Warenkorb</button>
+                    </div>
+                    <div class="product-item">
+                        <a href="/produkt/moderne-vase">
+                            <img src="https://picsum.photos/seed/produktD/300/350" alt="Moderne Vase">
+                            <h3>Moderne Vase</h3>
+                            <p class="price">45,50 €</p>
+                        </a>
+                        <button class="add-to-cart-button">In den Warenkorb</button>
+                    </div>
+                </div>
+                <div class="view-all-link">
+                    <a href="/kategorie/neuheiten" class="button-secondary">Alle Neuheiten anzeigen</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="special-offer-banner" style="background-image: url(./images/pictures/newsletter.png);">
+            <div class="container">
+                <h2>Mid-Season Sale!</h2>
+                <p>Spare jetzt bis zu 30% auf ausgewählte Artikel der aktuellen Saison!</p>
+                <a href="/angebote" class="cta-button">Zu den Angeboten</a>
+            </div>
+        </section>
+
+        <section class="bestsellers">
+            <div class="container">
+                <h2>Unsere Bestseller</h2>
+                <div class="product-grid">
+                    <div class="product-item">
+                        <a href="/produkt/klassische-jeans">
+                            <img src="https://picsum.photos/seed/bestsellerA/300/350" alt="Klassische Jeans">
+                            <h3>Klassische Jeans</h3>
+                            <p class="price">79,95 €</p>
+                        </a>
+                        <button class="add-to-cart-button">In den Warenkorb</button>
+                    </div>
+                    <div class="product-item">
+                        <a href="/produkt/kuscheliger-pullover">
+                            <img src="https://picsum.photos/seed/bestsellerB/300/350" alt="Kuscheliger Pullover">
+                            <h3>Kuscheliger Pullover</h3>
+                            <p class="price">59,99 €</p>
+                        </a>
+                        <button class="add-to-cart-button">In den Warenkorb</button>
+                    </div>
+                    <div class="product-item">
+                        <a href="/produkt/sportliche-uhr">
+                            <img src="https://picsum.photos/seed/bestsellerC/300/350" alt="Sportliche Uhr">
+                            <h3>Sportliche Uhr</h3>
+                            <p class="price">149,00 €</p>
+                        </a>
+                        <button class="add-to-cart-button">In den Warenkorb</button>
+                    </div>
+                     <div class="product-item">
+                        <a href="/produkt/duftkerze-set">
+                            <img src="https://picsum.photos/seed/bestsellerD/300/350" alt="Duftkerzen Set">
+                            <h3>Duftkerzen Set</h3>
+                            <p class="price">24,90 €</p>
+                        </a>
+                        <button class="add-to-cart-button">In den Warenkorb</button>
+                    </div>
+                </div>
+                <div class="view-all-link">
+                    <a href="/kategorie/bestseller" class="button-secondary">Alle Bestseller anzeigen</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="brand-logos">
+            <div class="container">
+                <h2>Beliebte Marken</h2>
+                <div class="logo-slider">
+                    <img src="https://via.placeholder.com/120x60?text=Marke+A" alt="Marke A">
+                    <img src="https://via.placeholder.com/120x60?text=Marke+B" alt="Marke B">
+                    <img src="https://via.placeholder.com/120x60?text=Marke+C" alt="Marke C">
+                    <img src="https://via.placeholder.com/120x60?text=Marke+D" alt="Marke D">
+                    <img src="https://via.placeholder.com/120x60?text=Marke+E" alt="Marke E">
+                </div>
+            </div>
+        </section>
+
+        <section class="testimonials">
+            <div class="container">
+                <h2>Was unsere Kunden sagen</h2>
+                <div class="testimonial-slider">
+                    <div class="testimonial-item">
+                        <p>"Tolles Produkt, schnelle Lieferung! Bin sehr zufrieden mit der Qualität und dem Service."</p>
+                        <span>- Max M., Berlin</span>
+                    </div>
+                    <div class="testimonial-item">
+                        <p>"Super Service und eine riesige Auswahl. Die Webseite ist sehr benutzerfreundlich. Kaufe gerne wieder hier."</p>
+                        <span>- Anna S., Hamburg</span>
+                    </div>
+                    <div class="testimonial-item">
+                        <p>"Die besten Preise, die ich online finden konnte! Und die Ware kam sogar früher als erwartet."</p>
+                        <span>- Tom K., München</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="blog-teaser">
+            <div class="container">
+                <h2>Aus unserem Magazin</h2>
+                <div class="article-grid">
+                    <div class="article-item">
+                        <a href="/blog/artikel-fruehlingstrends">
+                            <img src="https://picsum.photos/seed/blogA/400/250" alt="Frühlingstrends 2025">
+                            <h3>Die Top 5 Modetrends für den Frühling 2025</h3>
+                            <p>Entdecke, was in dieser Saison angesagt ist und wie du die neuesten Looks stylst...</p>
+                            <span>Weiterlesen &rarr;</span>
+                        </a>
+                    </div>
+                    <div class="article-item">
+                        <a href="/blog/artikel-nachhaltigkeit">
+                            <img src="https://picsum.photos/seed/blogB/400/250" alt="Nachhaltige Mode">
+                            <h3>Nachhaltigkeit im Kleiderschrank: Tipps für bewussten Konsum</h3>
+                            <p>So triffst du umweltfreundlichere Entscheidungen beim Shoppen...</p>
+                            <span>Weiterlesen &rarr;</span>
+                        </a>
+                    </div>
+                    <div class="article-item">
+                        <a href="/blog/artikel-geschenkideen">
+                            <img src="https://picsum.photos/seed/blogC/400/250" alt="Geschenkideen">
+                            <h3>Perfekte Geschenkideen für jeden Anlass</h3>
+                            <p>Finde inspirierende Geschenke, die Freude bereiten...</p>
+                            <span>Weiterlesen &rarr;</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="view-all-link">
+                    <a href="/blog" class="button-secondary">Zum Magazin</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="newsletter-signup">
+            <div class="container">
+                <h2>Bleibe auf dem Laufenden!</h2>
+                <p>Abonniere unseren Newsletter und verpasse keine Neuigkeiten oder exklusiven Angebote. Erhalte 10% Rabatt auf deine nächste Bestellung!</p>
+                <form action="/newsletter-anmeldung" method="post">
+                    <input type="email" name="email" placeholder="Deine E-Mail-Adresse" required>
+                    <button type="submit">Abonnieren</button>
+                </form>
+            </div>
+        </section>
+
     </main>
-    <script src="index.js"></script>
+
+    <footer>
+        <div class="container">
+            <div class="footer-columns">
+                <div class="footer-column">
+                    <h3>[Shop-Name]</h3>
+                    <p>Deine erste Adresse für hochwertige [Produkttyp/Nische] mit Stil und fairen Preisen.</p>
+                    <a href="/ueber-uns">Mehr über uns</a>
+                </div>
+
+                <div class="footer-column">
+                    <h3>Kundenservice</h3>
+                    <ul>
+                        <li><a href="/kontakt">Kontakt</a></li>
+                        <li><a href="/hilfe">Hilfe & FAQ</a></li>
+                        <li><a href="/versand">Versand & Lieferung</a></li>
+                        <li><a href="/retouren">Retouren & Umtausch</a></li>
+                        <li><a href="/agb">AGB</a></li>
+                        <li><a href="/datenschutz">Datenschutz</a></li>
+                        <li><a href="/impressum">Impressum</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h3>Entdecken</h3>
+                    <ul>
+                        <li><a href="/kategorie/neuheiten">Neuheiten</a></li>
+                        <li><a href="/kategorie/bekleidung">Bekleidung</a></li>
+                        <li><a href="/kategorie/schuhe">Schuhe</a></li>
+                        <li><a href="/angebote">Angebote</a></li>
+                        <li><a href="/gutscheine">Gutscheine</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h3>Folge uns</h3>
+                    <div class="social-media-icons">
+                        <a href="https://facebook.com" target="_blank" aria-label="Facebook">[FB_Icon]</a>
+                        <a href="https://instagram.com" target="_blank" aria-label="Instagram">[IG_Icon]</a>
+                        <a href="https://pinterest.com" target="_blank" aria-label="Pinterest">[PI_Icon]</a>
+                    </div>
+                    <h3 class="payment-title">Sicher bezahlen mit</h3>
+                    <div class="payment-methods-icons">
+                        <img src="https://via.placeholder.com/50x30/FFFFFF/000000?text=PayPal" alt="PayPal">
+                        <img src="https://via.placeholder.com/50x30/FFFFFF/000000?text=Visa" alt="Visa">
+                        <img src="https://via.placeholder.com/50x30/FFFFFF/000000?text=MC" alt="Mastercard">
+                        <img src="https://via.placeholder.com/50x30/FFFFFF/000000?text=Klarna" alt="Klarna">
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2024-<script>document.write(new Date().getFullYear())</script> [Shop-Name]. Alle Rechte vorbehalten.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
 </body>
-</html>
+</html
