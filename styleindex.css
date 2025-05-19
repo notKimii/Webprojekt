@@ -4,7 +4,7 @@
 
    :root {
     /* Farbpalette (inspiriert von Apple, aber anpassbar) */
-    --primary-color: #007aff; /* Apple's typisches Blau */
+    --primary-color: #102ba7; /* Apple's typisches Blau */
     --secondary-color: #8e8e93; /* Mittleres Grau für Text/Sekundäre Elemente */
     --accent-color: #007aff; /* Kann gleich der Primärfarbe sein oder eine andere */
     --light-color: #f5f5f7;  /* Sehr helles Grau für Hintergründe (Apple-ähnlich) */
@@ -207,7 +207,15 @@ header {
     /* Keine explizite flex-grow Eigenschaft */
     display: flex; /* Stellt sicher, dass die Icons innerhalb der Aktionen korrekt ausgerichtet sind */
     align-items: center;
+    gap: 30px;
 }
+
+.header-actions > a{
+    border: var(--primary-color) .5px solid;
+    border-radius: 10px;
+    padding: 5px 5px 5px 5px;
+}
+
 
 
 .cart-icon {

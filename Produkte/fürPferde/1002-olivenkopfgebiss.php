@@ -112,6 +112,7 @@
       @media screen and (max-width: 600px) {
         ul.topnav li.right, 
         ul.topnav li {float: none;}
+      }
     </style>
     
   </head>
@@ -128,7 +129,6 @@
         <li style="float: right; color: white;"><a href=""><i class="fas fa-globe-europe"></i><div id="ausgabe"></div></a></li>
         
       </ul><br><br>
-
 
   		<!-- body, alles in diesen Container rein schreiben-->
   		<div class="container">
@@ -147,12 +147,6 @@
             </div>
           </form>
   		</div>
-  		
-
-	
-
-
-  		
 
     <!--Fußzeile-->
       <br><br>
