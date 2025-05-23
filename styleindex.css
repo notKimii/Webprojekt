@@ -210,6 +210,14 @@ header {
     gap: 30px;
 }
 
+
+.header-action-item {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    gap: 10px;
+}
+
 .header-actions > a{
     border: var(--primary-color) .5px solid;
     border-radius: 10px;
