@@ -84,11 +84,11 @@ section {
 .add-to-cart-button,
 .newsletter-signup button {
     display: inline-block;
-    padding: calc(var(--spacing-unit) * 0.8) calc(var(--spacing-unit) * 1.8);
-    border-radius: var(--border-radius-pill); /* Pillenform */
+    padding: 10px 13px 10px 13px;
+    border-radius: 10px; /* Pillenform */
     text-align: center;
     cursor: pointer;
-    transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease, transform var(--transition-speed) ease;
+    
     font-weight: 500;
     border: none;
     font-size: 0.95rem;
@@ -102,11 +102,12 @@ section {
 }
 
 .cta-button {
-    background-color: var(--primary-color);
+    
     color: white;
 }
-.cta-button:hover {
-    background-color: lighten(var(--primary-color), 5%);
+.cta-button::hover {
+    background-color: #007aff;
+    color: white;
 }
 
 .button-secondary {
@@ -215,16 +216,27 @@ header {
     display: flex;
     justify-content: center;
     text-align: center;
-    gap: 10px;
+    flex-direction: column;
+    border-radius: 4px;
+    
 }
 
-.header-actions > a{
-    border: var(--primary-color) .5px solid;
+.header-action-item > p{
+    
+}
+
+.header-action-item > a{
     border-radius: 10px;
-    padding: 5px 5px 5px 5px;
+    padding: 7px 10px 7px 10px;
+    transition: box-shadow 0.3s ease;
+    background: linear-gradient(to top left, #102ba7, #007aff);
+    color: white;
 }
 
-
+.header-action-item > a:hover{
+    
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
 
 .cart-icon {
     font-size: 1.3rem;
@@ -337,16 +349,18 @@ header {
 .hero-content p {
     font-size: 1.25rem; /* Etwas größerer Text */
     margin-bottom: calc(var(--spacing-unit) * 2);
-    color: var(--secondary-color);
+    color: #4e4e4e;
     text-shadow: none;
     font-weight: 400;
 }
-.hero-banner .cta-button { /* Button im Hero kann dunkler sein für Kontrast */
-    background-color: var(--dark-color);
+.cta-button { /* Button im Hero kann dunkler sein für Kontrast */
+    background-color: #007aff;
     color: white;
+    transition: background-color 0.3s ease;
 }
 .hero-banner .cta-button:hover {
-    background-color: lighten(var(--dark-color), 10%);
+    background-color: #0270e5;
+    color: white;
 }
 
 
