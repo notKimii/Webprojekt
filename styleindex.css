@@ -84,7 +84,7 @@ section {
 .add-to-cart-button,
 .newsletter-signup button {
     display: inline-block;
-    padding: 10px 13px 10px 13px;
+    padding: 16px 13px 16px 13px;
     border-radius: 10px; /* Pillenform */
     text-align: center;
     cursor: pointer;
@@ -93,21 +93,32 @@ section {
     border: none;
     font-size: 0.95rem;
 }
-.cta-button:hover,
-.button-secondary:hover,
-.add-to-cart-button:hover,
-.newsletter-signup button:hover {
-    transform: translateY(-2px); /* Leichter Hover-Effekt */
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
 
-.cta-button {
-    
-    color: white;
-}
-.cta-button::hover {
+#login-button {
     background-color: #007aff;
     color: white;
+    border: 1px solid #006fe7;
+}
+
+#login-button:hover{
+    background-color: #006fe7;
+    color: white;
+}
+
+#cart-button {
+    background-color: #e3e3e3;
+    color: rgb(73, 73, 73);
+    border: 1px solid #d3d3d3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    gap: 10px;
+}
+
+#cart-button:hover{
+    background-color: #d3d3d3;
+    color: rgb(73, 73, 73);
 }
 
 .button-secondary {
@@ -150,32 +161,30 @@ header {
 }
 
 .header-main .container {
+    position: relative;           /* nötig, damit absolute Elemente relativ hier positioniert werden können */
     display: flex;
-    justify-content: space-between; /* Behält Logo links und Aktionen rechts */
+    justify-content: space-between;
     align-items: center;
-    padding-top: calc(var(--spacing-unit)*0.5);
-    padding-bottom: calc(var(--spacing-unit)*0.5);
-}
+  }
 
 .logo img {
     max-height: 85px; /* Kleineres, dezenteres Logo */
     border-radius: 0; /* Logos meist nicht abgerundet */
 }
 
-.search-bar {
-    display: flex;
-    flex-grow: 1; /* Erlaubt der Suchleiste, den verfügbaren Platz einzunehmen */
-    flex-shrink: 1; /* Erlaubt der Suchleiste bei Bedarf zu schrumpfen */
-    /* margin: 0 calc(var(--spacing-unit) * 2);  ENTFERNE DIE FIXEN HORIZONTALEN RÄNDER */
-    margin-left: calc(var(--spacing-unit) * 1.5); /* Optional: Mindestabstand zum Logo */
-    margin-right: calc(var(--spacing-unit) * 1.5); /* Optional: Mindestabstand zu den Aktionen */
-    max-width: 500px; /* Behalte eine maximale Breite für die Suchleiste bei */
-    /* Die Suchleiste selbst (das div) wird nun durch flex-grow und max-width
-       zentriert im verfügbaren Raum zwischen Logo und Aktionen platziert. */
-}
-
+.header-main .search-bar {
+    /* aufheben aller Flex-Eigenschaften */
+    flex: none !important;
+    /* absolute Zentrierung */
+    position: absolute !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    /* Breite beibehalten */
+    width: 100%;
+    max-width: 500px;
+  }
 .search-bar input[type="search"] {
-    flex-grow: 1;
+    
     padding: calc(var(--spacing-unit) * 0.6) var(--spacing-unit);
     border: 1px solid #ddd; /* Dezenter Rand */
     border-right: none;
@@ -227,16 +236,12 @@ header {
 
 .header-action-item > a{
     border-radius: 10px;
-    padding: 7px 10px 7px 10px;
+    padding: 5px 13px 5px 13px;
     transition: box-shadow 0.3s ease;
-    background: linear-gradient(to top left, #102ba7, #007aff);
     color: white;
+    font-size: 0.9rem;
 }
 
-.header-action-item > a:hover{
-    
-    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-}
 
 .cart-icon {
     font-size: 1.3rem;
@@ -249,16 +254,15 @@ header {
 }
 
 .cart-count {
-    position: absolute;
-    top: -8px;
-    right: -12px;
-    background-color: var(--primary-color);
+    padding: 1px 6.5px 1px 6.5px;
+    background-color: #007aff;
     color: white;
-    border-radius: 10px;
-    padding: 1px 6px;
+    border-radius: 50%;
     font-size: 0.7rem;
     font-weight: 600;
+    pointer-events: none;
 }
+
 
 /* Navigation im Apple-Stil (sehr dezent) */
 .main-navigation {
@@ -357,6 +361,7 @@ header {
     background-color: #007aff;
     color: white;
     transition: background-color 0.3s ease;
+    font-size: 0.7rem;
 }
 .hero-banner .cta-button:hover {
     background-color: #0270e5;
