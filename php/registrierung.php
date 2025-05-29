@@ -135,7 +135,7 @@ unset($_SESSION['form_data'], $_SESSION['mail_error']);
         </div>
 
         <!-- Submit Button -->
-        <button type="submit" class="btn btn-primary btn-block">Registrieren</button>
+        <button type="submit" class="btn btn-primary btn-block" style="background-color: #092291; color: white; border: 2px solid #092291; border-radius: 0;">Registrieren</button>
 
         <div class="text-center mt-3">
           Schon ein Konto? <a href="./login1.html">Hier einloggen</a>

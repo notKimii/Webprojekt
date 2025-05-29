@@ -1,0 +1,8 @@
+{
+  "require": {
+    "phpmailer/phpmailer": "^6.10",
+    "phpgangsta/googleauthenticator": "dev-master"
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
