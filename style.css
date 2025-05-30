@@ -320,6 +320,7 @@ header {
 .hero-section {
     padding: calc(var(--spacing-unit)*2) 0; /* Weniger Padding wenn Bild full-width */
     background-color: var(--light-color); /* Hintergrund für die gesamte Sektion */
+   
 }
 .hero-banner {
     background-size: cover;
@@ -332,7 +333,12 @@ header {
     align-items: center;
     justify-content: center;
     border-radius: calc(var(--border-radius-soft) * 2); /* Größere Rundung für Hero */
-    /* Overlay entfernt, stattdessen helle Bilder oder Textkontrast sicherstellen */
+    background: linear-gradient(90deg,
+    #007aff,  
+    #5e5ce6
+  );
+    
+    
 }
 
 .hero-content {
