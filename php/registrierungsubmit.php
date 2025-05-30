@@ -23,7 +23,7 @@ if (isset($_SESSION['mail_error'])) {
 	$adresse = $_POST["adresse"];
 	$plz = $_POST["plz"];
 	$ort = $_POST["ort"];
-	$passwort = password_hash($_POST["password"], PASSWORD_DEFAULT); // besser als SHA512
+	$passwort = hash('sha512', $_POST["password"]); // besser als SHA512
 
 	// Google Authenticator vorbereiten
 	$gAuth = new PHPGangsta_GoogleAuthenticator();
