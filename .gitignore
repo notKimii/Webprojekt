@@ -1,0 +1,11 @@
+/vendor/
+/composer.lock
+.env
+*.log
+.DS_Store
+*.sqlite
+.idea/
+/node_modules/
+/coverage/
+/*.bak
+*.swp

@@ -1,160 +1,182 @@
 <?php
-	ini_set('display_errors', 1);
-	ini_set('display_startup_errors', 1);
-	error_reporting(E_ALL);
-
-	use PHPMailer\PHPMailer\PHPMailer;
-	use PHPMailer\PHPMailer\Exception;
-
-	require __DIR__ . '/../vendor/autoload.php';
-	$Mailer = new PHPMailer(true);
-
-	//Daten aus Registrierungs-Formular in DB speichern
-	session_start();
-
-	$gefunden = false;
-		
-	//Inhalt aus Formular holen
-	$vorname = $_POST["vorname"];
-	$nachname = $_POST["nachname"];
-	$mail = $_POST["mail"];
-	$adresse = $_POST["adresse"];
-	$plz = $_POST["plz"];
-	$ort = $_POST["ort"];
-	$passwort = hash('sha512', $_POST["password"]); //Passwort mit sha256 verschlüsselt
-
-	//Verbindung zur DB aufbauen
-	$pdo = new PDO("mysql:host=localhost;dbname=dbPilotenshop","root","");
-	$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-	//Prüfen auf doppelte Registrierung --> keine gleiche Email Adresse!
-	$check = "SELECT mail FROM user";
-	foreach($pdo->query($check) as $row)
-	{
-       $NeuerEintrag = true;
-       
-   	   if($mail == $row['mail']) 
-   		{
-   			$NeuerEintrag = false; //neuer Eintrag nicht möglich da Mail-Adresse bereits verwendet
-   			break;
-   		}
-   	}	
-
-   	if ($NeuerEintrag) { 	//NeuerEintrag erlaubt
-   		//Formulardaten in DB einfügen 
-		$sql = "INSERT INTO user (vorname, nachname, mail, adresse, plz, ort, passwort)
-		VALUES ('$vorname','$nachname','$mail','$adresse','$plz', '$ort', '$passwort')";
-		
-				$_SESSION["username"]= $vorname;
-	   			$_SESSION["nachname"] = $nachname;
-                $_SESSION["adresse"] = $adresse;
-                $_SESSION["plz"] = $plz;
-                $_SESSION["ort"] = $ort;
-                $_SESSION["mail"] = $mail;
-                
-
-			if ($pdo->query($sql))
-			{
-				$_SESSION["login"]=1;
-
-				$sql2 = "SELECT * FROM user WHERE mail='$mail'";
-				foreach ($pdo->query($sql2) as $row) {
-					$_SESSION["id"] = $row['id'];
-					$id = $_SESSION["id"];
-				}
-				
-				$insert_query="INSERT INTO online(userID, timeonline) VALUES('$id', NOW())";
-		          if ($pdo->query($insert_query)) {
-		            echo "";
-		          }
-
-				
-				 
-			}
-				$Mailer = new PHPMailer(true);
-					    //Server settings
-					    //$Mailer->SMTPDebug = 1;                             
-					    //$Mailer->CharSet="UTF-8";
-					    $Mailer->isSMTP();                                    
-					    $Mailer->Host = 'smtp.mailbox.org';  					 
-					    $Mailer->SMTPAuth = true;                             
-					    $Mailer->Username = 'cockpitcorner@mailbox.org';        
-					    $Mailer->Password = 'Mondy.123';                  
-					    $Mailer->SMTPSecure = 'tls';                         
-					    $Mailer->Port = 587;                                  
-
-					    $Mailer->setFrom('cockpitcorner@mailbox.org', 'Cockpit Corner');
-					    $Mailer->addAddress($mail);    	   
-					    $Mailer->addReplyTo('cockpitcorner@mailbox.org');
-					 	
-					 	//Standard Nachricht -- mit HTML
-					 	//evtl. kann noch ein Bild (als Banner oder so) eingefügt werden
-					    $body = "<p>Herzlich Willkommen $vorname $nachname! 
-					    	<br><br>
-					    	Sie haben sich erfolgreich bei <i>'Cockpit Corner' </i>registriert.
-					    	<br><br><br> 
-					    	Ihre <strong>Anmeldedaten</strong> lauten wie folgt: <br>
-					    		Vorname: $vorname <br>
-					    		Nachname: $nachname <br>
-					    		E-Mail Adresse: $mail <br><br>
-					    	Als <strong>Lieferadresse </strong> haben sie folgende Adresse angeben: <br> $adresse <br> $plz $ort
-					    	<br><br>
-					    	Sie k&ouml;nnen diese Adresse auf unserer Webseite unter der Katergorie Kundenkonto ab&auml;ndern! 
-					    	<br>Viel Spa&szlig; beim Shoppen!<br><br>Mit pferdigen Gr&uuml;&szlig;en<br>Ihr Pferdeshop-Team</p>";
-						
-					    //Content
-					    $Mailer->isHTML(true);                   
-					    $Mailer->Subject = 'Erfolgreiche Registrierung';
-					    $Mailer->Body    = $body;
-					    $Mailer->AltBody = strip_tags($body);
-
-					    if(!$Mailer->send())
-					    {
-					    	echo 'Message could not be sent. Mailer Error!';
-						} 
-						else
-						{
-							echo 'Message has been sent!';
-						}
-
-			//neuer Eintrag erfolgreich (Registrierung erfolgreich) --> Wechsel auf Basisseite
-			header("Location: portal.php");
-			exit;
-	}
-	
-   	else //kein neuer Eintrag erlaubt --> zurück zur Registrierungsseite
-   	{
-   		header("Location: ../regMail.html");
-		exit;
-   		//echo "E-Mail Adresse bereits vergeben!";
-   	}
-// Google Authenticator Secret generieren
-$gAuth = new PHPGangsta_GoogleAuthenticator();
-$secret = $gAuth->createSecret();
-
-// QR-Code URL für Google Authenticator
-$websiteName = 'Pilotenshop'; // Oder dein Projektname
-$qrCodeUrl = $gAuth->getQRCodeGoogleUrl($websiteName, $secret);
-
-// User speichern
-$stmt = $pdo->prepare("
-    INSERT INTO user (vorname, nachname, adresse, plz, ort, mail, passwort, google_secret)
-    VALUES (:vorname, :nachname, :adresse, :plz, :ort, :mail, :passwort, :google_secret)
-");
-$stmt->execute([
-    'vorname' => $_POST['vorname'],
-    'nachname' => $_POST['nachname'],
-    'adresse' => $_POST['adresse'],
-    'plz' => $_POST['plz'],
-    'ort' => $_POST['ort'],
-    'mail' => $_POST['mail'],
-    'passwort' => $hashedPassword,
-    'google_secret' => $secret
-]);
-
-echo "<h2>Registrierung erfolgreich!</h2>";
-echo "<p>Bitte scanne diesen QR-Code mit deiner Google Authenticator App:</p>";
-echo "<img src='$qrCodeUrl' alt='QR-Code'>";
-echo "<p>Oder gib diesen Schlüssel manuell ein: <strong>$secret</strong></p>";
-echo "<a href='login.html'>Jetzt einloggen</a>";
+session_start();
+$formData = $_SESSION['form_data'] ?? [];
+$mailFehler = $_SESSION['mail_error'] ?? null;
+unset($_SESSION['form_data'], $_SESSION['mail_error']);
 ?>
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cockpit Corner Registrierung</title>
+
+  <!-- Google Fonts & Bootstrap CSS -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" 
+    integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-family: 'Roboto', sans-serif;
+      background: url('./images/Cockpit Corner/sky.jpg') center/cover no-repeat;
+    }
+    .register-box {
+      background-color: rgba(255, 255, 255, 0.95);
+      padding: 30px;
+      margin: 20px;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+  <?php if ($mailFehler): ?>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <?= htmlspecialchars($mailFehler) ?>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Schließen">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  <?php endif; ?>
+  <header class="w-100 text-center bg-light py-2">
+    <nav>
+      <a href="/"><img src="./images/Cockpit Corner/planelogo.png" alt="Logo" style="width: 100px;"></a>
+    </nav>
+  </header>
+
+  <main class="flex-fill d-flex justify-content-center align-items-center">
+    <div class="register-box">
+      <form action="registrierungsubmit.php" method="POST" class="needs-validation" novalidate>
+        <!-- CSRF -->
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
+
+        <h2 class="text-center mb-4">Kundenkonto erstellen</h2>
+
+        <!-- Vorname -->
+        <div class="form-group">
+          <label for="vorname">Vorname</label>
+          <input type="text" class="form-control" id="vorname" name="vorname" value="<?= htmlspecialchars($formData['vorname'] ?? '') ?>" required>
+          <div class="valid-feedback">Korrekt</div>
+          <div class="invalid-feedback">Bitte gib deinen Vornamen an.</div>
+        </div>
+
+        <!-- Nachname -->
+        <div class="form-group">
+          <label for="nachname">Nachname</label>
+          <input type="text" class="form-control" id="nachname" name="nachname" value="<?= htmlspecialchars($formData['nachname'] ?? '') ?>" required>
+          <div class="valid-feedback">Korrekt</div>
+          <div class="invalid-feedback">Bitte gib deinen Nachnamen an.</div>
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+          <label for="mail">E-Mail</label>
+          <input type="email" class="form-control" id="mail" name="mail" value="<?= htmlspecialchars($formData['mail'] ?? '') ?>" required>
+          <div class="valid-feedback">Korrekt</div>
+          <div class="invalid-feedback">Bitte gib eine gültige E-Mail-Adresse an.</div>
+        </div>
+
+        <!-- Adresse -->
+        <div class="form-group">
+          <label for="adresse">Straße und Hausnummer</label>
+          <input type="text" class="form-control" id="adresse" name="adresse" value="<?= htmlspecialchars($formData['adresse'] ?? '') ?>"required>
+          <div class="valid-feedback">Korrekt</div>
+          <div class="invalid-feedback">Bitte gib deine Adresse an.</div>
+        </div>
+
+        <!-- PLZ -->
+        <div class="form-group">
+          <label for="plz">Postleitzahl</label>
+          <input type="text" class="form-control" id="plz" name="plz" pattern="\d{5}" maxlength="5" value="<?= htmlspecialchars($formData['plz'] ?? '') ?>"  required>
+          <div class="valid-feedback">Korrekt</div>
+          <div class="invalid-feedback">Bitte gib eine 5-stellige Postleitzahl an.</div>
+        </div>
+
+        <!-- Ort -->
+        <div class="form-group">
+          <label for="ort">Ort</label>
+          <input type="text" class="form-control" id="ort" name="ort" value="<?= htmlspecialchars($formData['ort'] ?? '') ?>" required>
+          <div class="valid-feedback">Korrekt</div>
+          <div class="invalid-feedback">Bitte gib deinen Wohnort an.</div>
+        </div>
+
+        <!-- Passwort -->
+        <div class="form-group">
+          <label for="password">Passwort</label>
+          <input type="password" class="form-control" id="password" name="password" minlength="8" required>
+          <div class="valid-feedback">Korrekt</div>
+          <div class="invalid-feedback">Bitte gib ein Passwort mit mindestens 8 Zeichen ein.</div>
+        </div>
+
+        <!-- Passwort bestätigen -->
+        <div class="form-group">
+          <label for="password_confirm">Passwort wiederholen</label>
+          <input type="password" class="form-control" id="password_confirm" name="password_confirm" minlength="8" required>
+          <div class="valid-feedback">Korrekt</div>
+          <div class="invalid-feedback">Bitte wiederhole dein Passwort korrekt.</div>
+        </div>
+
+        <!-- AGB Checkbox -->
+        <div class="form-group form-check">
+          <input type="checkbox" class="form-check-input" id="terms" name="terms" required>
+          <label class="form-check-label" for="terms">
+            Ich akzeptiere die <a href="/terms" target="_blank">AGB</a> und
+            <a href="/privacy" target="_blank">Datenschutzerklärung</a>.
+          </label>
+          <div class="invalid-feedback">Du musst die AGB und Datenschutzbestimmungen akzeptieren.</div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary btn-block" style="background-color: #092291; color: white; border: 2px solid #092291; border-radius: 0;">Registrieren</button>
+
+        <div class="text-center mt-3">
+          Schon ein Konto? <a href="./login1.html">Hier einloggen</a>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <footer class="w-100 text-center bg-light py-2">
+    © 2025 Cockpit Corner - Alle Rechte vorbehalten
+  </footer>
+
+  <script>
+    // Bootstrap-Validierung aktivieren
+    (function () {
+      'use strict';
+      window.addEventListener('load', function () {
+        var forms = document.getElementsByClassName('needs-validation');
+        Array.prototype.forEach.call(forms, function (form) {
+          form.addEventListener('submit', function (event) {
+            if (form.checkValidity() === false) {
+              event.preventDefault();
+              event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+          }, false);
+        });
+      }, false);
+    })();
+
+    // Passwort-Abgleich
+    document.querySelector('form').addEventListener('submit', function (e) {
+      const pw = document.getElementById('password').value;
+      const pwConfirm = document.getElementById('password_confirm').value;
+      if (pw !== pwConfirm) {
+        e.preventDefault();
+        e.stopPropagation();
+        alert("Die Passwörter stimmen nicht überein.");
+        document.getElementById('password_confirm').focus();
+      }
+    });
+  </script>
+</body>
+</html>
