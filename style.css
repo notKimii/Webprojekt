@@ -235,10 +235,6 @@ header {
     
 }
 
-.header-action-item > p{
-    
-}
-
 .header-action-item > a{
     border-radius: 10px;
     padding: 5px 13px 5px 13px;
@@ -246,7 +242,6 @@ header {
     color: white;
     font-size: 0.9rem;
 }
-
 
 .cart-icon {
     font-size: 1.3rem;
@@ -298,6 +293,10 @@ header {
     border-radius: var(--border-radius-soft);
   }
   
+  .main-navigation ul li a:hover{
+    color: #006fe7;
+  }
+
   /* Optional: Bei Dropdowns sicherstellen, dass sie unter dem zentrierten Menü hängen */
   .main-navigation .dropdown {
     display: none;
