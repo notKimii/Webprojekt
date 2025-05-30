@@ -1,4 +1,6 @@
-
+<?php
+session_start();
+?>
     <link rel="stylesheet" href="../style.css">
     
     <div class="announcement-bar">
@@ -37,8 +39,15 @@
 
             <div class="header-actions">
                 <div class="header-action-item">
-                    <a href="login.html" id="login-button">
-                    <p>Anmelden</p></a>
+                        <?php if (isset($_SESSION['temp_user'])): ?>
+                            <a href="/mein-konto.php" id="login-button">
+                                <p>Mein Konto</p>
+                            </a>
+                        <?php else: ?>
+                            <a href="/login.html" id="login-button">
+                                <p>Anmelden</p>
+                            </a>
+                        <?php endif; ?>
                 </div>
                <div class="header-action-item">
                     <a href="./php/cart.php" id="cart-button">

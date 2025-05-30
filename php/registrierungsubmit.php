@@ -61,7 +61,7 @@ if (isset($_SESSION['mail_error'])) {
 		// E-Mail senden
 		$mailer->send();
 
-		//  Wenn Mail erfolgreich → in DB einfügen
+		// ✅ Wenn Mail erfolgreich → in DB einfügen
 		$pdo = new PDO("mysql:host=localhost;dbname=dbPilotenshop", "root", "");
 		$stmt = $pdo->prepare("SELECT COUNT(*) FROM user WHERE mail = ?");
 		$stmt->execute([$mail]);
@@ -127,4 +127,9 @@ if (isset($_SESSION['mail_error'])) {
 // echo "<img src='$qrCodeUrl' alt='QR-Code'>";
 // echo "<p>Oder gib diesen Schlüssel manuell ein: <strong>$secret</strong></p>";
 // echo "<a href='login.html'>Jetzt einloggen</a>";
+
+
+
+//prüfung ob secret code schon vorhanden in db
 ?>
+

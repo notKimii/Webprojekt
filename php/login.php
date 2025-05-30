@@ -19,7 +19,8 @@ try {
 }
 
 // 2) Eingaben prüfen
-if (empty($_POST['email']) || empty($_POST['password']) || empty($_POST['2fa_code'])) {
+if (empty($_POST['email']) || empty($_POST['password']) || empty($_POST['2fa_code']))
+ {
     header("Location: ../login.html");
     exit;
 }
@@ -36,15 +37,7 @@ if (empty($_POST['email']) || empty($_POST['password']) || empty($_POST['2fa_cod
     $stmt->execute(['email' => $email]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if (!$user) {
-    die('DEBUG: Benutzer nicht gefunden.');
-    } else {
-    echo '<pre>DEBUG: User geladen: ';
-    print_r($user);
-    echo '</pre>';
-    }
-
-// 4) Passwort prüfen
+    // 4) Passwort prüfen
     if ($user && $password == $user['passwort']){
         $_SESSION['temp_user'] = [
             'id'            => $user['id'],
@@ -56,7 +49,7 @@ if (empty($_POST['email']) || empty($_POST['password']) || empty($_POST['2fa_cod
             'email'         => $user['mail'],           // wenn die Spalte „mail“ heißt
             'google_secret' => $user['google_secret']
         ];
-
+        
         $checkResult = $gAuth->verifyCode($user['google_secret'], $code, 2);
         if ($checkResult) {
             header("Location: basis.php");
@@ -65,9 +58,10 @@ if (empty($_POST['email']) || empty($_POST['password']) || empty($_POST['2fa_cod
             header("Location: ../login.html");
                 exit;
             }
-        } else {
-        header("Location: ../login.html");
-        exit;
+        } 
+        else {
+            header("Location: ../login.html");
+             exit;
     }
 //Login mit befüllten feldern und fehlermeldung
 ?>
