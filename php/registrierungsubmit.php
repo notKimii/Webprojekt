@@ -56,12 +56,12 @@ if (isset($_SESSION['mail_error'])) {
 			Als <strong>Lieferadresse </strong> haben sie folgende Adresse angeben: <br> $adresse <br> $plz $ort
 			<br><br>
 			Sie k&ouml;nnen diese Adresse auf unserer Webseite unter der Katergorie Kundenkonto ab&auml;ndern! 
-			<br>Viel Spa&szlig; beim Shoppen!<br><br>Mit pferdigen Gr&uuml;&szlig;en<br>Ihr Pferdeshop-Team</p>";
+			<br>Viel Spa&szlig; beim Shoppen!<br><br>Happy Landings<br>Ihr CockpitCorner-Team</p>";
 		$mailer->Body = $body;
 		// E-Mail senden
 		$mailer->send();
 
-		// ✅ Wenn Mail erfolgreich → in DB einfügen
+		//  Wenn Mail erfolgreich → in DB einfügen
 		$pdo = new PDO("mysql:host=localhost;dbname=dbPilotenshop", "root", "");
 		$stmt = $pdo->prepare("SELECT COUNT(*) FROM user WHERE mail = ?");
 		$stmt->execute([$mail]);
