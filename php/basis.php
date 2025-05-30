@@ -9,7 +9,7 @@
   {
       $gefunden=true;
   }
-
+ 
   if($gefunden==false)
   {
     header("Location: ../login.html");
