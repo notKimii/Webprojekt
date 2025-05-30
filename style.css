@@ -158,8 +158,7 @@ header {
     display: none; /* Für einen noch minimalistischeren Look */
 }
 
-.header-main .container {
-    position: relative;           /* nötig, damit absolute Elemente relativ hier positioniert werden können */
+.header-main .container {          /* nötig, damit absolute Elemente relativ hier positioniert werden können */
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -180,7 +179,7 @@ header {
     /* Breite beibehalten */
     width: 100%;
     max-width: 500px;
-  }
+}
 .search-bar input[type="search"] {
     
     padding: calc(var(--spacing-unit) * 0.6) var(--spacing-unit);
@@ -416,7 +415,7 @@ header {
 .product-grid,
 .article-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Etwas größere Min-Breite */
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); /* Etwas größere Min-Breite */
     gap: calc(var(--spacing-unit) * 2); /* Mehr Abstand zwischen Karten */
 }
 
@@ -716,7 +715,14 @@ footer {
         justify-content: center;
     }
     .logo { width: 100%; text-align: center; margin-bottom: var(--spacing-unit); }
-    .search-bar { order: 2; width: 100%; margin: 0 0 var(--spacing-unit) 0;}
+    .search-bar { 
+        order: 2; 
+        width: 100%; 
+        margin: 0 0 var(--spacing-unit) 0;
+        position: relative !important;
+        left: 0 !important;
+        transform: none !important;
+    }
     .header-actions { order: 1; margin-bottom: var(--spacing-unit); }
 
 
