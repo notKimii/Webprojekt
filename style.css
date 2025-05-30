@@ -158,7 +158,8 @@ header {
     display: none; /* Für einen noch minimalistischeren Look */
 }
 
-.header-main .container {          /* nötig, damit absolute Elemente relativ hier positioniert werden können */
+.header-main .container {
+    position: relative;           /* nötig, damit absolute Elemente relativ hier positioniert werden können */
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -179,40 +180,47 @@ header {
     /* Breite beibehalten */
     width: 100%;
     max-width: 500px;
-}
-.search-bar input[type="search"] {
-    
-    padding: calc(var(--spacing-unit) * 0.6) var(--spacing-unit);
-    border: 1px solid #ddd; /* Dezenter Rand */
-    border-right: none;
-    border-radius: var(--border-radius-soft) 0 0 var(--border-radius-soft);
-    background-color: var(--light-color);
-    font-size: 0.9rem;
-}
-.search-bar input[type="search"]:focus {
-    background-color: white;
-    border-color: var(--primary-color);
+  }
+  .search-bar form {
+    display: flex;
+    width: 100%;
+    background: #f5f5f7;
+    border-radius: 999px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+    overflow: hidden;  /* Damit nichts raussteht */
+  }
+  
+  .search-bar input[type="search"] {
+    flex: 1 1 auto;
+    border: none;
     outline: none;
-}
-
-.search-bar button {
-    padding: calc(var(--spacing-unit) * 0.6) var(--spacing-unit);
-    border: 1px solid #ddd;
-    border-left: none;
-    background-color: var(--light-color);
-    color: var(--secondary-color);
+    padding: 0.9em 1.3em;
+    background: #f5f5f7;
+    font-size: 0.95rem;
+    border-radius: 999px 0 0 999px;
+  }
+  
+  .search-bar button {
+    border: none;
+    outline: none;
+    background: #007aff;
+    color: #fff;
+    font-size: 0.95rem;
+    padding: 0.9em 1.7em;
+    border-radius: 0 999px 999px 0;
     cursor: pointer;
-    border-radius: 0 var(--border-radius-soft) var(--border-radius-soft) 0;
+    font-weight: 500;
+    transition: background 0.2s;
+  }
 }
 .search-bar button:hover {
     color: var(--primary-color);
 }
 
 
-.header-actions {
-    flex-shrink: 0; /* Verhindert, dass die Aktionen schrumpfen */
-    /* Keine explizite flex-grow Eigenschaft */
-    display: flex; /* Stellt sicher, dass die Icons innerhalb der Aktionen korrekt ausgerichtet sind */
+..header-actions {
+    flex: 0 0 auto;
+    display: flex;
     align-items: center;
     gap: 30px;
 }
@@ -715,14 +723,7 @@ footer {
         justify-content: center;
     }
     .logo { width: 100%; text-align: center; margin-bottom: var(--spacing-unit); }
-    .search-bar { 
-        order: 2; 
-        width: 100%; 
-        margin: 0 0 var(--spacing-unit) 0;
-        position: relative !important;
-        left: 0 !important;
-        transform: none !important;
-    }
+    .search-bar { order: 2; width: 100%; margin: 0 0 var(--spacing-unit) 0;}
     .header-actions { order: 1; margin-bottom: var(--spacing-unit); }
 
 
