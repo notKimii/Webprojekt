@@ -73,7 +73,7 @@ if ($user && $password == $user['passwort']) {
     }
     $checkResult = $gAuth->verifyCode($user['google_secret'], $code, 2);
     if ($checkResult) {
-        header("Location: basis.php");
+        header("Location: ../index.php");
         exit;
     } else {
         header("Location: ../login.html");

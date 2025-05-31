@@ -15,7 +15,7 @@
     header("Location: ../login.html");
   }
 
-  $pdo = new PDO('mysql:host=localhost;dbname=dbpferdeshop', 'root', '');
+  include 'php/connect.php';
   $userID = $_SESSION["id"];
   ?>
 <!DOCTYPE html>

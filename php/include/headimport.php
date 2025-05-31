@@ -26,7 +26,7 @@ session_start();
         <div class="container">
             <div class="logo">
                 <a href="/">
-                    <img src="../images/pictures/logo_grey.png" alt="[Shop-Name] Logo">
+                    <img src="favicon.ico" alt="CockpitCornerLogo">
                 </a>
             </div>
 
