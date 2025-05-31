@@ -62,7 +62,7 @@ session_start();
         <div class="container">
             <ul>
                 <li><a href="/kategorie/neuheiten">Neuheiten</a></li>
-                <li><a href="/kategorie/kategorie-1">Headsets</a></li>
+                <li><a href="./php/headsets.php">Headsets</a></li>
                 <li><a href="/kategorie/kategorie-2">Flugtaschen</a></li>
                 <li><a href="/kategorie/kategorie-3">Kneeboards & Clipboards</a></li>
                 <li><a href="/angebote">Karten & Navigationshilfen</a></li>
