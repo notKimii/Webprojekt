@@ -81,7 +81,7 @@
         <p>Oder gib diesen geheimen Schlüssel manuell ein:</p>
         <div class="secret-box"><?php echo $secret; ?> </div>
         <br>
-        <a href='../php/basis.php' class='btn btn-primary btn-shop' style="background-color: #092291; color: white; border: 2px solid #092291; border-radius: 0;">Weiter zum Shop</a>
+        <a href='../php/passwortAendern.php' class='btn btn-primary btn-shop' style="background-color: #092291; color: white; border: 2px solid #092291; border-radius: 0;">Weiter zur Passwortänderung</a>
 
     </div>
 

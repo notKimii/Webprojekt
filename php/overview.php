@@ -14,7 +14,7 @@
   {
     header("Location: ../login.html");
   }
-  ?>
+?>
 
 <?php 
     //Variablen

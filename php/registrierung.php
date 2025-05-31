@@ -48,7 +48,7 @@ unset($_SESSION['form_data'], $_SESSION['mail_error']);
   <?php endif; ?>
   <header class="w-100 text-center bg-light py-2">
     <nav>
-      <a href="/"><img src="./images/Cockpit Corner/planelogo.png" alt="Logo" style="width: 100px;"></a>
+      <a href="/"><img src="../favicon.ico" alt="Logo" style="width: 100px;"></a>
     </nav>
   </header>
 
@@ -138,7 +138,7 @@ unset($_SESSION['form_data'], $_SESSION['mail_error']);
         <button type="submit" class="btn btn-primary btn-block" style="background-color: #007aff; color: white; border: 2px solid #007aff; border-radius: 0;">Registrieren</button>
 
         <div class="text-center mt-3">
-          Schon ein Konto? <a href="./login1.html">Hier einloggen</a>
+          Schon ein Konto? <a href="./login.html">Hier einloggen</a>
         </div>
       </form>
     </div>
