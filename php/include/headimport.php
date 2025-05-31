@@ -1,7 +1,7 @@
 <?php
 session_start();
 ?>
-    <link rel="stylesheet" href=".../style.css">
+    <link rel="stylesheet" href="../style.css">
     
     <div class="announcement-bar">
         <p>🎉 Sommer Sale: Bis zu 50% Rabatt auf ausgewählte Artikel! Nur für kurze Zeit! | Kostenloser Versand ab 50€ Bestellwert 🎉</p>

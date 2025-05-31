@@ -1,79 +1,81 @@
 <?php
-	include 'include/debug.php';
+include 'include/debug.php';
 
-	session_start();
+session_start();
 
-	include 'include/vendorconnect.php';
-	use PHPMailer\PHPMailer\PHPMailer;
-	use PHPMailer\PHPMailer\Exception;
+include 'include/vendorconnect.php';
 
-	// Formulardaten
-	$vorname = $_POST["vorname"];
-	$nachname = $_POST["nachname"];
-	$mail = $_POST["mail"];
-	$adresse = $_POST["adresse"];
-	$plz = $_POST["plz"];
-	$ort = $_POST["ort"];
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
-	//Passwort generieren
-	function generatePassword($length = 10) {
-    $lower = 'abcdefghijklmnopqrstuvwxyz';
-    $upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    $numbers = '0123456789';
-    $allChars = $lower . $upper . $numbers;
+// Formulardaten
+$vorname = $_POST["vorname"];
+$nachname = $_POST["nachname"];
+$mail = $_POST["mail"];
+$adresse = $_POST["adresse"];
+$plz = $_POST["plz"];
+$ort = $_POST["ort"];
 
-    $password = '';
-    $password .= $lower[random_int(0, strlen($lower) - 1)];
-    $password .= $upper[random_int(0, strlen($upper) - 1)];
-    $password .= $numbers[random_int(0, strlen($numbers) - 1)];
+//Passwort generieren
+function generatePassword($length = 10)
+{
+	$lower = 'abcdefghijklmnopqrstuvwxyz';
+	$upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	$numbers = '0123456789';
+	$allChars = $lower . $upper . $numbers;
 
-    for ($i = strlen($password); $i < $length; $i++) {
-        $password .= $allChars[random_int(0, strlen($allChars) - 1)];
-    }
+	$password = '';
+	$password .= $lower[random_int(0, strlen($lower) - 1)];
+	$password .= $upper[random_int(0, strlen($upper) - 1)];
+	$password .= $numbers[random_int(0, strlen($numbers) - 1)];
 
-    // Passwort mischen
-    $password = str_shuffle($password);
-
-    return $password;
+	for ($i = strlen($password); $i < $length; $i++) {
+		$password .= $allChars[random_int(0, strlen($allChars) - 1)];
 	}
 
-	$plainPassword = generatePassword(10);
-	// SHA512
-	$password='';
-	$password = hash('sha512', $plainPassword);
+	// Passwort mischen
+	$password = str_shuffle($password);
 
-	try {
-		// Prüfung auf doppelten Eintrag
-		include 'include/connect.php';
-		$stmt = $con->prepare("SELECT COUNT(*) FROM user WHERE mail = ?");
-		$stmt->execute([$mail]);
-		$anzahl = $stmt->fetchColumn();
+	return $password;
+}
 
-		if ($anzahl > 0) {
-			$_SESSION['form_data'] = $_POST;
-			$_SESSION['mail_error'] = "Diese E-Mail-Adresse ist bereits registriert.";
-			header("Location: registrierung.php");
-			exit;
-		}
-		$stmt = $con->prepare("INSERT INTO user (vorname, nachname, mail, adresse, plz, ort, passwort, google_secret) 
+$plainPassword = generatePassword(10);
+// SHA512
+$password = '';
+$password = hash('sha512', $plainPassword);
+
+try {
+	// Prüfung auf doppelten Eintrag
+	include 'include/connect.php';
+	$stmt = $con->prepare("SELECT COUNT(*) FROM user WHERE mail = ?");
+	$stmt->execute([$mail]);
+	$anzahl = $stmt->fetchColumn();
+
+	if ($anzahl > 0) {
+		$_SESSION['form_data'] = $_POST;
+		$_SESSION['mail_error'] = "Diese E-Mail-Adresse ist bereits registriert.";
+		header("Location: registrierung.php");
+		exit;
+	}
+	$stmt = $con->prepare("INSERT INTO user (vorname, nachname, mail, adresse, plz, ort, passwort, google_secret) 
 		VALUES (?, ?, ?, ?, ?, ?, ?,?)");
-		$stmt->execute([$vorname, $nachname, $mail, $adresse, $plz, $ort, $password, NULL]);
+	$stmt->execute([$vorname, $nachname, $mail, $adresse, $plz, $ort, $password, NULL]);
 
-		// E-Mail vorbereiten
-		$mailer = new PHPMailer(true);
-		$mailer->isSMTP();
-		$mailer->Host = 'smtp.mailbox.org';
-		$mailer->SMTPAuth = true;
-		$mailer->Username = 'cockpitcorner@mailbox.org';
-		$mailer->Password = 'Mailbox.123';
-		$mailer->SMTPSecure = 'tls';
-		$mailer->Port = 587;
+	// E-Mail vorbereiten
+	$mailer = new PHPMailer(true);
+	$mailer->isSMTP();
+	$mailer->Host = 'smtp.mailbox.org';
+	$mailer->SMTPAuth = true;
+	$mailer->Username = 'cockpitcorner@mailbox.org';
+	$mailer->Password = 'Mailbox.123';
+	$mailer->SMTPSecure = 'tls';
+	$mailer->Port = 587;
 
-		$mailer->setFrom('cockpitcorner@mailbox.org', 'Cockpit Corner');
-		$mailer->addAddress($mail);
-		$mailer->Subject = 'Willkommen bei Cockpit Corner';
-		$mailer->isHTML(true);
-		$body = "<p>Herzlich Willkommen $vorname $nachname! 
+	$mailer->setFrom('cockpitcorner@mailbox.org', 'Cockpit Corner');
+	$mailer->addAddress($mail);
+	$mailer->Subject = 'Willkommen bei Cockpit Corner';
+	$mailer->isHTML(true);
+	$body = "<p>Herzlich Willkommen $vorname $nachname! 
 			<br><br>
 			Sie haben sich erfolgreich bei <i>'Cockpit Corner' </i>registriert.
 			<br><br><br> 
@@ -86,21 +88,21 @@
 			<br><br>
 			Sie k&ouml;nnen diese Adresse auf unserer Webseite unter der Katergorie Kundenkonto ab&auml;ndern! 
 			<br>Viel Spa&szlig; beim Shoppen!<br><br>Happy Landings<br>Ihr CockpitCorner-Team</p>";
-		$mailer->Body = $body;
-		// E-Mail senden
-		$mailer->send();
-
-		header("Location: ../login.html");
+	$mailer->Body = $body;
+	// E-Mail senden
+	$mailer->send();
 
 
-	} 
-	catch (Exception $e) {
-		$_SESSION['form_data'] = $_POST;
-		$_SESSION['mail_error'] = "Die E-Mail konnte nicht gesendet werden.";
-		header("Location: registrierung.php");
-		exit;
-	}
+	header("Location: ../login.html");
+} catch (Exception $e) {
+
+	$_SESSION['form_data'] = $_POST;
+	$_SESSION['mail_error'] = "Die E-Mail konnte nicht gesendet werden. Fehler: " . $mailer->ErrorInfo;
+	  echo "<script>console.log('Mailer Error: {$mailer->ErrorInfo}');</script>";
+	header("Location: registrierung.php");
+	exit;
+}
+
+
 
 //prüfung ob secret code schon vorhanden in db
-?>
-

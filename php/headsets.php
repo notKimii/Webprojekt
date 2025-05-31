@@ -7,13 +7,12 @@ include "include/connectcon.php";
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Headsets – Cockpit Corner</title>
-  
+
+</head>
+<body>  
   <?php
     include "include/headimport.php";
   ?>
-
-</head>
-<body>
 
   <!-- Kategorien-Content -->
   <main>
