@@ -26,7 +26,7 @@ session_start();
         <div class="container">
             <div class="logo">
                 <a href="/">
-                    <img src="favicon.ico" alt="CockpitCornerLogo">
+                    <img src="images/pictures/logo_grey.png" alt="CockpitCornerLogo">
                 </a>
             </div>
 
