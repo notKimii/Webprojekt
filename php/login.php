@@ -44,7 +44,23 @@
             'email'         => $user['mail'],           // wenn die Spalte „mail“ heißt
             'google_secret' => $user['google_secret']
         ];
-        
+        if($user['google_secret']==NULL)
+            {
+                //Secret erstellen 
+                $gAuth = new PHPGangsta_GoogleAuthenticator();
+                $secret = $gAuth->createSecret();
+
+                //Secret in DB ablegen
+                $stmt = $con->prepare("UPDATE user SET google_secret = ? WHERE mail = ?");
+		        $stmt->execute([$secret, $email]);
+
+                //Session speichern
+                $_SESSION["mail"] = $email;
+
+                //weiter zum QRCode
+                header("Location: qr2fa.php");
+                exit;
+            }
         $checkResult = $gAuth->verifyCode($user['google_secret'], $code, 2);
         if ($checkResult) {
             header("Location: basis.php");

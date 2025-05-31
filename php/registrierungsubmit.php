@@ -94,6 +94,7 @@
 		// E-Mail senden
 		$mailer->send();
 
+		header("Location: ../login.html");
 		// Session starten und weiter zur 2FA-Seite
 		// session_start();
 		// $_SESSION["username"] = $vorname;

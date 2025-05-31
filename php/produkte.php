@@ -1,5 +1,5 @@
 <?php
-	require 'connect.php';
+	require 'include/connectcon.php';
 	$result = mysqli_query($con, 'select * from artikel');
 ?>
 
