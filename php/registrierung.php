@@ -1,10 +1,7 @@
 <?php
 session_start();
-$formData = $_SESSION['form_data'] ?? [];
-$mailFehler = $_SESSION['mail_error'] ?? null;
-unset($_SESSION['form_data'], $_SESSION['mail_error']);
-?>
 
+?>
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -107,23 +104,6 @@ unset($_SESSION['form_data'], $_SESSION['mail_error']);
           <div class="valid-feedback">Korrekt</div>
           <div class="invalid-feedback">Bitte gib deinen Wohnort an.</div>
         </div>
-<!-- 
-        Passwort
-        <div class="form-group">
-          <label for="password">Passwort</label>
-          <input type="password" class="form-control" id="password" name="password" minlength="8" required>
-          <div class="valid-feedback">Korrekt</div>
-          <div class="invalid-feedback">Bitte gib ein Passwort mit mindestens 8 Zeichen ein.</div>
-        </div>
-
-        Passwort bestätigen
-        <div class="form-group">
-          <label for="password_confirm">Passwort wiederholen</label>
-          <input type="password" class="form-control" id="password_confirm" name="password_confirm" minlength="8" required>
-          <div class="valid-feedback">Korrekt</div>
-          <div class="invalid-feedback">Bitte wiederhole dein Passwort korrekt.</div>
-        </div> -->
-
         <!-- AGB Checkbox -->
         <div class="form-group form-check">
           <input type="checkbox" class="form-check-input" id="terms" name="terms" required>
@@ -165,18 +145,6 @@ unset($_SESSION['form_data'], $_SESSION['mail_error']);
         });
       }, false);
     })();
-
-    // Passwort-Abgleich
-    // document.querySelector('form').addEventListener('submit', function (e) {
-    //   const pw = document.getElementById('password').value;
-    //   const pwConfirm = document.getElementById('password_confirm').value;
-    //   if (pw !== pwConfirm) {
-    //     e.preventDefault();
-    //     e.stopPropagation();
-    //     alert("Die Passwörter stimmen nicht überein.");
-    //     document.getElementById('password_confirm').focus();
-    //   }
-    // });
   </script>
 </body>
 </html>

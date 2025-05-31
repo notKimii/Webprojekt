@@ -42,10 +42,6 @@
 	$password='';
 	$password = hash('sha512', $plainPassword);
 
-	// Google Authenticator vorbereiten
-	// $gAuth = new PHPGangsta_GoogleAuthenticator();
-	// $secret = $gAuth->createSecret();
-
 	try {
 		// Prüfung auf doppelten Eintrag
 		include 'include/connect.php';
@@ -95,14 +91,7 @@
 		$mailer->send();
 
 		header("Location: ../login.html");
-		// Session starten und weiter zur 2FA-Seite
-		// session_start();
-		// $_SESSION["username"] = $vorname;
-		// $_SESSION["mail"] = $mail;
-		// $_SESSION["google_secret"] = $secret;
 
-		// header("Location: qr2fa.php");
-		// exit;
 
 	} 
 	catch (Exception $e) {
@@ -111,14 +100,6 @@
 		header("Location: registrierung.php");
 		exit;
 	}
-// Google Authenticator Secret generieren
-// $gAuth = new PHPGangsta_GoogleAuthenticator();
-// $secret = $gAuth->createSecret();
-
-// // QR-Code URL für Google Authenticator
-// $websiteName = 'Pilotenshop'; // Oder dein Projektname
-// $qrCodeUrl = $gAuth->getQRCodeGoogleUrl($websiteName, $secret);
-
 
 //prüfung ob secret code schon vorhanden in db
 ?>
