@@ -1,3 +1,3 @@
 <?php
-	   $con = new mysqli('localhost', 'root', '', 'dbpPilotenshop');
+	   $con = new mysqli('localhost', 'root', '', 'dbpilotenshop');
 ?>

@@ -2,13 +2,12 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost
--- Erstellungszeit: 30. Mai 2025 um 09:45
--- Server-Version: 10.4.28-MariaDB
--- PHP-Version: 8.2.4
+-- Host: 127.0.0.1
+-- Erstellungszeit: 31. Mai 2025 um 22:25
+-- Server-Version: 10.4.32-MariaDB
+-- PHP-Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -19,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Datenbank: `dbPilotenshop`
+-- Datenbank: `dbpilotenshop`
 --
 
 -- --------------------------------------------------------
@@ -33,26 +32,58 @@ CREATE TABLE `artikel` (
   `name` varchar(200) NOT NULL,
   `beschreibung` varchar(400) NOT NULL,
   `groesse` varchar(1) NOT NULL,
-  `preis` int(10) NOT NULL
+  `preis` int(10) NOT NULL,
+  `lagerbestand` int(11) DEFAULT NULL,
+  `kategorie` varchar(30) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Daten für Tabelle `artikel`
 --
 
-INSERT INTO `artikel` (`id`, `name`, `beschreibung`, `groesse`, `preis`) VALUES
-(1001, 'Halfter', 'Mit schicker Applikation am Nasenriemen. Das weiche Neopren-Polster bietet optimalen Scheuerschutz auf sensiblen Belastungspunkten. Das Halfter ist sowohl am Kinn- als auch am Genickstück durch stabile Dornschnallen individuelle verstellbar. Alle Metallbeschläge sind markant kupferfarbend veredelt.', 'U', 30),
-(1002, 'Olivenkopfgebiss', 'Olivenkopfgebiss aus Edelstahl. Das ergonomisch geformte Mundstück des Olivenkopfgebisses liegt besonders weich und angenehm im Pferdemaul.', 'U', 20),
-(1003, 'Fliegenhaube', 'Die Fliegenhaube Artwork aus der aktuellen Heritage Kollektion von ESKADRON ist ein gehäkelter Fliegenkopfschutz mit elastischen Ohren. Sie bietet nicht nur im Sommer Schutz vor Lästlingen, sondern in Kombination mit den drei umlaufenden Kordeln und der Stickerei auch perfekt mit der passenden Schabracke zu kombinieren.', 'U', 35),
-(1004, 'Paradedecke', 'Wunderschöne, bestickbare Paradedecke von Horse-friends für tolle Auftritte. Das saugfähige Material leitet den Schweiß nach außen und schützt dabei Ihr Pferd vor Kälte und Zugluft. Es ist atmungsaktiv, schweißableitend und klimaregulierend. Die Besonderheiten der Paradecke sind der aufwendig gearbeitete Zierschweifriemen, die umlaufende Kontrastkordel und der Brustlatz. 125 cm ', 'S', 25),
-(1005, 'Schabracke', 'Die Schabracke Big Square aus der aktuellen Heritage Kollektion von ESKADRON. Sie ist die absolute Topseller Schabracke in voluminöser Big-Square-Steppung. Die Abseite besteht aus fellfreundlichem Baumwollwaffel-Gewebe. Durch die schicke Doppelkordel und den beidseitig vertikalen Emblemstreifen wird die Big Square Schabracke zu einem echten Eyecatcher. 60 cm x 56 cm', '', 50),
-(1006, 'Dressursattel', 'Der Dressursattel Prince ist aus strapazierfähigem, schwarzem Rindsleder mit stabilen Nähten gefertigt. Sitz, Sattelkissen und Knielage aus pflegeleichtem Kunstleder. Der Dressursattel für Großpferde verfügt über lange Gurtstrippen. Die gute Passform und der tiefer Sitz überzeugen. 17,5 Zoll', '', 200),
-(2001, 'Outdoorjacke', 'Die Reit- und Outdoorjacke Sintra von black forest ist ein praktischer Allrounder für Sport und Freizeit. Aus angenehm zu tragendem Polyester-Material, das atmungsaktiv (Atmungsaktivität 3.000 g/m²) und wasserdicht (Wassersäule 3.000 mm) ist. ', 'S', 60),
-(2002, 'Reithose', 'Unser Bestseller die Winterreithose Genua Winter von black forest in neuer Passform. Durch das Baumwoll-Material und die weich angeraute Fleece-Fütterung ist die Gesäßeinsatz-Reithose Genua auch bei kalten Temperaturen genau die richtige Wahl!', 'S', 55),
-(2003, 'Unterziehrolli', 'Der klassische Unterziehrolli Abby Athleisure von Pikeur mit glattem Warenbild. Für besten Tragekomfort sorgt die bi-elastische Funktionsware und die angeraute Fleece-Abseite. Sehr schick ist der große Pikeur Athleisure Print am linken Ärmel.', 'S', 40),
-(2004, 'Reithelm', 'Der Leichte und Luftige - Unschlagbar im Preis/Leistungsverhältnis! Praktisch und bequem im täglichen Gebrauch. Rundum sicher, mit 4-fach Monocoque™- Sicherheitstechnik. Effiziente Fresh-Air-Belüftung durch 13 Lüftungsöffnungen mit schönen Edelstahl Eyelets. 54-56 cm', '', 100),
-(2005, 'Reitstiefeletten', 'Das robuste, rustikale Fettleder mit echtem Lammfellfutter ist die perfekte Kombination für die kalten Tage. Des Weiteren ist die Winter-Reitstiefelette mit Gummieinsätzen am Schaft für ein bquemes An- und Ausziehen sowie einer rutschfesten Gummiprofilsohle ausgestattet. Größe 38', '', 65),
-(2006, 'Reithandschuhe', 'Unser Bestseller in der Wintervariante mit Fleecelaminierung! Die Winter-Reithandschuhe Light & Soft zeichnen sich besonders durch ihre Leichtigkeit und das weiche, griffige Kunstledermaterial aus. Für eine ausgezeichnete Passform und optimale Bewegungsfreiheit sorgen die Dehnungsfalten an Fingern und Handrücken sowie der Gummizug an Handrücken und Bündchen. ', 'S', 10);
+INSERT INTO `artikel` (`id`, `name`, `beschreibung`, `groesse`, `preis`, `lagerbestand`, `kategorie`) VALUES
+(1001, 'Bose A30 Aviation Headset', 'Premium ANR-Headset mit hohem Tragekomfort und exzellenter Lärmreduzierung.', 'O', 1299, 25, 'Headsets'),
+(1002, 'Lightspeed Zulu 3 ANR Headset', 'Beliebtes ANR-Headset, bekannt für Komfort, Haltbarkeit und klare Audioqualität.', 'O', 950, 30, 'Headsets'),
+(1003, 'David Clark H10-13.4 Aviation Headset', 'Klassisches, robustes PNR-Headset, ein Standard in der Allgemeinen Luftfahrt.', 'O', 389, 50, 'Headsets'),
+(1004, 'Yaesu FTA-550L Pro-X', 'Luftfahrt-Handfunkgerät mit NAV/COM und GPS-Empfänger.', 'O', 299, 15, 'Headsets'),
+(1005, 'Sennheiser S1 Digital Aviation Headset', 'ANR-Headset mit adaptiver Lärmkompensation und individuell einstellbarem Anpressdruck.', 'O', 1050, 18, 'Headsets'),
+(1006, 'Icom IC-A25NE (8.33/25 kHz)', 'Leistungsstarkes Handfunkgerät mit Navigation (VOR, GPS) und Bluetooth.', 'O', 489, 22, 'Headsets'),
+(1007, 'Garmin aera 660 Portable Aviation GPS', 'Tragbares GPS mit Touchscreen, 3D Vision und umfangreichen Navigationsfunktionen.', 'O', 849, 20, 'Navigation'),
+(1008, 'ICAO Karte Deutschland (Set)', 'Offizielles Kartenset der Deutschen Flugsicherung für VFR-Flüge in Deutschland.', 'O', 25, 150, 'Navigation'),
+(1009, 'Jeppesen CR-3 Circular Flight Computer', 'Klassischer mechanischer Flugrechner für Flugplanungsberechnungen.', 'O', 36, 70, 'Navigation'),
+(1010, 'ASA KB-3 Tri-Fold Kneeboard', 'Dreifach faltbares Kniebrett mit Klemmbrett, Stifthaltern und Kartentaschen.', 'O', 50, 40, 'Navigation'),
+(1011, 'Garmin GDL 50 Portable ADS-B Receiver', 'Tragbarer Empfänger für ADS-B Wetter- und Verkehrsdaten, Anzeige auf kompatiblen Geräten.', 'O', 799, 15, 'Navigation'),
+(1012, 'SkyDemon Lizenz (1 Jahr)', 'Umfassende Flugplanungs- und Navigationssoftware für VFR-Piloten in Europa.', 'O', 149, 0, 'Navigation'),
+(1013, 'Randolph Engineering Aviator (55mm, Gold)', 'Klassische Piloten-Sonnenbrille, nach US Militärspezifikationen gefertigt.', 'O', 219, 35, 'Pilotenkleidung & Accessoires'),
+(1014, 'Garmin D2 Mach 1 Aviator Smartwatch', 'Premium GPS-Smartwatch für Piloten mit umfassenden Flug-, Wetter- und Fitnessfunktionen.', 'O', 1199, 10, 'Pilotenkleidung & Accessoires'),
+(1015, '\"Alpha\" Pilotenhemd, weiß, Kurzarm', 'Pilotenhemd aus pflegeleichtem Baumwollmischung, mit Schulterklappen.', 'O', 40, 100, 'Pilotenkleidung & Accessoires'),
+(1016, 'Design4Pilots \"Pilot Case Daily\"', 'Kompakter und robuster Pilotentrolley für den täglichen Gebrauch oder kurze Reisen.', 'O', 189, 12, 'Pilotenkleidung & Accessoires'),
+(1017, 'Ray-Ban Aviator Classic RB3025', 'Die originale Pilotenbrille, ein zeitloser Klassiker mit hervorragendem UV-Schutz.', 'O', 150, 60, 'Pilotenkleidung & Accessoires'),
+(1018, 'Alpha Industries MA-1 Fliegerjacke', 'Kultige Nylon-Fliegerjacke mit orangem Innenfutter und robuster Verarbeitung.', 'O', 179, 45, 'Pilotenkleidung & Accessoires'),
+(1019, 'Jeppesen Captain Flight Bag', 'Geräumige Flugtasche mit vielen Fächern für Headsets, Karten und Zubehör.', 'O', 129, 28, 'Flugtaschen & Koffer'),
+(1020, 'Design4Pilots \"Pilot Weekend\" Tasche', 'Kompakte und stilvolle Tasche für Kurztrips oder als Alltagstasche für Piloten.', 'O', 99, 22, 'Flugtaschen & Koffer'),
+(1021, 'Brightline Bags B7 Flight \"Echo\" Konfiguration', 'Hochgradig anpassbare, modulare Flugtasche.', 'O', 229, 19, 'Flugtaschen & Koffer'),
+(1022, 'ASA AirClassics Flight Bag', 'Strapazierfähige und kompakte Tasche für die wichtigsten Pilotenutensilien.', 'O', 80, 33, 'Flugtaschen & Koffer'),
+(1023, 'Lightspeed \"The Cann\" Flight Bag', 'Elegante Leder-Flugtasche, benannt nach dem berühmten Autor Ernest K. Gann.', 'O', 199, 14, 'Flugtaschen & Koffer'),
+(1024, 'Aerocoast Pro EFB + Cooler II', 'Speziell für Airline-Piloten entwickelte Tasche mit EFB-Fach und integriertem Kühler.', 'O', 165, 17, 'Flugtaschen & Koffer'),
+(1025, 'PPL-A Lehrbuch Set (z.B. Oxford Aviation)', 'Umfassendes Lehrbuchset für die EASA PPL(A) Theorie.', 'O', 249, 40, 'Flugbücher & Lernmaterial'),
+(1026, 'ASA Standard Pilot Logbook (SP-30)', 'Standardisiertes Logbuch zur Erfassung von Flugzeiten und Erfahrungen.', 'O', 13, 200, 'Flugbücher & Lernmaterial'),
+(1027, '\"Stick and Rudder\" von Wolfgang Langewiesche', 'Ein Klassiker über die Kunst des Fliegens, tiefgründig und zeitlos.', 'O', 23, 35, 'Flugbücher & Lernmaterial'),
+(1028, 'Aviationexam PPL Fragensammlung (1 Jahr Zugang)', 'Online-Zugang zu einer umfangreichen Datenbank mit EASA PPL Prüfungsfragen.', 'O', 89, 0, 'Flugbücher & Lernmaterial'),
+(1029, 'Jeppesen ATPL Training Set (E-Books)', 'Kompletter Satz an E-Books für die ATPL(A) Theorie gemäß EASA-Richtlinien.', 'O', 699, 0, 'Flugbücher & Lernmaterial'),
+(1030, '\"Pilots Weather\" by Brian Cosgrove', 'Detailliertes Buch über Meteorologie speziell für Piloten.', 'O', 35, 25, 'Flugbücher & Lernmaterial'),
+(1031, '\"Remove Before Flight\" Pitot Cover Universal', 'Schützt das Pitot-Rohr vor Verstopfung durch Insekten oder Schmutz am Boden.', 'O', 10, 300, 'Flugzeugzubehör (GA)'),
+(1032, 'Flugzeug Radkeile, Gummi (Paar)', 'Robuste Gummikeile zur Sicherung von Leichtflugzeugen am Boden.', 'O', 30, 90, 'Flugzeugzubehör (GA)'),
+(1033, 'GATS Jar Fuel Tester', 'Transparenter Treibstofftester zur Prüfung auf Wasser und Sedimente im Kraftstoff.', 'O', 19, 120, 'Flugzeugzubehör (GA)'),
+(1034, 'Aircraft Tie-Down Kit (3x Spanngurte, Seile)', 'Set zur sicheren Verankerung von Flugzeugen im Freien.', 'O', 59, 40, 'Flugzeugzubehör (GA)'),
+(1035, 'Aero Cosmetics Wash Wax ALL (Konzentrat, 1L)', 'Wasserloses Reinigungs- und Wachsystsem für Flugzeuge, umweltfreundlich.', 'O', 45, 55, 'Flugzeugzubehör (GA)'),
+(1036, 'Tempest AA472 Oil Filter Cutter', 'Werkzeug zum sauberen Öffnen von Ölfiltern zur Inspektion auf Metallpartikel.', 'O', 89, 12, 'Flugzeugzubehör (GA)'),
+(1037, 'Crewsaver Crewfit 165N Schwimmweste', 'Automatische Rettungsweste über Wasser, leicht und komfortabel.', 'O', 99, 20, 'Sicherheitsaustrüstung'),
+(1038, 'ACR ResQLink 400 PLB', 'Kompakte und robuste persönliche Ortungsbake (PLB) für Notfälle.', 'O', 329, 8, 'Sicherheitsaustrüstung'),
+(1039, 'Lufthansa Erste-Hilfe-Set DIN 13157 erweitert', 'Umfassendes Erste-Hilfe-Set, erweitert mit flugspezifischen Inhalten oder Empfehlungen.', 'O', 45, 38, 'Sicherheitsaustrüstung'),
+(1040, 'H3R Aviation Halon 1211 Feuerlöscher (A344T)', 'Kompakter Halon 1211 Feuerlöscher, für den Einsatz im Cockpit zugelassen.', 'O', 289, 10, 'Sicherheitsaustrüstung'),
+(1041, 'SOL Escape Bivvy Bag Orange', 'Isolierender Notfall-Biwacksack, reflektiert 70% der Körperwärme.', 'O', 36, 36, 'Sicherheitsaustrüstung'),
+(1042, 'Forensics Detectors CO Detector for Aircraft', 'Tragbarer Kohlenmonoxid-Detektor speziell für Flugzeuge, mit Alarm.', 'O', 159, 7, 'Sicherheitsaustrüstung');
 
 -- --------------------------------------------------------
 
@@ -186,7 +217,7 @@ ALTER TABLE `cart`
 -- AUTO_INCREMENT für Tabelle `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
