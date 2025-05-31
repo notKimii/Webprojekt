@@ -1,18 +1,9 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+	include 'include/debug.php';
 
-session_start();
-$mailFehler = '';
-if (isset($_SESSION['mail_error'])) {
-    $mailFehler = $_SESSION['mail_error'];
-    unset($_SESSION['mail_error']);
-}
-?>
+	session_start();
 
-<?php
-	require_once __DIR__ . '/../vendor/autoload.php';
+	include 'include/vendorconnect.php';
 	use PHPMailer\PHPMailer\PHPMailer;
 	use PHPMailer\PHPMailer\Exception;
 
@@ -23,16 +14,57 @@ if (isset($_SESSION['mail_error'])) {
 	$adresse = $_POST["adresse"];
 	$plz = $_POST["plz"];
 	$ort = $_POST["ort"];
-	$passwort = hash('sha512', $_POST["password"]); // besser als SHA512
+
+	//Passwort generieren
+	function generatePassword($length = 10) {
+    $lower = 'abcdefghijklmnopqrstuvwxyz';
+    $upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $numbers = '0123456789';
+    $allChars = $lower . $upper . $numbers;
+
+    $password = '';
+    $password .= $lower[random_int(0, strlen($lower) - 1)];
+    $password .= $upper[random_int(0, strlen($upper) - 1)];
+    $password .= $numbers[random_int(0, strlen($numbers) - 1)];
+
+    for ($i = strlen($password); $i < $length; $i++) {
+        $password .= $allChars[random_int(0, strlen($allChars) - 1)];
+    }
+
+    // Passwort mischen
+    $password = str_shuffle($password);
+
+    return $password;
+	}
+
+	$plainPassword = generatePassword(10);
+	// SHA512
+	$password='';
+	$password = hash('sha512', $plainPassword);
 
 	// Google Authenticator vorbereiten
-	$gAuth = new PHPGangsta_GoogleAuthenticator();
-	$secret = $gAuth->createSecret();
-
-	// E-Mail vorbereiten
-	$mailer = new PHPMailer(true);
+	// $gAuth = new PHPGangsta_GoogleAuthenticator();
+	// $secret = $gAuth->createSecret();
 
 	try {
+		// Prüfung auf doppelten Eintrag
+		include 'include/connect.php';
+		$stmt = $con->prepare("SELECT COUNT(*) FROM user WHERE mail = ?");
+		$stmt->execute([$mail]);
+		$anzahl = $stmt->fetchColumn();
+
+		if ($anzahl > 0) {
+			$_SESSION['form_data'] = $_POST;
+			$_SESSION['mail_error'] = "Diese E-Mail-Adresse ist bereits registriert.";
+			header("Location: registrierung.php");
+			exit;
+		}
+		$stmt = $con->prepare("INSERT INTO user (vorname, nachname, mail, adresse, plz, ort, passwort, google_secret) 
+		VALUES (?, ?, ?, ?, ?, ?, ?,?)");
+		$stmt->execute([$vorname, $nachname, $mail, $adresse, $plz, $ort, $password, NULL]);
+
+		// E-Mail vorbereiten
+		$mailer = new PHPMailer(true);
 		$mailer->isSMTP();
 		$mailer->Host = 'smtp.mailbox.org';
 		$mailer->SMTPAuth = true;
@@ -52,7 +84,8 @@ if (isset($_SESSION['mail_error'])) {
 			Ihre <strong>Anmeldedaten</strong> lauten wie folgt: <br>
 				Vorname: $vorname <br>
 				Nachname: $nachname <br>
-				E-Mail Adresse: $mail <br><br>
+				E-Mail Adresse: $mail <br>
+				Vorl&auml;iges Passwort: $plainPassword <br><br>
 			Als <strong>Lieferadresse </strong> haben sie folgende Adresse angeben: <br> $adresse <br> $plz $ort
 			<br><br>
 			Sie k&ouml;nnen diese Adresse auf unserer Webseite unter der Katergorie Kundenkonto ab&auml;ndern! 
@@ -61,37 +94,17 @@ if (isset($_SESSION['mail_error'])) {
 		// E-Mail senden
 		$mailer->send();
 
-		// ✅ Wenn Mail erfolgreich → in DB einfügen
-		$pdo = new PDO("mysql:host=localhost;dbname=dbPilotenshop", "root", "");
-		$stmt = $pdo->prepare("SELECT COUNT(*) FROM user WHERE mail = ?");
-		$stmt->execute([$mail]);
-		$anzahl = $stmt->fetchColumn();
-
-		if ($anzahl > 0) {
-			session_start();
-			$_SESSION['form_data'] = $_POST;
-			$_SESSION['mail_error'] = "Diese E-Mail-Adresse ist bereits registriert.";
-			header("Location: registrierung.php");
-			exit;
-		}
-
-		$stmt = $pdo->prepare("INSERT INTO user (vorname, nachname, mail, adresse, plz, ort, passwort, google_secret) 
-							VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-		$stmt->execute([$vorname, $nachname, $mail, $adresse, $plz, $ort, $passwort, $secret]);
-
 		// Session starten und weiter zur 2FA-Seite
-		session_start();
-		$_SESSION["username"] = $vorname;
-		$_SESSION["mail"] = $mail;
-		$_SESSION["google_secret"] = $secret;
+		// session_start();
+		// $_SESSION["username"] = $vorname;
+		// $_SESSION["mail"] = $mail;
+		// $_SESSION["google_secret"] = $secret;
 
-		header("Location: qr2fa.php");
-		exit;
+		// header("Location: qr2fa.php");
+		// exit;
 
 	} 
 	catch (Exception $e) {
-		// ❌ Wenn Mail-Versand fehlschlägt
-		session_start();
 		$_SESSION['form_data'] = $_POST;
 		$_SESSION['mail_error'] = "Die E-Mail konnte nicht gesendet werden.";
 		header("Location: registrierung.php");
@@ -104,30 +117,6 @@ if (isset($_SESSION['mail_error'])) {
 // // QR-Code URL für Google Authenticator
 // $websiteName = 'Pilotenshop'; // Oder dein Projektname
 // $qrCodeUrl = $gAuth->getQRCodeGoogleUrl($websiteName, $secret);
-
-// // User speichern
-// $stmt = $pdo->prepare("
-//     INSERT INTO user (vorname, nachname, adresse, plz, ort, mail, passwort, google_secret)
-//     VALUES (:vorname, :nachname, :adresse, :plz, :ort, :mail, :passwort, :google_secret)
-// ");
-// $stmt->execute([
-//     'vorname' => $_POST['vorname'],
-//     'nachname' => $_POST['nachname'],
-//     'adresse' => $_POST['adresse'],
-//     'plz' => $_POST['plz'],
-//     'ort' => $_POST['ort'],
-//     'mail' => $_POST['mail'],
-//     'passwort' => $hashedPassword,
-//     'google_secret' => $secret
-// ]);
-
-
-// echo "<h2>Registrierung erfolgreich!</h2>";
-// echo "<p>Bitte scanne diesen QR-Code mit deiner Google Authenticator App:</p>";
-// echo "<img src='$qrCodeUrl' alt='QR-Code'>";
-// echo "<p>Oder gib diesen Schlüssel manuell ein: <strong>$secret</strong></p>";
-// echo "<a href='login.html'>Jetzt einloggen</a>";
-
 
 
 //prüfung ob secret code schon vorhanden in db

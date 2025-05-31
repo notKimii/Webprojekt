@@ -1,43 +1,38 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-session_start();
+    session_start();
 
 
-// 1) DB-Verbindung mit Fehler-Reporting
-try {
-    $pdo = new PDO(
-        'mysql:host=localhost;dbname=dbPilotenshop;charset=utf8mb4',
-        'root',
-        '',
-        [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
-    );
-} catch (PDOException $e) {
-    die('DB-Verbindungsfehler: ' . $e->getMessage());
-}
+    // DB-Verbindung mit Fehler-Reporting
+    include 'include/connect.php';
 
-// 2) Eingaben prüfen
-if (empty($_POST['email']) || empty($_POST['password']) || empty($_POST['2fa_code']))
- {
-    header("Location: ../login.html");
-    exit;
-}
+        $email    = trim($_POST['email']);
+        $code = $_POST['2fa_code'] ?? '';
+        $password = $_POST["password"];
+        
+    // Eingaben prüfen
+    if (strlen($email) < 5 || strpos($email, '@') === false || empty($password)) {
+        header("Location: ../login.html");
+        exit;
+    }
 
-    $email    = trim($_POST['email']);
+    if (strlen($password) < 9 || !preg_match('/[A-Z]/', $password) || !preg_match('/[a-z]/', $password) || !preg_match('/\d/', $password)) 
+    {
+        header("Location: ../login.html");
+        exit;
+    }
+
+    // Wenn alle Prüfungen bestanden: Passwort hashen
     $password = hash('sha512', $_POST["password"]);
-	$code = $_POST['2fa_code'] ?? '';
 
-    require_once __DIR__ . '/../vendor/autoload.php';
+    include 'include/vendorconnect.php';
 	$gAuth = new PHPGangsta_GoogleAuthenticator();
 
-    // 3) User laden – hier stimmt der Platzhalter
-    $stmt = $pdo->prepare("SELECT * FROM user WHERE mail = :email");
+    // User laden 
+    $stmt = $con->prepare("SELECT * FROM user WHERE mail = :email");
     $stmt->execute(['email' => $email]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    // 4) Passwort prüfen
+    // Passwort prüfen
     if ($user && $password == $user['passwort']){
         $_SESSION['temp_user'] = [
             'id'            => $user['id'],

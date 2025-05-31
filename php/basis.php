@@ -20,10 +20,10 @@
 
 
   //Anzeige: Anzahl aktuell registrierter Nutzer (AJAX)
-  $pdo = new PDO("mysql:host=localhost;dbname=dbpferdeshop","root","");
+  include '../connect.php';
 
   $sql  = "SELECT * FROM user"; 
-  $user = $pdo->query($sql);
+  $user = $con->query($sql);
   $anzahl = $user->rowCount();
 
   
@@ -43,7 +43,7 @@
     ?>
 </head>
 <body>
-    <?php include 'headimport.php'; ?>
+    <?php include '../headimport.php'; ?>
     <main>
 
         <section class="hero-section">
