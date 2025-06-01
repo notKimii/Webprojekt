@@ -60,12 +60,12 @@ include "include/connectcon.php";
 
 <main>
   <div class="container">
-    <h1>Headsets</h1>
-    <p>Hier findest du unsere Auswahl an hochwertigen Headsets fürs Cockpit.</p>
+    <h1>Navigation</h1>
+    <p>Hier findest du unsere Auswahl an Artikel zur Navigation.</p>
 
     <div class="product-grid">
       <?php
-      $sql = "SELECT * FROM artikel WHERE kategorie = 'Headsets'";
+      $sql = "SELECT * FROM artikel WHERE kategorie = 'Navigation'";
       $result = $con->query($sql);
 
       if ($result->num_rows > 0) {
@@ -111,7 +111,7 @@ include "include/connectcon.php";
           echo '</div>';
         }
       } else {
-        echo "<p>Keine Produkte in der Kategorie Headsets gefunden.</p>";
+        echo "<p>Keine Produkte in der Kategorie Navigation gefunden.</p>";
       }
 
       $con->close();

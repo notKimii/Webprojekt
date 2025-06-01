@@ -42,7 +42,7 @@ session_start();
                         <?php if (isset($_SESSION['temp_user'])): ?>
                             <a href="/mein-konto.php" id="login-button">
                                 <p>Mein Konto</p>
-                            </a>
+                            </a>y
                         <?php else: ?>
                             <a href="/login.html" id="login-button">
                                 <p>Anmelden</p>
@@ -63,10 +63,12 @@ session_start();
             <ul>
                 <li><a href="/kategorie/neuheiten">Neuheiten</a></li>
                 <li><a href="./php/headsets.php">Headsets</a></li>
-                <li><a href="/kategorie/kategorie-2">Flugtaschen</a></li>
-                <li><a href="/kategorie/kategorie-3">Kneeboards & Clipboards</a></li>
-                <li><a href="/angebote">Karten & Navigationshilfen</a></li>
-                <li><a href="/blog">Sonnenbrillen</a></li>
+                <li><a href="./php/navigationkategorie.php">Navigation</a></li>
+                <li><a href="./php/pilotenkleidung.php">Kleidung & Accessoires</a></li>
+                <li><a href="/angebote">Flugtaschen</a></li>
+                <li><a href="/angebote">Lernmaterial</a></li>
+                <li><a href="/kategorie/kategorie-3">Flugzeugzubehör</a></li>
+                <li><a href="/angebote">Sicherheitsaustrüstung</a></li>
                 <li><a href="/ueber-uns">Über uns</a></li>
             </ul>
         </div>

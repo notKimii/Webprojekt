@@ -60,12 +60,12 @@ include "include/connectcon.php";
 
 <main>
   <div class="container">
-    <h1>Headsets</h1>
-    <p>Hier findest du unsere Auswahl an hochwertigen Headsets fürs Cockpit.</p>
+    <h1>Pilotenkleidung & Accessoires</h1>
+    <p>Hier findest du unsere Auswahl an stylischen Kleidung & Accessoires.</p>
 
     <div class="product-grid">
       <?php
-      $sql = "SELECT * FROM artikel WHERE kategorie = 'Headsets'";
+      $sql = "SELECT * FROM artikel WHERE kategorie = 'Pilotenkleidung & Accessoires'";
       $result = $con->query($sql);
 
       if ($result->num_rows > 0) {
