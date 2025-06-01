@@ -6,7 +6,7 @@ include "include/connectcon.php";
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Navigation – Cockpit Corner</title>
+  <title>Lernmaterial – Cockpit Corner</title>
 
   <?php include "include/headimport.php"; ?>
   <style>
@@ -60,12 +60,12 @@ include "include/connectcon.php";
 
 <main>
   <div class="container">
-    <h1>Navigation</h1>
-    <p>Hier findest du unsere Auswahl an Artikel zur Navigation.</p>
+    <h1>Lernmaterial & Karten</h1>
+    <p>Hier findest du unsere Lernmaterialien & Karten.</p>
 
     <div class="product-grid">
       <?php
-      $sql = "SELECT * FROM artikel WHERE kategorie = 'Navigation'";
+      $sql = "SELECT * FROM artikel WHERE kategorie = 'Flugbücher & Lernmaterial'";
       $result = $con->query($sql);
 
       if ($result->num_rows > 0) {
@@ -111,7 +111,7 @@ include "include/connectcon.php";
           echo '</div>';
         }
       } else {
-        echo "<p>Keine Produkte in der Kategorie Navigation gefunden.</p>";
+        echo "<p>Keine Produkte in der Kategorie Flugbücher & Lernmaterial gefunden.</p>";
       }
 
       $con->close();
