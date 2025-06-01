@@ -62,9 +62,9 @@ session_start();
         <div class="container">
             <ul>
                 <li><a href="/kategorie/neuheiten">Neuheiten</a></li>
-                <li><a href="./php/headsets.php">Headsets</a></li>
-                <li><a href="./php/navigationkategorie.php">Navigation</a></li>
-                <li><a href="./php/pilotenkleidung.php">Kleidung & Accessoires</a></li>
+                <li><a href="/Webprojekt/php/headsets.php">Headsets</a></li>
+                <li><a href="/Webprojekt/php/navigationkategorie.php">Navigation</a></li>
+                <li><a href="/Webprojekt/php/pilotenkleidung.php">Kleidung & Accessoires</a></li>
                 <li><a href="/angebote">Flugtaschen</a></li>
                 <li><a href="/angebote">Lernmaterial</a></li>
                 <li><a href="/kategorie/kategorie-3">Flugzeugzubehör</a></li>
