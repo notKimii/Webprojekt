@@ -1,8 +1,5 @@
-<?php
-session_start();
-?>
 
-<link rel="stylesheet" href=".../style.css">
+<link rel="stylesheet" href="/Webprojekt/style.css">
 
 <footer>
         <div class="container">
@@ -55,7 +52,7 @@ session_start();
             </div>
 
             <div class="footer-bottom">
-                <p>&copy; 2024-<script>document.write(new Date().getFullYear())</script> [Shop-Name]. Alle Rechte vorbehalten.</p>
+                <p>&copy; 2024-<script>document.write(new Date().getFullYear())</script> Cockpit Corner. Alle Rechte vorbehalten.</p>
             </div>
         </div>
     </footer>

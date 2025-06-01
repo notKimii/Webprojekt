@@ -1,12 +1,12 @@
-<?php
-include "include/connectcon.php"; 
-?>
+
 <!DOCTYPE html>
 <html lang="de">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Headsets – Cockpit Corner</title>
+
+  <?php include "include/connectcon.php"; ?>
 
   <?php include "include/headimport.php"; ?>
   <style>
@@ -121,11 +121,7 @@ include "include/connectcon.php";
   </div>
 </main>
 
-<footer>
-  <div class="container">
-    <p>&copy; 2024 Cockpit Corner</p>
-  </div>
-</footer>
+<?php include "include/footimport.php"; ?>
 
 <script>
 // Bildwechsel-Funktion

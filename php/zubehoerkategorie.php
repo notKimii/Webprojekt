@@ -121,11 +121,7 @@ include "include/connectcon.php";
   </div>
 </main>
 
-<footer>
-  <div class="container">
-    <p>&copy; 2024 Cockpit Corner</p>
-  </div>
-</footer>
+<?php include "include/footimport.php"; ?>
 
 <script>
 // Bildwechsel-Funktion

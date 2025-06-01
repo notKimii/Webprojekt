@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Cockpit Corner Login</title>
+  <title>Login - Cockpit Corner</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
     integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
@@ -15,33 +15,42 @@
 
     body {
       margin: 0;
-      height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       font-family: 'Roboto', sans-serif;
-      background: url('./images/Cockpit Corner/sky.jpg') center/cover no-repeat;
+      background: url('/Webprojekt/images/pictures/sky.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+    
+    nav{
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
     header,
     footer {
       width: 100%;
-      background-color: rgba(255, 255, 255, 0.9);
       text-align: center;
       padding: 10px 0;
       font-size: 14px;
     }
 
     header nav img {
-      width: 100px;
+      width: 90px;
     }
 
     main {
       flex: 1;
       width: 100%;
+      min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
+      transform: translateY(-80px);
     }
 
     .login-box {
@@ -61,9 +70,6 @@
     fieldset {
       border: none;
       padding: 0;
-
-
-
       margin: 0;
     }
 
@@ -118,6 +124,11 @@
       text-align: center;
     }
 
+    .btn:hover {
+      background-color:rgb(0, 97, 201);
+      color: white;
+    }
+
     .btn-outline {
       background-color: white;
       color: black;
@@ -156,12 +167,12 @@
 <body>
   <header>
     <nav>
-      <a href="/"><img src="favicon.ico" alt="" role="presentation"></a>
+      <a href="/Webprojekt/index.php"><img src="favicon.ico" alt="Logo" role="presentation"></a>
     </nav>
   </header>
   <main>
     <div class="login-box">
-      <form id="formlogin" action="./php/login.php" method="POST" class="needs-validation" novalidate>
+      <form id="formlogin" action="/Webprojekt/php/login.php" method="POST" class="needs-validation" novalidate>
         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
         <fieldset>
           <legend>In mein Kundenkonto einloggen</legend>
@@ -190,7 +201,7 @@
           </div>
         </fieldset>
         <div class="register-box">
-          <a href="./php/registrierung.php" class="btn btn-outline">Jetzt registrieren</a>
+          <a href="/Webprojekt/registrierung.php" class="btn btn-outline">Jetzt registrieren</a>
         </div>
         <!-- Versteckte Felder-->
         <input type="hidden" id="screen_resolution" name="screen_resolution">
@@ -199,9 +210,7 @@
 
     </div>
   </main>
-  <footer>
-    © 2025 Cockpit Corner - Alle Rechte vorbehalten
-  </footer>
+  <?php include("php/include/footimport.php"); ?>
   <script>
     (function () {
       'use strict';
