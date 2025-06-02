@@ -6,55 +6,10 @@ include "include/connectcon.php";
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Flugtaschen – Cockpit Corner</title>
+  <title>Flugtaschen - Cockpit Corner</title>
+  <link rel="stylesheet" href="/Webprojekt/produkt.css">
 
   <?php include "include/headimport.php"; ?>
-  <style>
-    .product-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-      justify-content: center;
-    }
-    .product-item {
-      position: relative;
-      width: 350px;
-    }
-    .product-item img {
-      width: 300px;
-      height: 300px;
-      object-fit: cover;
-      display: block;
-    }
-    .product-item .image-nav {
-      position: absolute;
-      top: 50%;
-      left: 0;
-      right: 0;
-      display: flex;
-      justify-content: space-between;
-      padding: 0 10px;
-      transform: translateY(-50%);
-    }
-    .image-nav button {
-      background: rgba(0,0,0,0.5);
-      color: #fff;
-      border: none;
-      padding: 5px 10px;
-      cursor: pointer;
-    }
-    .product-item h3, .product-item p {
-      margin: 10px 0 0;
-    }
-    .add-to-cart-button {
-      margin-top: 10px;
-      padding: 8px 12px;
-      background-color: #333;
-      color: #fff;
-      border: none;
-      cursor: pointer;
-    }
-  </style>
 </head>
 <body>
 

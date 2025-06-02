@@ -268,7 +268,6 @@ header {
     width: 100%;
   }
   
-  
   .main-navigation .container {
     display: flex;
     justify-content: center;
@@ -281,9 +280,13 @@ header {
     gap: var(--spacing-unit);
   }
   
-  .main-navigation ul{
-    gap: 10px;
-    font-size: 1rem;
+  .main-navigation ul li a {
+    display: block;
+    padding: calc(var(--spacing-unit) * 0.5) calc(var(--spacing-unit) * 0.8);
+    color: var(--text-color);
+    font-size: 0.9rem;
+    font-weight: 500;
+    border-radius: var(--border-radius-soft);
   }
 
   .main-navigation ul li a:hover{
@@ -447,7 +450,8 @@ header {
 .article-item img {
     margin-bottom: var(--spacing-unit);
     border-radius: calc(var(--border-radius-soft) / 2) ; 
-    aspect-ratio: 1/1; 
+    aspect-ratio: 1/1;
+    object-fit: cover; 
 }
 
 .product-item h3, .category-item h3, .article-item h3 {
@@ -626,6 +630,7 @@ footer {
     color: #ccc; /* Helles Grau für Text */
     padding: calc(var(--spacing-unit) * 3) 0 0;
     font-size: 0.9rem;
+    margin-top: 4rem;
 }
 
 .footer-columns {

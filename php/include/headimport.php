@@ -61,14 +61,14 @@ session_start();
     <nav class="main-navigation">
         <div class="container">
             <ul>
-                <li><a href="/kategorie/neuheiten">Neuheiten</a></li><span>|</span>
-                <li><a href="/Webprojekt/php/headsetskategorie.php">Headsets</a></li><span>|</span>
-                <li><a href="/Webprojekt/php/navigationkategorie.php">Navigation</a></li><span>|</span>
-                <li><a href="/Webprojekt/php/kleidungkategorie.php">Kleidung & Accessoires</a></li><span>|</span>
-                <li><a href="/Webprojekt/php/flugtaschenkategorie.php">Flugtaschen</a></li><span>|</span>
-                <li><a href="/Webprojekt/php/lernmaterialkategorie.php">Lernmaterial</a></li><span>|</span>
-                <li><a href="/webprojekt/php/zubehoerkategorie.php">Flugzeugzubehör</a></li><span>|</span>
-                <li><a href="/webprojekt/php/sicherheitkategorie.php">Sicherheitsaustrüstung</a></li><span>|</span>
+                <li><a href="/kategorie/neuheiten">Neuheiten</a></li>
+                <li><a href="/Webprojekt/php/headsetskategorie.php">Headsets</a></li>
+                <li><a href="/Webprojekt/php/navigationkategorie.php">Navigation</a></li>
+                <li><a href="/Webprojekt/php/kleidungkategorie.php">Kleidung & Accessoires</a></li>
+                <li><a href="/Webprojekt/php/flugtaschenkategorie.php">Flugtaschen</a></li>
+                <li><a href="/Webprojekt/php/lernmaterialkategorie.php">Lernmaterial</a></li>
+                <li><a href="/webprojekt/php/zubehoerkategorie.php">Flugzeugzubehör</a></li>
+                <li><a href="/webprojekt/php/sicherheitkategorie.php">Sicherheitsaustrüstung</a></li>
                 <li><a href="/ueber-uns">Über uns</a></li>
             </ul>
         </div>
