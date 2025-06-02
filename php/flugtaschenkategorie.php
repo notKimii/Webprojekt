@@ -34,7 +34,7 @@ include "include/connectcon.php";
           $bilder = glob($bilderOrdner . "*.{jpg,JPG,png,PNG,jpeg,JPEG,webp,WEBP}", GLOB_BRACE);
 
           echo '<div class="product-item" data-id="' . $produktId . '">';
-          echo   '<a href="/produkt/' . $produktId . '">';
+          echo   '<a href="/Webprojekt/php/produkt-detail.php?id=' . $produktId . '">';
 
           // Erstes Bild oder Fallback
           if (!empty($bilder)) {
