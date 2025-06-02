@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 if (!isset($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
@@ -28,9 +28,25 @@ if (!isset($_SESSION['csrf_token'])) {
       width: 100%;
       box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
+    nav{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
 
+    header,
+    footer {
+      width: 100%;
+      text-align: center;
+      padding: 10px 0;
+      font-size: 14px;
+      background-color:rgba(255, 255, 255, 0.35) !important;
+    }
+
+    header nav img {
+      width: 90px;
+    }
   </style>
-  <?php include "include/headimport.php"; ?>
 </head>
 <body>
 <?php if (!empty($mailFehler)): ?>
@@ -42,7 +58,11 @@ if (!isset($_SESSION['csrf_token'])) {
     </div>
   <?php endif; ?>
   
-
+  <header>
+    <nav>
+      <a href="/Webprojekt/index.php"><img src="/Webprojekt/favicon.ico" alt="Logo" role="presentation"></a>
+    </nav>
+  </header>
   <main class="flex-fill d-flex justify-content-center align-items-center">
     <div class="register-box">
       <form action="registrierungsubmit.php" method="POST" class="needs-validation" novalidate>
