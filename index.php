@@ -6,12 +6,9 @@
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <title>Cockpit Corner - Alles für Piloten: Flugtaschen, Zubehör & mehr</title>
     <link rel="stylesheet" href="style.css">
-
+    <?php include 'php/include/headimport.php';?>
 </head>
 <body>
-        <?php
-        include 'php/include/headimport.php';
-        ?>
     <main>
 
         <section class="hero-section">
@@ -39,25 +36,25 @@
                 <div class="category-grid">
                     <div class="category-item">
                         <a href="/kategorie/bekleidung">
-                            <img src="./images/pictures/indexpics/headsets.png" alt="Bose">
+                            <img src="./images/pictures/indexpics/headset.png" alt="Bose">
                             <h3>Headsets</h3>
                         </a>
                     </div>
                     <div class="category-item">
                         <a href="/kategorie/schuhe">
-                            <img src="./images/Cockpit_Corner/pictures/products/sonnenbrille.png" alt="Schuhe">
+                            <img src="./images/pictures/indexpics/Sonnenbrille.png" alt="Schuhe">
                             <h3>Sonnenbrillen</h3>
                         </a>
                     </div>
                     <div class="category-item">
                         <a href="/kategorie/accessoires">
-                            <img src="./images/Cockpit_Corner/pictures/products/flugtasche.png" alt="Accessoires">
+                            <img src="./images/pictures/indexpics/Flugtasche.png" alt="Accessoires">
                             <h3>Flugtaschen</h3>
                         </a>
                     </div>
                     <div class="category-item">
                         <a href="/kategorie/wohnene">
-                            <img src="./images/Cockpit_Corner/pictures/products/kneeboard.jpg" alt="Wohnen">
+                            <img src="./images/pictures/indexpics/Clipboard.png" alt="Wohnen">
                             <h3>Kneeboards & Clipboards</h3>
                         </a>
                     </div>

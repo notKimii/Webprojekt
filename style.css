@@ -43,7 +43,7 @@ body {
 }
 
 a {
-    color: var(--primary-color);
+    color: var(--text-color);
     text-decoration: none;
     transition: color var(--transition-speed) ease;
 }
@@ -264,36 +264,28 @@ header {
     pointer-events: none;
 }
 
-
-/* Navigation im Apple-Stil (sehr dezent) */
 .main-navigation {
     width: 100%;
   }
   
-  /* Container in der Navigation als Flex-Parent mit Center-Alignment */
+  
   .main-navigation .container {
     display: flex;
-    justify-content: center; /* zentriert den Inhalt horizontal */
-    padding: 0;              /* optional: falls innen Padding stört */
+    justify-content: center;
+    padding: 0;              
   }
-  
-  /* Die eigentliche Liste als flexibles, zentriertes Menü */
+ 
   .main-navigation .container ul {
     display: flex;
-    justify-content: center; /* redundant, aber safe */
-    gap: var(--spacing-unit);/* Abstand zwischen Links */
+    justify-content: center;
+    gap: var(--spacing-unit);
   }
   
-  /* Links-Styling bleibt unverändert */
-  .main-navigation ul li a {
-    display: block;
-    padding: calc(var(--spacing-unit) * 0.5) calc(var(--spacing-unit) * 0.8);
-    color: var(--text-color);
-    font-size: 0.9rem;
-    font-weight: 500;
-    border-radius: var(--border-radius-soft);
+  .main-navigation ul{
+    gap: 10px;
+    font-size: 1rem;
   }
-  
+
   .main-navigation ul li a:hover{
     color: #006fe7;
   }
@@ -386,7 +378,7 @@ header {
 
 /* USP BAR */
 .usp-bar {
-    background-color: transparent; /* Kein eigener Hintergrund */
+    background-color: transparent;
     padding: calc(var(--spacing-unit)*1.5) 0;
     border-top: 1px solid rgba(0,0,0,0.07);
     border-bottom: 1px solid rgba(0,0,0,0.07);
@@ -400,7 +392,7 @@ header {
 .usp-item {
     margin: calc(var(--spacing-unit) * 0.5);
     text-align: center;
-    font-size: 0.85rem; /* Kleiner, dezenter */
+    font-size: 0.85rem; 
     color: var(--secondary-color);
     font-weight: 500;
 }
@@ -410,7 +402,7 @@ header {
 .new-arrivals,
 .bestsellers,
 .blog-teaser {
-    background-color: var(--body-bg); /* Oder var(--light-color) für Sektionshintergrund */
+    background-color: var(--body-bg);
 }
 
 .featured-categories h2,
@@ -421,7 +413,7 @@ header {
 .newsletter-signup h2,
 .brand-logos h2 {
     text-align: center;
-    margin-bottom: calc(var(--spacing-unit) * 2.5); /* Mehr Abstand unter Titeln */
+    margin-bottom: calc(var(--spacing-unit) * 2.5); 
     font-weight: 600;
 }
 
@@ -429,17 +421,16 @@ header {
 .product-grid,
 .article-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); /* Etwas größere Min-Breite */
-    gap: calc(var(--spacing-unit) * 2); /* Mehr Abstand zwischen Karten */
-}
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: calc(var(--spacing-unit) * 2); }
 
 .category-item,
 .product-item,
 .article-item {
-    background-color: white; /* Karten auf hellem Sektionshintergrund */
-    border: 1px solid rgba(0,0,0,0.07); /* Sehr dezenter Rand */
+    background-color: white; 
+    border: 1px solid rgba(0,0,0,0.07); 
     border-radius: var(--border-radius-soft);
-    padding: calc(var(--spacing-unit) * 1.5); /* Mehr Innenabstand */
+    padding: calc(var(--spacing-unit) * 1.5); 
     text-align: center;
     transition: box-shadow var(--transition-speed) ease, transform var(--transition-speed) ease;
 }
@@ -448,20 +439,19 @@ header {
 .product-item:hover,
 .article-item:hover {
     transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08); /* Etwas stärkerer Schatten im Hover */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08); 
 }
 
-.category-item img, /* Bilder in Karten */
+.category-item img, 
 .product-item img,
 .article-item img {
     margin-bottom: var(--spacing-unit);
-    border-radius: calc(var(--border-radius-soft) / 2) ; /* Leichte Rundung, wenn Karte auch gerundet */
-    aspect-ratio: 1/1; /* Quadratische Bilder sind modern */
-    object-fit: cover;
+    border-radius: calc(var(--border-radius-soft) / 2) ; 
+    aspect-ratio: 1/1; 
 }
 
 .product-item h3, .category-item h3, .article-item h3 {
-    font-size: 1.1rem; /* Etwas kleiner für Produktnamen */
+    font-size: 1.1rem;
     font-weight: 500;
     margin-bottom: calc(var(--spacing-unit) * 0.4);
 }
@@ -478,7 +468,7 @@ header {
 
 .product-item .price {
     font-size: 1rem;
-    font-weight: 600; /* Preis etwas hervorheben */
+    font-weight: 600; 
     color: var(--text-color);
     margin-bottom: var(--spacing-unit);
 }
