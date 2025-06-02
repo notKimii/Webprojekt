@@ -141,6 +141,7 @@ section {
     padding: calc(var(--spacing-unit) * 0.6) 0;
     font-size: 0.9rem;
     font-weight: 500;
+    margin-bottom: 0px;
 }
 
 /* ==========================
@@ -462,7 +463,8 @@ header {
     margin-bottom: var(--spacing-unit);
     border-radius: calc(var(--border-radius-soft) / 2) ; 
     aspect-ratio: 1/1;
-    object-fit: cover; 
+    object-fit: cover;
+    transform: scale(0.9); 
 }
 
 .product-item h3, .category-item h3, .article-item h3 {
@@ -772,7 +774,7 @@ footer {
     }
     .announcement-bar{
         font-size: 0.85rem;
-        padding-inline: .75rem;
+        padding-inline: .75sewrem;
     }
     .search-bar{
         display: none;

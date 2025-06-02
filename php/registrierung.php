@@ -1,6 +1,8 @@
 <?php
-session_start();
 
+if (!isset($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
 ?>
 <!DOCTYPE html>
 <html lang="de">
@@ -9,33 +11,29 @@ session_start();
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Cockpit Corner Registrierung</title>
 
-  <!-- Google Fonts & Bootstrap CSS -->
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" 
     integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 
   <style>
     body {
-      margin: 0;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
       font-family: 'Roboto', sans-serif;
-      background: url('./images/Cockpit Corner/sky.jpg') center/cover no-repeat;
+      background: url('/Webprojekt/images/pictures/sky.jpg') center/cover no-repeat;
     }
     .register-box {
       background-color: rgba(255, 255, 255, 0.95);
       padding: 30px;
-      margin: 20px;
+      margin-block: 5rem;
       max-width: 500px;
       width: 100%;
       box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
+
   </style>
+  <?php include "include/headimport.php"; ?>
 </head>
 <body>
-  <?php if ($mailFehler): ?>
+<?php if (!empty($mailFehler)): ?>
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
       <?= htmlspecialchars($mailFehler) ?>
       <button type="button" class="close" data-dismiss="alert" aria-label="Schließen">
@@ -43,11 +41,7 @@ session_start();
       </button>
     </div>
   <?php endif; ?>
-  <header class="w-100 text-center bg-light py-2">
-    <nav>
-      <a href="/"><img src="../favicon.ico" alt="Logo" style="width: 100px;"></a>
-    </nav>
-  </header>
+  
 
   <main class="flex-fill d-flex justify-content-center align-items-center">
     <div class="register-box">
@@ -105,28 +99,26 @@ session_start();
           <div class="invalid-feedback">Bitte gib deinen Wohnort an.</div>
         </div>
         <!-- AGB Checkbox -->
-        <div class="form-group form-check">
+        <div class="form-group form-check" style="display: flex; align-items: center;">
           <input type="checkbox" class="form-check-input" id="terms" name="terms" required>
           <label class="form-check-label" for="terms">
-            Ich akzeptiere die <a href="/terms" target="_blank">AGB</a> und
-            <a href="/privacy" target="_blank">Datenschutzerklärung</a>.
+            Ich akzeptiere die <a href="/terms" target="_blank" style="color: #007aff;">AGB</a> und
+            <a href="/privacy" target="_blank" style="color: #007aff;">Datenschutzerklärung</a>.
           </label>
           <div class="invalid-feedback">Du musst die AGB und Datenschutzbestimmungen akzeptieren.</div>
         </div>
 
         <!-- Submit Button -->
-        <button type="submit" class="btn btn-primary btn-block" style="background-color: #007aff; color: white; border: 2px solid #007aff; border-radius: 0;">Registrieren</button>
+        <button type="submit" class="btn btn-primary btn-block" style="background-color: #007aff; color: white; border: 2px solid #007aff; border-radius: 5px;">Registrieren</button>
 
         <div class="text-center mt-3">
-          Schon ein Konto? <a href="./login.html">Hier einloggen</a>
+          Schon ein Konto? <a href="/Webprojekt/loginformular.php" style="color: #007aff;">Hier einloggen</a>
         </div>
       </form>
     </div>
   </main>
 
-  <footer class="w-100 text-center bg-light py-2">
-    © 2025 Cockpit Corner - Alle Rechte vorbehalten
-  </footer>
+  <?php include "include/footimport.php"; ?>
 
   <script>
     // Bootstrap-Validierung aktivieren

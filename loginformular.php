@@ -125,6 +125,7 @@
       color: white;
       background-color: #007aff;
       text-align: center;
+      margin-top: 1rem;
     }
 
     .btn:hover {
@@ -135,23 +136,28 @@
     .btn-outline {
       background-color: white;
       color: black;
-      border: 1px solid #868686;
+      border: .4px solid rgb(155, 155, 155);
       width: auto;
-      /* Override full-width */
       display: inline-block;
-      /* Shrink to content */
       text-decoration: none;
     }
 
     .btn+.btn-outline {
       margin-top: 20px;
-      /* Mehr Abstand nach oben */
     }
 
     .register-box {
       text-align: center;
       margin-top: 20px;
-      /* Noch etwas Luft oben */
+    }
+    .register-box a {
+      background-color:rgb(245, 245, 245);
+      color:rgb(59, 59, 59);
+    }
+
+    .register-box a:hover {
+      background-color:rgb(227, 227, 227);
+      color:rgb(59, 59, 59);
     }
 
     .bottom-link {
@@ -208,7 +214,7 @@
           </div>
         </fieldset>
         <div class="register-box">
-          <a href="/Webprojekt/registrierung.php" class="btn btn-outline">Jetzt registrieren</a>
+          <a href="/Webprojekt/php/registrierung.php" class="btn btn-outline">Jetzt registrieren</a>
         </div>
         <!-- Versteckte Felder-->
         <input type="hidden" id="screen_resolution" name="screen_resolution">
