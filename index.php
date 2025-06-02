@@ -241,8 +241,8 @@
         <div class="container">
             <div class="footer-columns">
                 <div class="footer-column">
-                    <h3>[Shop-Name]</h3>
-                    <p>Deine erste Adresse für hochwertige [Produkttyp/Nische] mit Stil und fairen Preisen.</p>
+                    <h3>Cockpit Corner</h3>
+                    <p>Deine erste Adresse für hochwertiges Pilotenequipment mit Stil und fairen Preisen.</p>
                     <a href="/ueber-uns">Mehr über uns</a>
                 </div>
 

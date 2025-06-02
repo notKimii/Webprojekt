@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Warenkorb - Mein Shop</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/Webprojekt/style.css">
+    <?php include "include/headimport.php"; ?> 
+
     <style>
+      
 h1{
     font-size: 2rem;
 }    
@@ -121,21 +124,6 @@ h1{
     </style>
 </head>
 <body>
-    <header>
-        <div class="container header-main">
-            <div class="logo">
-                <a href="index.php"><img src="logo.png" alt="Shop-Logo"></a>
-            </div>
-            <div class="header-actions">
-                <a id="login-button" href="login.php">Login</a>
-                <a id="cart-button" href="cart.html">
-                    <span class="cart-icon">🛒</span>
-                    <span class="cart-count">2</span>
-                </a>
-            </div>
-        </div>
-    </header>
-
     <main>
         <section class="cart-section">
             <div class="container">
@@ -187,28 +175,6 @@ h1{
             </div>
         </section>
     </main>
-
-    <footer>
-        <div class="container footer-columns">
-            <div class="footer-column">
-                <h3>Kontakt</h3>
-                <ul>
-                    <li><a href="#">Impressum</a></li>
-                    <li><a href="#">Datenschutz</a></li>
-                </ul>
-            </div>
-            <div class="footer-column">
-                <h3>Socials</h3>
-                <div class="social-media-icons">
-                    <a href="#">🐦</a>
-                    <a href="#">📘</a>
-                    <a href="#">📸</a>
-                </div>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            &copy; 2025 Mein Shop – Alle Rechte vorbehalten.
-        </div>
-    </footer>
+    <?php include "include/footimport.php"; ?>
 </body>
 </html>

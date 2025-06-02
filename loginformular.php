@@ -37,6 +37,7 @@
       text-align: center;
       padding: 10px 0;
       font-size: 14px;
+      background-color:rgba(255, 255, 255, 0.35) !important;
     }
 
     header nav img {
@@ -59,6 +60,7 @@
       max-width: 400px;
       width: 100%;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      border-radius: 5px;
     }
 
     @media (max-width: 420px) {
@@ -95,6 +97,7 @@
       padding: 10px;
       border: 1px solid #ccc;
       font-size: 16px;
+      border-radius: 5px;
     }
 
     input:focus {
@@ -155,6 +158,10 @@
       margin-top: 10px;
       font-size: 14px;
       text-align: center;
+    }
+
+    .bottom-link a:hover{
+      text-decoration: underline;
     }
 
     .bottom-link a {
