@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 31. Mai 2025 um 22:25
+-- Erstellungszeit: 03. Jun 2025 um 11:49
 -- Server-Version: 10.4.32-MariaDB
 -- PHP-Version: 8.2.12
 
@@ -26,45 +26,6 @@ SET time_zone = "+00:00";
 --
 -- Tabellenstruktur für Tabelle `artikel`
 --
-
-CREATE TABLE `logs` (
-  `id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `login_time` datetime NOT NULL,
-  `screen_resolution` varchar(50) NOT NULL,
-  `operating_system` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Daten für Tabelle `logs`
---
-
-INSERT INTO `logs` (`id`, `user_id`, `login_time`, `screen_resolution`, `operating_system`) VALUES
-(14, 38, '2025-05-31 21:43:09', '408x690', 'MacIntel'),
-(15, 38, '2025-05-31 21:43:36', '1440x932', 'MacIntel'),
-(16, 38, '2025-05-31 21:43:38', '1440x932', 'MacIntel'),
-(17, 38, '2025-05-31 21:43:39', '1440x932', 'MacIntel'),
-(18, 38, '2025-05-31 21:43:39', '1440x932', 'MacIntel'),
-(19, 38, '2025-05-31 21:43:39', '1440x932', 'MacIntel'),
-(20, 38, '2025-05-31 21:43:39', '1440x932', 'MacIntel'),
-(21, 38, '2025-05-31 21:43:40', '1440x932', 'MacIntel'),
-(22, 38, '2025-05-31 21:43:40', '1440x932', 'MacIntel'),
-(23, 38, '2025-05-31 21:43:48', '1440x932', 'MacIntel'),
-(24, 38, '2025-05-31 21:43:49', '1440x932', 'MacIntel'),
-(25, 38, '2025-05-31 21:43:49', '1440x932', 'MacIntel'),
-(26, 38, '2025-05-31 21:43:49', '1440x932', 'MacIntel'),
-(27, 38, '2025-05-31 21:43:49', '1440x932', 'MacIntel'),
-(28, 38, '2025-05-31 21:43:49', '1440x932', 'MacIntel'),
-(29, 38, '2025-05-31 21:44:34', '408x690', 'MacIntel'),
-(30, 38, '2025-05-31 21:44:50', '408x690', 'MacIntel'),
-(31, 38, '2025-05-31 21:45:19', '408x690', 'MacIntel'),
-(32, 38, '2025-05-31 21:58:59', '408x690', 'MacIntel'),
-(33, 38, '2025-05-31 21:59:01', '408x690', 'MacIntel'),
-(34, 38, '2025-05-31 22:03:03', '408x690', 'MacIntel'),
-(35, 38, '2025-05-31 22:19:48', '1440x932', 'MacIntel'),
-(36, 38, '2025-05-31 22:20:19', '1440x932', 'MacIntel');
-
-
 
 CREATE TABLE `artikel` (
   `id` int(11) NOT NULL,
@@ -127,6 +88,34 @@ INSERT INTO `artikel` (`id`, `name`, `beschreibung`, `groesse`, `preis`, `lagerb
 -- --------------------------------------------------------
 
 --
+-- Tabellenstruktur für Tabelle `bestellkopf`
+--
+
+CREATE TABLE `bestellkopf` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  `bestelldatum` datetime DEFAULT current_timestamp(),
+  `gesamtbetrag` decimal(10,2) DEFAULT NULL,
+  `status` varchar(50) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `bestellposition`
+--
+
+CREATE TABLE `bestellposition` (
+  `id` int(11) NOT NULL,
+  `bestellung_id` int(11) DEFAULT NULL,
+  `artikel_id` int(11) DEFAULT NULL,
+  `menge` int(11) DEFAULT NULL,
+  `einzelpreis` decimal(10,2) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Tabellenstruktur für Tabelle `cart`
 --
 
@@ -145,8 +134,56 @@ CREATE TABLE `cart` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `online`
+-- Tabellenstruktur für Tabelle `logs`
 --
+
+CREATE TABLE `logs` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `login_time` datetime NOT NULL,
+  `screen_resolution` varchar(50) NOT NULL,
+  `operating_system` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Daten für Tabelle `logs`
+--
+
+INSERT INTO `logs` (`id`, `user_id`, `login_time`, `screen_resolution`, `operating_system`) VALUES
+(0, 45, '2025-06-03 11:36:36', '1920x1080', 'Win32');
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `punkte`
+--
+
+CREATE TABLE `punkte` (
+  `user_id` int(11) NOT NULL,
+  `punktestand` int(11) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Daten für Tabelle `punkte`
+--
+
+INSERT INTO `punkte` (`user_id`, `punktestand`) VALUES
+(1, 0),
+(45, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `rechnungskopf`
+--
+
+CREATE TABLE `rechnungskopf` (
+  `id` int(11) NOT NULL,
+  `bestellung_id` int(11) DEFAULT NULL,
+  `rechnungsdatum` datetime DEFAULT current_timestamp(),
+  `betrag` decimal(10,2) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 -- --------------------------------------------------------
 
 --
@@ -171,12 +208,42 @@ CREATE TABLE `user` (
 
 INSERT INTO `user` (`id`, `vorname`, `nachname`, `mail`, `adresse`, `plz`, `ort`, `passwort`, `google_secret`) VALUES
 (1, 'dndjd', 'djdjdn', 'dj@qdd.de', 'jdjdkik', 2234, 'djdjsnn', 'djdjj3jjns', NULL),
-(3, 'hjbdjhswfj', 'jndsjnkd', 'esrr1979@outlook.com', 'djehjnfj', 23334, 'dujdjfn', 'f783e32fefe752acda784a8873cd6b9cd930e51208db7be726b9a3a1bfe4556e', NULL),
-(10, '2', '23', 'cockpitcorner@mailbox.org', '2', 33, 'ed', '45a166adb8933284e4d4b29677d0b189e3ba1f6e49f5277f23100f48ccee3e1c', NULL),
-(12, 'Florian', '23', 'tittl.florian@gmail.com', '2', 33, 'ed', '81e9e2f91bba47f7aa2ea999d5ab9e0c371e30be9982391bc541735074081c5c', NULL),
-(29, 'test', 'test', 'snfhjnf@outlook.com', 'test', 12344, 'test', '$2y$10$MMfMO.MNFKJ1jwS0LLHlauyR.2CeGoMJpS1sF/zsjezr.jchb8SRi', 'EV2Z2EKGDM57O663'),
-(31, 'edn', 'fkwejn', 'k.apaza@outlook.com', 'sjnw', 12345, 'wej hj', '$2y$10$PjEXN9W6iw9e47nEJN0fWOQkVCSeH1Zh1FlBSWlKxHsFj6U4zy/oO', 'WNCDJAIBPXS7YE2W'),
-(32, 'hbunj', 'uhbn', 'hnure@outlook.com', 'ewdcuin', 23882, 'wejindiu', '$2y$10$9gxNTg9XsKsHzRl0gFLMvu8su9F6xjHXBsIqklXLdYbIoCJtXigJa', 'O35RLXDVU3BYNYKT');
+(45, 'Fabian', 'Andy', 'andre.reiff@online.de', 'Moltkestraße 32', 72805, 'Lichtenstein', 'bf78f0125180f365b24716b3cc2a5c1161c9c5fe977108e3307df95f4f5562c75369a9d605eb4c8453569d183b7ae7b045b48eddf86e02f4575e76f16d368ac4', '5VFCBX5CKYSG222T');
+
+--
+-- Trigger `user`
+--
+DELIMITER $$
+CREATE TRIGGER `after_user_insert` AFTER INSERT ON `user` FOR EACH ROW BEGIN
+    INSERT INTO punkte (user_id) VALUES (NEW.id);
+END
+$$
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `warenkorbkopf`
+--
+
+CREATE TABLE `warenkorbkopf` (
+  `id` int(11) NOT NULL,
+  `kunde_id` int(11) DEFAULT NULL,
+  `erstellt_am` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `warenkorbposition`
+--
+
+CREATE TABLE `warenkorbposition` (
+  `id` int(11) NOT NULL,
+  `warenkorb_id` int(11) DEFAULT NULL,
+  `artikel_id` int(11) DEFAULT NULL,
+  `menge` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Indizes der exportierten Tabellen
@@ -189,10 +256,38 @@ ALTER TABLE `artikel`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indizes für die Tabelle `bestellkopf`
+--
+ALTER TABLE `bestellkopf`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
+-- Indizes für die Tabelle `bestellposition`
+--
+ALTER TABLE `bestellposition`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `bestellung_id` (`bestellung_id`),
+  ADD KEY `artikel_id` (`artikel_id`);
+
+--
 -- Indizes für die Tabelle `cart`
 --
 ALTER TABLE `cart`
   ADD PRIMARY KEY (`bestellungID`);
+
+--
+-- Indizes für die Tabelle `punkte`
+--
+ALTER TABLE `punkte`
+  ADD PRIMARY KEY (`user_id`);
+
+--
+-- Indizes für die Tabelle `rechnungskopf`
+--
+ALTER TABLE `rechnungskopf`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `bestellung_id` (`bestellung_id`);
 
 --
 -- Indizes für die Tabelle `user`
@@ -200,6 +295,21 @@ ALTER TABLE `cart`
 ALTER TABLE `user`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `mail` (`mail`);
+
+--
+-- Indizes für die Tabelle `warenkorbkopf`
+--
+ALTER TABLE `warenkorbkopf`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `kunde_id` (`kunde_id`);
+
+--
+-- Indizes für die Tabelle `warenkorbposition`
+--
+ALTER TABLE `warenkorbposition`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `warenkorb_id` (`warenkorb_id`),
+  ADD KEY `artikel_id` (`artikel_id`);
 
 --
 -- AUTO_INCREMENT für exportierte Tabellen
@@ -212,16 +322,88 @@ ALTER TABLE `artikel`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2007;
 
 --
+-- AUTO_INCREMENT für Tabelle `bestellkopf`
+--
+ALTER TABLE `bestellkopf`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT für Tabelle `bestellposition`
+--
+ALTER TABLE `bestellposition`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT für Tabelle `cart`
 --
 ALTER TABLE `cart`
   MODIFY `bestellungID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT für Tabelle `rechnungskopf`
+--
+ALTER TABLE `rechnungskopf`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT für Tabelle `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
+
+--
+-- AUTO_INCREMENT für Tabelle `warenkorbkopf`
+--
+ALTER TABLE `warenkorbkopf`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT für Tabelle `warenkorbposition`
+--
+ALTER TABLE `warenkorbposition`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- Constraints der exportierten Tabellen
+--
+
+--
+-- Constraints der Tabelle `bestellkopf`
+--
+ALTER TABLE `bestellkopf`
+  ADD CONSTRAINT `bestellkopf_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
+
+--
+-- Constraints der Tabelle `bestellposition`
+--
+ALTER TABLE `bestellposition`
+  ADD CONSTRAINT `bestellposition_ibfk_1` FOREIGN KEY (`bestellung_id`) REFERENCES `bestellkopf` (`id`),
+  ADD CONSTRAINT `bestellposition_ibfk_2` FOREIGN KEY (`artikel_id`) REFERENCES `artikel` (`id`);
+
+--
+-- Constraints der Tabelle `punkte`
+--
+ALTER TABLE `punkte`
+  ADD CONSTRAINT `fk_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints der Tabelle `rechnungskopf`
+--
+ALTER TABLE `rechnungskopf`
+  ADD CONSTRAINT `rechnungskopf_ibfk_1` FOREIGN KEY (`bestellung_id`) REFERENCES `bestellkopf` (`id`);
+
+--
+-- Constraints der Tabelle `warenkorbkopf`
+--
+ALTER TABLE `warenkorbkopf`
+  ADD CONSTRAINT `warenkorbkopf_ibfk_1` FOREIGN KEY (`kunde_id`) REFERENCES `user` (`id`);
+
+--
+-- Constraints der Tabelle `warenkorbposition`
+--
+ALTER TABLE `warenkorbposition`
+  ADD CONSTRAINT `warenkorbposition_ibfk_1` FOREIGN KEY (`warenkorb_id`) REFERENCES `warenkorbkopf` (`id`),
+  ADD CONSTRAINT `warenkorbposition_ibfk_2` FOREIGN KEY (`artikel_id`) REFERENCES `artikel` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
