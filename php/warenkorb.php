@@ -1,5 +1,16 @@
-<?php $kunden_id = $_SESSION['kunden_id'] ?? null;
+<?php session_start();
+$kunden_id = $_SESSION['kunden_id'] ?? null;
+
+if (!$kunden_id) {
+    header("Location: /Webprojekt/loginformular.php");
+    exit;
+}
+else{
+    header("Location: /Webprojekt/warenkorb.php")
+}
 ?>
+
+<?php include "include/connectcon.php";?>
 
 <!DOCTYPE html>
 <html lang="de">
@@ -128,11 +139,17 @@ h1{
 </head>
 <body>
     <main>
+        <?php
+        $sql = "SELECT * FROM warenkorbposition WHERE kategorie = 'Headsets'";
+        $result = $con->query($sql);
+
+        ?>
         <section class="cart-section">
             <div class="container">
                 <h1>Dein Warenkorb</h1>
                 <div class="cart-items-list">
                     <!-- Beispielprodukt 1 -->
+
                     <div class="cart-item">
                         <img src="produkt1.jpg" alt="Produkt 1" class="cart-item-img">
                         <div class="cart-item-info">
