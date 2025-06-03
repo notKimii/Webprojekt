@@ -50,7 +50,7 @@ session_start();
                         <?php endif; ?>
                 </div>
                <div class="header-action-item">
-                    <a href="./php/cart.php" id="cart-button">
+                    <a href="/Webprojekt/php/warenkorb.php" id="cart-button">
                         <p>Warenkorb</p>
                     <span class="cart-count">0</span> 
                     </a>

@@ -1,3 +1,6 @@
+<?php $kunden_id = $_SESSION['kunden_id'] ?? null;
+?>
+
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -170,7 +173,11 @@ h1{
                         <strong>Gesamt</strong>
                         <strong>104,97 €</strong>
                     </div>
-                    <a href="checkout.php" class="cta-button">Zur Kasse</a>
+                    <?php if (!empty($positionen)): ?>
+                        <form action="bestellung_abschliessen.php" method="post">
+                            <button type="submit">✅ Jetzt kaufen</button>
+                        </form>
+                    <?php endif; ?>
                 </div>
             </div>
         </section>
