@@ -4,6 +4,8 @@ include 'include/debug.php';
 session_start();
 
 include 'include/vendorconnect.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 // Formulardaten
@@ -59,8 +61,20 @@ try {
 		VALUES (?, ?, ?, ?, ?, ?, ?,?)");
 	$stmt->execute([$vorname, $nachname, $mail, $adresse, $plz, $ort, $password, NULL]);
 
-	include 'include/mailversand.php';
+	// E-Mail vorbereiten
+	$mailer = new PHPMailer(true);
+	$mailer->isSMTP();
+	$mailer->Host = 'smtp.mailbox.org';
+	$mailer->SMTPAuth = true;
+	$mailer->Username = 'cockpitcorner@mailbox.org';
+	$mailer->Password = 'Mailbox.123';
+	$mailer->SMTPSecure = 'tls';
+	$mailer->Port = 587;
+
+	$mailer->setFrom('cockpitcorner@mailbox.org', 'Cockpit Corner');
+	$mailer->addAddress($mail);
 	$mailer->Subject = 'Willkommen bei Cockpit Corner';
+	$mailer->isHTML(true);
 	$body = "<p>Herzlich Willkommen $vorname $nachname! 
 			<br><br>
 			Sie haben sich erfolgreich bei <i>'Cockpit Corner' </i>registriert.
@@ -79,7 +93,7 @@ try {
 	$mailer->send();
 
 
-	header("Location: ../loginformular.php");
+	header("Location: ../login.html");
 } catch (Exception $e) {
 
 	$_SESSION['form_data'] = $_POST;

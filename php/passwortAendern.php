@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION["mail"])) {
-    header("Location: loginformular.php");
+    header("Location: login.php");
     exit;
 }
 
@@ -20,7 +20,7 @@ if (!isset($_SESSION["mail"])) {
         integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 
     <style>
-        .change-box {
+        .register-box {
             background-color: rgba(255, 255, 255, 0.95);
             padding: 30px;
             margin: 20px;
@@ -50,13 +50,12 @@ if (!isset($_SESSION["mail"])) {
     if (isset($_GET['error']) && $_GET['error'] == 1) {
         echo "<p class='text-center' style='color: red'>Das Passwort muss mindestens 9 Zeichen lang sein und mindestens einen Großbuchstaben, einen Kleinbuchstaben und eine Zahl enthalten.</p>";
     }
-        if (isset($_GET['error']) && $_GET['error'] == 2) {
-        echo "<p class='text-center' style='color: red'>Bitte geben Sie das korrekte alte Passwort ein.</p>";
-    }
     ?>
     <main class="flex-fill d-flex justify-content-center align-items-center">
-        <div class="change-box">
+        <div class="register-box">
             <form action="passwortsubmit.php" method="POST" class="needs-validation" novalidate>
+                <!-- CSRF -->
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
 
                 <h2 class="text-center mb-4">Passwort ändern</h2>
 

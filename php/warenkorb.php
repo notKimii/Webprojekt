@@ -1,7 +1,16 @@
 <?php session_start();
-    include "include/loginpruefung.php";
-    include "include/connectcon.php";
+$kunden_id = $_SESSION['kunden_id'] ?? null;
+
+if (!$kunden_id) {
+    header("Location: /Webprojekt/loginformular.php");
+    exit;
+}
+else{
+    header("Location: /Webprojekt/warenkorb.php")
+}
 ?>
+
+<?php include "include/connectcon.php";?>
 
 <!DOCTYPE html>
 <html lang="de">
@@ -9,6 +18,8 @@
     <meta charset="UTF-8">
     <title>Warenkorb - Mein Shop</title>
     <link rel="stylesheet" href="/Webprojekt/style.css">
+    <?php include "include/headimport.php"; ?> 
+
     <style>
       
 h1{
@@ -127,11 +138,11 @@ h1{
     </style>
 </head>
 <body>
-    <?php include "include/headimport.php"; ?> 
     <main>
         <?php
         $sql = "SELECT * FROM warenkorbposition WHERE kategorie = 'Headsets'";
         $result = $con->query($sql);
+
         ?>
         <section class="cart-section">
             <div class="container">

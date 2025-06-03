@@ -5,7 +5,7 @@
 
   $gefunden=false;
 
-  if (isset($_SESSION['temp_user']))
+  if($_SESSION["login"] ==1)
   {
       $gefunden=true;
   }
