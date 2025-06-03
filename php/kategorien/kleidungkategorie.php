@@ -1,5 +1,5 @@
 <?php
-include "include/connectcon.php"; 
+include "../include/connectcon.php"; 
 ?>
 <!DOCTYPE html>
 <html lang="de">
@@ -9,7 +9,7 @@ include "include/connectcon.php";
   <title>Headsets - Cockpit Corner</title>
   <link rel="stylesheet" href="/Webprojekt/produkt.css">
 
-  <?php include "include/headimport.php"; ?>
+  <?php include "../include/headimport.php"; ?>
   
 </head>
 <body>
@@ -31,7 +31,7 @@ include "include/connectcon.php";
           $preis = number_format($row['preis'], 2, ',', '.');
 
           // Bilder aus dem Ordner laden
-          $bilderOrdner = "../images/pictures/productids/$produktId/";
+          $bilderOrdner = "../..//images/pictures/productids/$produktId/";
           $bilder = glob($bilderOrdner . "*.{jpg,JPG,png,PNG,jpeg,JPEG,webp,WEBP}", GLOB_BRACE);
 
           echo '<div class="product-item" data-id="' . $produktId . '">';

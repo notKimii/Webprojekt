@@ -1,19 +1,5 @@
 <?php
-  error_reporting(0);
-  //Überprüfung 
-  session_start();
-
-  $gefunden=false;
-
-  if($_SESSION["login"] ==1)
-  {
-      $gefunden=true;
-  }
-
-  if($gefunden==false)
-  {
-    header("Location: ../login.html");
-  }
+  include 'include/loginpruefung.php';
     //Variablen
     $id = $_SESSION["id"];
     $_SESSION["SArtikelID"] = $SArtikelID;

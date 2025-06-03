@@ -25,9 +25,8 @@ if ($user && $passwordold == $user['passwort']) {
     $stmt = $con->prepare("UPDATE user set passwort= ? WHERE mail=?");
     $stmt->execute([$password, $email]);
 
-    header('Location: ../login.html');
+    header('Location: ../loginformular.php');
     exit;
 }
-
-header('Location: ../basis.html');
+header("Location: passwortAendern.php?error=2");
 exit;

@@ -1,26 +1,27 @@
 <?php
-include "include/connectcon.php"; 
+include "../include/connectcon.php"; 
 ?>
 <!DOCTYPE html>
 <html lang="de">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Flugtaschen - Cockpit Corner</title>
+  <title>Sicherheitsausrüstung – Cockpit Corner</title>
   <link rel="stylesheet" href="/Webprojekt/produkt.css">
 
-  <?php include "include/headimport.php"; ?>
+  <?php include "../include/headimport.php"; ?>
+
 </head>
 <body>
 
 <main>
   <div class="container">
-    <h1>Flugtaschen</h1>
-    <p>Hier findest du unsere Auswahl an Flugtaschen.</p>
+    <h1>Sicherheitsausrüstung</h1>
+    <p>Hier findest du Sicherheitsausrüstung die dich auf alles wappnet</p>
 
     <div class="product-grid">
       <?php
-      $sql = "SELECT * FROM artikel WHERE kategorie = 'Flugtaschen & Koffer'";
+      $sql = "SELECT * FROM artikel WHERE kategorie = 'Sicherheitsaustrüstung'";
       $result = $con->query($sql);
 
       if ($result->num_rows > 0) {
@@ -30,7 +31,7 @@ include "include/connectcon.php";
           $preis = number_format($row['preis'], 2, ',', '.');
 
           // Bilder aus dem Ordner laden
-          $bilderOrdner = "../images/pictures/productids/$produktId/";
+          $bilderOrdner = "../..//images/pictures/productids/$produktId/";
           $bilder = glob($bilderOrdner . "*.{jpg,JPG,png,PNG,jpeg,JPEG,webp,WEBP}", GLOB_BRACE);
 
           echo '<div class="product-item" data-id="' . $produktId . '">';
@@ -66,7 +67,7 @@ include "include/connectcon.php";
           echo '</div>';
         }
       } else {
-        echo "<p>Keine Produkte in der Kategorie Navigation gefunden.</p>";
+        echo "<p>Keine Produkte in der Kategorie Sicherheitsaustrüstung gefunden.</p>";
       }
 
       $con->close();
