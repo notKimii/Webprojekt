@@ -318,7 +318,7 @@ if ($absoluterPfad && is_dir($absoluterPfad)) {
 
         <div class="product-details-section">
             <h1 class="product-title"><?php echo htmlspecialchars($produkt['name']); ?></h1>
-            <p class="product-tagline"><?php echo htmlspecialchars($produkt['tagline'] ?? 'Innovation trifft auf zeitloses Design.'); ?></p>
+            
 
             <div class="product-rating-summary">
                 <div class="stars">
@@ -330,32 +330,16 @@ if ($absoluterPfad && is_dir($absoluterPfad)) {
             <p class="product-price"><?php echo number_format(floatval($produkt['preis']), 2, ',', '.'); ?> €</p>
             <p class="tax-info">Inkl. MwSt., zzgl. Versandkosten</p>
 
-            <div class="product-variants">
-                <div class="variant-option">
-                    <label for="color-option">Farbe:</label>
-                    <select name="color" id="color-option">
-                        <option value="graphit">Graphit</option>
-                        <option value="silber">Silber</option>
-                    </select>
-                </div>
-                <div class="variant-option">
-                    <label for="storage-option">Speicher:</label>
-                    <select name="storage" id="storage-option">
-                        <option value="256gb">256 GB</option>
-                        <option value="512gb">512 GB</option>
-                    </select>
-                </div>
+            <div class="product-bestand">
+                <div class="shipping-detail"><i class="fas fa-box-open"></i><span><?php echo number_format(floatval($produkt['lagerbestand'])); ?> Stück auf lager</span></div>
             </div>
 
             <form action="/php/cart-add.php" method="post" style="margin-bottom: 12px;">
-                <input type="hidden" name="produkt_id" value="<?php echo $produktId; ?>">
-                <button type="submit" class="add-to-cart-button">In den Warenkorb</button>
+                
             </form>
-            <button class="buy-now-button">Jetzt kaufen</button>
+            <button class="buy-now-button">In den Warenkorb</button>
 
-            <div class="product-short-description">
-                <p><?php echo nl2br(htmlspecialchars($produkt['beschreibung'])); ?></p>
-            </div>
+            
 
             <div class="product-shipping-info">
                 <div class="shipping-detail"><i class="fas fa-truck"></i><span>Kostenloser Versand</span></div>
