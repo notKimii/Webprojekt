@@ -35,19 +35,19 @@
                 <h2>Unsere Top-Kategorien</h2>
                 <div class="category-grid">
                     <div class="category-item">
-                        <a href="/kategorie/bekleidung">
+                        <a href="/Webprojekt/php/headsetskategorie.php">
                             <img src="./images/pictures/indexpics/headset.png" alt="Bose">
                             <h3>Headsets</h3>
                         </a>
                     </div>
                     <div class="category-item">
-                        <a href="/kategorie/schuhe">
+                        <a href="/Webprojekt/php/headsetskategorie.php">
                             <img src="./images/pictures/indexpics/Sonnenbrille.png" alt="Schuhe">
                             <h3>Sonnenbrillen</h3>
                         </a>
                     </div>
                     <div class="category-item">
-                        <a href="/kategorie/accessoires">
+                        <a href="/Webprojekt/php/flugtaschenkategorie.php">
                             <img src="./images/pictures/indexpics/Flugtasche.png" alt="Accessoires">
                             <h3>Flugtaschen</h3>
                         </a>
