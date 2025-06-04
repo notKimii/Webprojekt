@@ -1,22 +1,40 @@
 <!DOCTYPE html>
 <html lang="de">
+<?php session_start(); ?>
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <title>Cockpit Corner - Alles für Piloten: Flugtaschen, Zubehör & mehr</title>
     <link rel="stylesheet" href="style.css">
-    <?php include 'php/include/headimport.php';?>
+    <?php include 'php/include/headimport.php'; ?>
 </head>
+
 <body>
     <main>
 
         <section class="hero-section">
-            <div class="hero-banner" style="background-image: url(./images/Cockpit_Corner/pictures/herobanner_3.png);">
+            <div class="hero-banner" style="background-image: url(./images/pictures/herobanner_2.png);">
                 <div class="hero-content">
-                    <h1><span class="hero-highlight">Next-Level</span> Equipment fürs Cockpit.</h1>
-                    <p>Bereit zum Abheben? Hochwertiges Pilotengear und unwiderstehliche Deals erwarten dich.</p>
-                    <a href="/kategorie/neuheiten" class="cta-button">Jetzt Entdecken</a>
+                    <?php
+                    if (isset($_SESSION['temp_user'])) {
+                        include 'php/include/connect.php';
+                        $name = $_SESSION['temp_user']['vorname'];
+                        $nachname = $_SESSION['temp_user']['nachname'];
+                        $stmt = $con->prepare("SELECT COUNT(*) FROM user WHERE aktiv=1");
+                        $stmt->execute();
+                        $anzahl = $stmt->fetchColumn();
+
+                        echo"<h1>Wilkommen an Board <span class='hero-highlight'>$name $nachname</span></h1>
+                        <p>Aktuell sind $anzahl weitere Piloten online.
+                        <br> Hochwertiges Pilotengear und unwiderstehliche Deals erwarten dich.
+                        <br> Bereit zum Abheben?</p>
+                    <a href='/kategorie/neuheiten' class='cta-button'>Jetzt Entdecken</a>";
+                    }
+                    ?>
+
+                    
                 </div>
             </div>
         </section>
@@ -141,7 +159,7 @@
                         </a>
                         <button class="add-to-cart-button">In den Warenkorb</button>
                     </div>
-                     <div class="product-item">
+                    <div class="product-item">
                         <a href="/produkt/duftkerze-set">
                             <img src="https://picsum.photos/seed/bestsellerD/300/350" alt="Duftkerzen Set">
                             <h3>Duftkerzen Set</h3>
@@ -288,10 +306,13 @@
             </div>
 
             <div class="footer-bottom">
-                <p>&copy; 2024-<script>document.write(new Date().getFullYear())</script> [Shop-Name]. Alle Rechte vorbehalten.</p>
+                <p>&copy; 2024-<script>
+                        document.write(new Date().getFullYear())
+                    </script> [Shop-Name]. Alle Rechte vorbehalten.</p>
             </div>
         </div>
     </footer>
 
 </body>
+
 </html

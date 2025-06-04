@@ -325,7 +325,7 @@ header {
 
 /* HERO SECTION */
 .hero-section {
-    padding: calc(var(--spacing-unit)*2) 0; /* Weniger Padding wenn Bild full-width */
+    padding: 0; 
     background-color: var(--light-color); /* Hintergrund für die gesamte Sektion */
    
 }
@@ -347,10 +347,21 @@ header {
     
     
 }
+.greeting {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 1.4rem; /* etwas größer */
+    font-weight: 500; /* mittlere Stärke */
+    color: #333; /* dunkler, weicher Text */
+    background-color: #f0f8ff; /* leichtes Hellblau */
+}
 
 .hero-content {
     max-width: 650px;
-    background-color: rgba(255,255,255,0.3); /* Optional: leichter Text-Hintergrund für Lesbarkeit */
+    background-color: rgba(255, 255, 255, 0.407); /* Optional: leichter Text-Hintergrund für Lesbarkeit */
     backdrop-filter: blur(5px);
     padding: var(--spacing-unit);
     border-radius: var(--border-radius-soft);
@@ -364,7 +375,7 @@ header {
 .hero-content p {
     font-size: 1.25rem; /* Etwas größerer Text */
     margin-bottom: calc(var(--spacing-unit) * 2);
-    color: #4e4e4e;
+    color: #2e2c2c;
     text-shadow: none;
     font-weight: 400;
     line-height: 1.5;
