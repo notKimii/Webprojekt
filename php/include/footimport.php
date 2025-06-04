@@ -37,9 +37,9 @@
                 <div class="footer-column">
                     <h3>Folge uns</h3>
                     <div class="social-media-icons">
-                        <a href="https://facebook.com" target="_blank" aria-label="Facebook">[FB_Icon]</a>
-                        <a href="https://instagram.com" target="_blank" aria-label="Instagram">[IG_Icon]</a>
-                        <a href="https://pinterest.com" target="_blank" aria-label="Pinterest">[PI_Icon]</a>
+                        <a href="https://facebook.com" target="_blank" aria-label="Facebook"><img src="/Webprojekt/images/pictures/socialmedia/facebook.png" alt=""</a>
+                        <a href="https://instagram.com" target="_blank" aria-label="Instagram"><img src="/Webprojekt/images/pictures/socialmedia/instagram.png" alt=""</a>
+                        <a href="https://pinterest.com" target="_blank" aria-label="Pinterest"><img src="/Webprojekt/images/pictures/socialmedia/Linkedin.png" alt=""></a>
                     </div>
                     <h3 class="payment-title">Sicher bezahlen mit</h3>
                     <div class="payment-methods-icons">

@@ -7,21 +7,7 @@ session_start();
         <p>🎉 Sommer Sale: Bis zu 50% Rabatt auf ausgewählte Artikel! Nur für kurze Zeit! <span class="extra-text">| Kostenloser Versand ab 50€ Bestellwert 🎉</span></p>
     </div>
 
-
     <header>
-    <div class="header-top">
-        <div class="container">
-            <div class="header-top-left">
-                <a href="/hilfe">Hilfe & FAQ</a> |
-                <a href="/versand">Versand & Lieferung</a>
-            </div>
-            <div class="header-top-right">
-                <a href="/mein-konto">Mein Konto</a> |
-                <a href="/wunschliste">Wunschliste ❤️</a>
-            </div>
-        </div>
-    </div>
-
     <div class="header-main">
         <div class="container">
             <div class="logo">
@@ -103,7 +89,7 @@ session_start();
     <nav class="main-navigation">
         <div class="container">
             <ul>
-                <li><a href="/kategorien/neuheiten">Neuheiten</a></li>
+                <li><a href="/Webprojekt/php/kategorien/saleskategorie.php">Sales</a></li>
                 <li><a href="/Webprojekt/php/kategorien/headsetskategorie.php">Headsets</a></li>
                 <li><a href="/Webprojekt/php/kategorien/navigationkategorie.php">Navigation</a></li>
                 <li><a href="/Webprojekt/php/kategorien/kleidungkategorie.php">Kleidung & Accessoires</a></li>

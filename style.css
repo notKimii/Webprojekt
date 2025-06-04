@@ -159,22 +159,20 @@ section {
    HEADER
    ========================== */
 header {
-    background-color: rgba(255,255,255,0.8); /* Leicht transparent, wenn sticky */
-    backdrop-filter: blur(10px); /* Glassmorphism-Effekt für den Header */
-    box-shadow: none; /* Apple-Header haben oft keinen Schatten oder nur sehr dezent */
-    border-bottom: 1px solid rgba(0,0,0,0.07); /* Sehr feine Linie */
+    background-color: rgba(255,255,255,0.8); 
+    backdrop-filter: blur(10px); 
+    box-shadow: none; 
+    border-bottom: 1px solid rgba(0,0,0,0.07);
     position: sticky;
     top: 0;
     z-index: 1000;
-    padding: calc(var(--spacing-unit) * 0.5) 0; /* Weniger Padding im Header selbst */
+    padding: calc(var(--spacing-unit) * 0.5) 0;
 }
 
-.header-top { /* Kann für Minimalismus entfernt oder integriert werden */
-    display: none; /* Für einen noch minimalistischeren Look */
-}
+
 
 .header-main .container {
-    position: relative;           /* nötig, damit absolute Elemente relativ hier positioniert werden können */
+    position: relative;          
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -485,7 +483,7 @@ header {
     margin-bottom: var(--spacing-unit);
     border-radius: calc(var(--border-radius-soft) / 2) ; 
     aspect-ratio: 1/1;
-    object-fit: cover;
+    object-fit: contain;
     transform: scale(0.9); 
 }
 

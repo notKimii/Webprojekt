@@ -207,35 +207,32 @@
 
         <section class="blog-teaser">
             <div class="container">
-                <h2>Aus unserem Magazin</h2>
+                <h2>Aktuelles</h2>
                 <div class="article-grid">
                     <div class="article-item">
-                        <a href="/blog/artikel-fruehlingstrends">
-                            <img src="https://picsum.photos/seed/blogA/400/250" alt="Frühlingstrends 2025">
+                        <a href="https://www.aero-expo.de/">
+                            <img src="/Webprojekt/images/pictures/indexpics/gadgets.jpeg" alt="Frühlingstrends 2025">
                             <h3>AERO Friedrichshafen 2025</h3>
                             <p>Starke Impulse für die Allgemeine Luftfahrt und Fokus auf Nachhaltigkeit</p>
                             <span>Weiterlesen &rarr;</span>
                         </a>
                     </div>
                     <div class="article-item">
-                        <a href="/blog/artikel-nachhaltigkeit">
-                            <img src="https://picsum.photos/seed/blogB/400/250" alt="Nachhaltige Mode">
-                            <h3>Kompakte Notfall-ELTs</h3>
-                            <p>So triffst du umweltfreundlichere Entscheidungen beim Shoppen...</p>
+                        <a href="https://www.dulv.de">
+                            <img src="/Webprojekt/images/pictures/indexpics/ultraleicht.jpeg" alt="Nachhaltige Mode">
+                            <h3>Ultraleicht Fliegen</h3>
+                            <p>Der kostengünstige Einstieg ins Cockpit – Modelle, Lizenzen und laufende Kosten im Überblick</p>
                             <span>Weiterlesen &rarr;</span>
                         </a>
                     </div>
                     <div class="article-item">
-                        <a href="/blog/artikel-geschenkideen">
-                            <img src="https://picsum.photos/seed/blogC/400/250" alt="Geschenkideen">
-                            <h3>Perfekte Geschenkideen für jeden Anlass</h3>
-                            <p>Finde inspirierende Geschenke, die Freude bereiten...</p>
+                        <a href="https://www.siebert.aero">
+                            <img src="/Webprojekt/images/pictures/indexpics/ausbildung.jpeg" alt="Geschenkideen">
+                            <h3>Flugausbildung im Wandel</h3>
+                            <p>Was angehende Piloten heute über moderne Trainingsmethoden wissen sollten</p>
                             <span>Weiterlesen &rarr;</span>
                         </a>
                     </div>
-                </div>
-                <div class="view-all-link">
-                    <a href="/blog" class="button-secondary">Zum Magazin</a>
                 </div>
             </div>
         </section>
