@@ -349,7 +349,6 @@ if ($absoluterPfad && is_dir($absoluterPfad)) {
 
             <div class="additional-actions">
                 <a href="#" class="wishlist-link"><i class="far fa-heart"></i> Zur Wunschliste hinzufügen</a>
-                <a href="#" class="compare-link"><i class="fas fa-exchange-alt"></i> Produkt vergleichen</a>
             </div>
         </div>
     </div>

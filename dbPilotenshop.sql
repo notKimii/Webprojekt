@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 03. Jun 2025 um 11:49
+-- Erstellungszeit: 04. Jun 2025 um 12:05
 -- Server-Version: 10.4.32-MariaDB
 -- PHP-Version: 8.2.12
 
@@ -150,7 +150,21 @@ CREATE TABLE `logs` (
 --
 
 INSERT INTO `logs` (`id`, `user_id`, `login_time`, `screen_resolution`, `operating_system`) VALUES
-(0, 45, '2025-06-03 11:36:36', '1920x1080', 'Win32');
+(0, 45, '2025-06-03 11:36:36', '1920x1080', 'Win32'),
+(0, 50, '2025-06-04 10:59:04', '1920x1080', 'Win32'),
+(0, 50, '2025-06-04 12:05:12', '1920x1080', 'Win32');
+
+--
+-- Trigger `logs`
+--
+DELIMITER $$
+CREATE TRIGGER `punkte_update` AFTER INSERT ON `logs` FOR EACH ROW BEGIN
+    UPDATE punkte
+    SET punktestand = punktestand + 2
+    WHERE user_id = NEW.user_id;
+END
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -160,7 +174,7 @@ INSERT INTO `logs` (`id`, `user_id`, `login_time`, `screen_resolution`, `operati
 
 CREATE TABLE `punkte` (
   `user_id` int(11) NOT NULL,
-  `punktestand` int(11) NOT NULL DEFAULT 0
+  `punktestand` int(11) NOT NULL DEFAULT 100
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -169,7 +183,51 @@ CREATE TABLE `punkte` (
 
 INSERT INTO `punkte` (`user_id`, `punktestand`) VALUES
 (1, 0),
-(45, 0);
+(46, 100),
+(47, 100),
+(49, 100),
+(50, 102);
+
+--
+-- Trigger `punkte`
+--
+DELIMITER $$
+CREATE TRIGGER `plog_update` AFTER UPDATE ON `punkte` FOR EACH ROW BEGIN
+    -- Prüfen ob sich der Punktestand geändert hat
+    IF NEW.punktestand <> OLD.punktestand THEN
+        INSERT INTO punktelog 
+            (user_id, datum, art, punkte_aenderung, neuer_punktestand, bemerkung)
+        VALUES
+            (NEW.user_id, NOW(), 'Automatisch', NEW.punktestand - OLD.punktestand, NEW.punktestand, 'Änderung am Punktestand');
+    END IF;
+END
+$$
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `punktelog`
+--
+
+CREATE TABLE `punktelog` (
+  `transaktions_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `datum` datetime NOT NULL DEFAULT current_timestamp(),
+  `art` varchar(100) DEFAULT NULL,
+  `punkte_aenderung` int(11) NOT NULL,
+  `neuer_punktestand` int(11) NOT NULL,
+  `bemerkung` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Daten für Tabelle `punktelog`
+--
+
+INSERT INTO `punktelog` (`transaktions_id`, `user_id`, `datum`, `art`, `punkte_aenderung`, `neuer_punktestand`, `bemerkung`) VALUES
+(1, 49, '2025-06-03 22:14:35', NULL, 0, 100, NULL),
+(2, 50, '2025-06-04 10:57:28', NULL, 0, 100, NULL),
+(3, 50, '2025-06-04 12:05:12', 'Automatisch', 2, 102, 'Änderung am Punktestand');
 
 -- --------------------------------------------------------
 
@@ -208,13 +266,22 @@ CREATE TABLE `user` (
 
 INSERT INTO `user` (`id`, `vorname`, `nachname`, `mail`, `adresse`, `plz`, `ort`, `passwort`, `google_secret`) VALUES
 (1, 'dndjd', 'djdjdn', 'dj@qdd.de', 'jdjdkik', 2234, 'djdjsnn', 'djdjj3jjns', NULL),
-(45, 'Fabian', 'Andy', 'andre.reiff@online.de', 'Moltkestraße 32', 72805, 'Lichtenstein', 'bf78f0125180f365b24716b3cc2a5c1161c9c5fe977108e3307df95f4f5562c75369a9d605eb4c8453569d183b7ae7b045b48eddf86e02f4575e76f16d368ac4', '5VFCBX5CKYSG222T');
+(46, 'monty', 'miner', 'monty.isid@h.de', 'Moltkestraße 32', 72805, 'Lichtenstein', '40e235dd0c7c50a3af4019e342f6046fd5bef9c96c2150f556238fd5d3977fd25b819ec7391178ed62da388f0bf979d90d566056e2808aaa57ce1c880d2aec0b', NULL),
+(47, 'hadfasd', 'dasdasas', 'monty.isisdd@hs.de', 'sasd 2', 31231, 'Lichtenstein', 'eb4872b5f8a88fe7bdbd52ee5ef10f9a74e937d061ec014be7eedb99f71921ed6e9983772e3dc16ec876b72f7cbdba49b2ce84c635b4d8a93f7ce92c1753e82d', NULL),
+(49, 'awawe', 'weae', 'montwey.isisdd@hs.de', 'seeasd 2', 31211, 'Lichtenstein', '71244f86f9e78b572b692bda0f11e010dda7930ff4097d331f243955d593779d5473e04de6853003923b2f49cd3df1726a77b3bcfce2bdd60db61fb07c1d3eb9', NULL),
+(50, 'andre', 'reiff', 'andre.reiff@online.de', 'Moltkestraße 32', 72805, 'Lichtenstein', '47d658a097d490e0d26650c77ff4bf755fa8a3d86acc5df95b3844f4b3c9cb80b20ac1fe7e5b67564d4c15798a1b9b4c5bcfd2f7b5a6eeeb585381c95221fc1c', 'AVEL7JNZRIHDXP5C');
 
 --
 -- Trigger `user`
 --
 DELIMITER $$
-CREATE TRIGGER `after_user_insert` AFTER INSERT ON `user` FOR EACH ROW BEGIN
+CREATE TRIGGER `plog_erster_eintrag` AFTER INSERT ON `user` FOR EACH ROW BEGIN
+	INSERT INTO punktelog (user_id, neuer_punktestand) VALUES (NEW.id, 100);
+END
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `punkte_erster_eintrag` AFTER INSERT ON `user` FOR EACH ROW BEGIN
     INSERT INTO punkte (user_id) VALUES (NEW.id);
 END
 $$
@@ -283,6 +350,12 @@ ALTER TABLE `punkte`
   ADD PRIMARY KEY (`user_id`);
 
 --
+-- Indizes für die Tabelle `punktelog`
+--
+ALTER TABLE `punktelog`
+  ADD PRIMARY KEY (`transaktions_id`);
+
+--
 -- Indizes für die Tabelle `rechnungskopf`
 --
 ALTER TABLE `rechnungskopf`
@@ -340,6 +413,12 @@ ALTER TABLE `cart`
   MODIFY `bestellungID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT für Tabelle `punktelog`
+--
+ALTER TABLE `punktelog`
+  MODIFY `transaktions_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT für Tabelle `rechnungskopf`
 --
 ALTER TABLE `rechnungskopf`
@@ -349,7 +428,7 @@ ALTER TABLE `rechnungskopf`
 -- AUTO_INCREMENT für Tabelle `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 
 --
 -- AUTO_INCREMENT für Tabelle `warenkorbkopf`
