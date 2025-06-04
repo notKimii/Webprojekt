@@ -93,7 +93,7 @@ try {
 	$mailer->send();
 
 
-	header("Location: loginformular.php");
+	header("Location: /Webprojekt/loginformular.php");
 } catch (Exception $e) {
 
 	$_SESSION['form_data'] = $_POST;
