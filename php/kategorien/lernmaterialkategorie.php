@@ -1,6 +1,3 @@
-<?php
-include "include/connectcon.php"; 
-?>
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -9,11 +6,12 @@ include "include/connectcon.php";
   <title>Lernmaterial - Cockpit Corner</title>
   <link rel="stylesheet" href="/Webprojekt/produkt.css">
 
-  <?php include "include/headimport.php"; ?>
 
 </head>
 <body>
+  <?php include "../include/connectcon.php"; ?>
 
+  <?php include "../include/headimport.php"; ?>
 <main>
   <div class="container">
     <h1>Lernmaterial & Karten</h1>
@@ -31,7 +29,7 @@ include "include/connectcon.php";
           $preis = number_format($row['preis'], 2, ',', '.');
 
           // Bilder aus dem Ordner laden
-          $bilderOrdner = "../images/pictures/productids/$produktId/";
+          $bilderOrdner = "../../images/pictures/productids/$produktId/";
           $bilder = glob($bilderOrdner . "*.{jpg,JPG,png,PNG,jpeg,JPEG,webp,WEBP}", GLOB_BRACE);
 
           echo '<div class="product-item" data-id="' . $produktId . '">';
@@ -77,7 +75,7 @@ include "include/connectcon.php";
   </div>
 </main>
 
-<?php include "include/footimport.php"; ?>
+<?php include "../include/footimport.php"; ?>
 
 <script>
 // Bildwechsel-Funktion

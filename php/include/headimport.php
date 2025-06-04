@@ -42,7 +42,7 @@ session_start();
                         <?php if (isset($_SESSION['temp_user'])): ?>
                             <a href="/mein-konto.php" id="login-button">
                                 <p>Mein Konto</p>
-                            </a>y
+                            </a>
                         <?php else: ?>
                             <a href="/Webprojekt/loginformular.php" id="login-button">
                                 <p>Anmelden</p>
@@ -61,14 +61,14 @@ session_start();
     <nav class="main-navigation">
         <div class="container">
             <ul>
-                <li><a href="/kategorie/neuheiten">Neuheiten</a></li>
-                <li><a href="/Webprojekt/php/headsetskategorie.php">Headsets</a></li>
-                <li><a href="/Webprojekt/php/navigationkategorie.php">Navigation</a></li>
-                <li><a href="/Webprojekt/php/kleidungkategorie.php">Kleidung & Accessoires</a></li>
-                <li><a href="/Webprojekt/php/flugtaschenkategorie.php">Flugtaschen</a></li>
-                <li><a href="/Webprojekt/php/lernmaterialkategorie.php">Lernmaterial</a></li>
-                <li><a href="/webprojekt/php/zubehoerkategorie.php">Flugzeugzubehör</a></li>
-                <li><a href="/webprojekt/php/sicherheitkategorie.php">Sicherheitsaustrüstung</a></li>
+                <li><a href="/kategorien/neuheiten">Neuheiten</a></li>
+                <li><a href="/Webprojekt/php/kategorien/headsetskategorie.php">Headsets</a></li>
+                <li><a href="/Webprojekt/php/kategorien/navigationkategorie.php">Navigation</a></li>
+                <li><a href="/Webprojekt/php/kategorien/kleidungkategorie.php">Kleidung & Accessoires</a></li>
+                <li><a href="/Webprojekt/php/kategorien/flugtaschenkategorie.php">Flugtaschen</a></li>
+                <li><a href="/Webprojekt/php/kategorien/lernmaterialkategorie.php">Lernmaterial</a></li>
+                <li><a href="/webprojekt/php/kategorien/zubehoerkategorie.php">Flugzeugzubehör</a></li>
+                <li><a href="/webprojekt/php/kategorien/sicherheitkategorie.php">Sicherheitsaustrüstung</a></li>
                 <li><a href="/ueber-uns">Über uns</a></li>
             </ul>
         </div>
