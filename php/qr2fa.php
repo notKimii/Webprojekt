@@ -55,13 +55,8 @@
         include 'include/vendorconnect.php';
         include 'include/connect.php';
 
-        session_start();
-
-        if (!isset($_SESSION["mail"])) {
-            header("Location: login.php");
-            exit;
-        }
-        $mail = $_SESSION["mail"];
+        include 'include/loginpruef.php';
+        $mail = $_SESSION["temp_user"]['email'];
 
         //Secret abfragen
         $stmt = $con->prepare("SELECT google_secret FROM user WHERE mail = ?");

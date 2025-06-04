@@ -139,6 +139,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   $sql = "UPDATE user SET vorname=? ,nachname=?, adresse=?, plz=?, ort=? WHERE mail= ?";
   $stmt = $con->prepare($sql);
-  $stmt->execute([$vorname, $nachname, $adresse, $plz, $ort, $email]);
+  
+  if ($stmt->execute([$vorname, $nachname, $adresse, $plz, $ort, $email]))
+	{
+		echo "Adresse erfolgreich geändert!";
+	}
 }
 ?>

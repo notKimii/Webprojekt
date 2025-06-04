@@ -22,19 +22,17 @@
                         include 'php/include/connect.php';
                         $name = $_SESSION['temp_user']['vorname'];
                         $nachname = $_SESSION['temp_user']['nachname'];
-                        $stmt = $con->prepare("SELECT COUNT(*) FROM user WHERE aktiv=1");
-                        $stmt->execute();
-                        $anzahl = $stmt->fetchColumn();
 
-                        echo"<h1>Wilkommen an Board <span class='hero-highlight'>$name $nachname</span></h1>
-                        <p>Aktuell sind $anzahl weitere Piloten online.
+                        echo "<h1>Wilkommen an Board <span class='hero-highlight'>$name $nachname</span></h1>
                         <br> Hochwertiges Pilotengear und unwiderstehliche Deals erwarten dich.
-                        <br> Bereit zum Abheben?</p>
-                    <a href='/kategorie/neuheiten' class='cta-button'>Jetzt Entdecken</a>";
+                        <br> Bereit zum Abheben?</p>";
+                    } else {
+                    echo "<h1><span class='hero-highlight'>Next-Level</span> Equipment fürs Cockpit.</h1>
+                    <p>Bereit zum Abheben? Hochwertiges Pilotengear und unwiderstehliche Deals erwarten dich.</p>";
                     }
                     ?>
+                    <a href='/kategorie/neuheiten' class='cta-button'>Jetzt Entdecken</a>
 
-                    
                 </div>
             </div>
         </section>

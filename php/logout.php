@@ -1,19 +1,7 @@
 <?php
 
   //Überprüfung 
-  session_start();
-
-  $gefunden=false;
-
-  if($_SESSION["login"] ==1)
-  {
-      $gefunden=true;
-  }
-
-  if($gefunden==false)
-  {
-    header("Location: ../login.html");
-  }
+  include 'include/loginpruef.php';
 
   include 'php/connect.php';
   $userID = $_SESSION["id"];

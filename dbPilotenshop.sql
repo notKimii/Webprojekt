@@ -257,7 +257,8 @@ CREATE TABLE `user` (
   `plz` decimal(5,0) NOT NULL,
   `ort` varchar(100) NOT NULL,
   `passwort` varchar(200) NOT NULL,
-  `google_secret` varchar(255) DEFAULT NULL
+  `google_secret` varchar(255) DEFAULT NULL,
+  `online` bit NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --

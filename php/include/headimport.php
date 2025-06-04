@@ -84,7 +84,16 @@ session_start();
                     } else {
                         echo "-";
                     }
-
+                    ?>
+                   </a>
+                   <a href="/Webprojekt/php/Kundenkonto.php" id="online-button">
+                   <?php
+                     if (isset($_SESSION['temp_user'])) {
+                        include 'connect.php';
+                        $stmt = $con->prepare("SELECT COUNT(*) FROM user WHERE online=1");
+                        $stmt->execute();
+                        $anzahl = $stmt->fetchColumn();
+                     }
                     ?>
                     </a>
               </div>

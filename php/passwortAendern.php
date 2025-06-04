@@ -1,9 +1,5 @@
 <?php
-session_start();
-if (!isset($_SESSION["mail"])) {
-    header("Location: login.php");
-    exit;
-}
+    include 'include/loginpruef.php';
     $mailFehler = null;
 ?>
 

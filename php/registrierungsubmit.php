@@ -1,12 +1,11 @@
 <?php
 include 'include/debug.php';
-
+include 'include/vendorconnect.php';
+include 'include/mailversand.php';
 session_start();
 
-include 'include/vendorconnect.php';
 
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
+
 
 // Formulardaten
 $vorname = $_POST["vorname"];
@@ -62,19 +61,7 @@ try {
 	$stmt->execute([$vorname, $nachname, $mail, $adresse, $plz, $ort, $password, NULL]);
 
 	// E-Mail vorbereiten
-	$mailer = new PHPMailer(true);
-	$mailer->isSMTP();
-	$mailer->Host = 'smtp.mailbox.org';
-	$mailer->SMTPAuth = true;
-	$mailer->Username = 'cockpitcorner@mailbox.org';
-	$mailer->Password = 'Mailbox.123';
-	$mailer->SMTPSecure = 'tls';
-	$mailer->Port = 587;
-
-	$mailer->setFrom('cockpitcorner@mailbox.org', 'Cockpit Corner');
-	$mailer->addAddress($mail);
 	$mailer->Subject = 'Willkommen bei Cockpit Corner';
-	$mailer->isHTML(true);
 	$body = "<p>Herzlich Willkommen $vorname $nachname! 
 			<br><br>
 			Sie haben sich erfolgreich bei <i>'Cockpit Corner' </i>registriert.
@@ -83,10 +70,13 @@ try {
 				Vorname: $vorname <br>
 				Nachname: $nachname <br>
 				E-Mail Adresse: $mail <br>
-				Vorl&auml;iges Passwort: $plainPassword <br><br>
+				Vorl&auml;ufiges Passwort: $plainPassword <br><br>
 			Als <strong>Lieferadresse </strong> haben sie folgende Adresse angeben: <br> $adresse <br> $plz $ort
-			<br><br>
+			<br>
 			Sie k&ouml;nnen diese Adresse auf unserer Webseite unter der Katergorie Kundenkonto ab&auml;ndern! 
+
+			Bitte verwenden Sie für das erste Login das Vorl&auml;ufiges Passwort und folgen Sie den weiteren Schritte. <br>
+			Die Eingabe des 2FA-Codes ist bei der ersten Anmeldung nicht notwendig.<br>
 			<br>Viel Spa&szlig; beim Shoppen!<br><br>Happy Landings<br>Ihr CockpitCorner-Team</p>";
 	$mailer->Body = $body;
 	// E-Mail senden

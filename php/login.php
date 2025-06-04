@@ -14,12 +14,12 @@ $operating_system = $_POST['operating_system']; // Betriebssystem
 
 // Eingaben prüfen
 if (strlen($email) < 5 || strpos($email, '@') === false || empty($password)) {
-    header("Location: ../login.html");
+    header("Location: ../loginformular.php");
     exit;
 }
 
 if (strlen($password) < 9 || !preg_match('/[A-Z]/', $password) || !preg_match('/[a-z]/', $password) || !preg_match('/\d/', $password)) {
-    header("Location: ../login.html");
+    header("Location: ../loginformular.php");
     exit;
 }
 
@@ -44,7 +44,7 @@ if ($user && $password == $user['passwort']) {
         'adresse'       => $user['adresse'],
         'plz'           => $user['plz'],
         'ort'           => $user['ort'],
-        'email'         => $user['mail'],           // wenn die Spalte „mail“ heißt
+        'email'         => $user['mail'],        
         'google_secret' => $user['google_secret']
     ];
 
@@ -53,6 +53,9 @@ if ($user && $password == $user['passwort']) {
 
     // Log-Daten in der Datenbank speichern
     $stmt = $con->prepare("INSERT INTO logs (user_id, login_time, screen_resolution, operating_system) VALUES (?, ?, ?, ?)");
+    $stmt->execute([$user['id'], $login_time, $screen_resolution, $operating_system]);
+
+    $stmt = $con->prepare("UPDATE user online=1");
     $stmt->execute([$user['id'], $login_time, $screen_resolution, $operating_system]);
 
 
@@ -64,9 +67,6 @@ if ($user && $password == $user['passwort']) {
         $stmt = $con->prepare("UPDATE user SET google_secret = ? WHERE mail = ?");
         $stmt->execute([$secret, $email]);
 
-        //Session speichern
-        $_SESSION["mail"] = $email;
-
         //weiter zum QRCode
         header("Location: qr2fa.php");
         exit;
@@ -76,11 +76,11 @@ if ($user && $password == $user['passwort']) {
         header("Location: ../index.php");
         exit;
     } else {
-        header("Location: ../login.html");
+        header("Location: ../loginformular.php");
         exit;
     }
 } else {
-    header("Location: ../login.html");
+    header("Location: ../loginformular.php");
     exit;
 }
-//Login mit befüllten feldern und fehlermeldung
+
