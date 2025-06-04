@@ -678,10 +678,17 @@ footer {
     line-height: 1.5;
 }
 
+.social-media-icons{
+    display: flex;
+}
 .social-media-icons a {
     color: #ccc;
     font-size: 1.3rem;
-    margin-right: calc(var(--spacing-unit) * 0.8);
+    margin-right: calc(var(--spacing-unit) * 1.2);
+}
+.social-media-icons img{
+    height: 32px;
+    width: auto;
 }
 .social-media-icons a:hover {
     color: white;
@@ -696,16 +703,16 @@ footer {
     max-height: 22px;
     margin-right: calc(var(--spacing-unit) * 0.4);
     margin-top: calc(var(--spacing-unit) * 0.5);
-    background-color: transparent; /* Kein weißer Hintergrund mehr, wenn Logos passen */
+    background-color: transparent; 
     border-radius: 3px;
     padding: 0;
-    filter: grayscale(100%) brightness(150%); /* Macht sie heller und grau */
+    filter: grayscale(100%) brightness(150%); 
 }
 
 .footer-bottom {
     text-align: center;
     padding: calc(var(--spacing-unit) * 1.5) 0;
-    border-top: 1px solid rgba(255,255,255,0.1); /* Sehr dezente Linie */
+    border-top: 1px solid rgba(255,255,255,0.1); 
     font-size: 0.8rem;
     color: var(--secondary-color);
 }
@@ -720,7 +727,6 @@ footer {
     h2 { font-size: 2rem; }
 
     .header-main .container {
-        /* flex-direction: column; Beibehalten oder anpassen */
         gap: var(--spacing-unit);
     }
      .main-navigation .container ul {
@@ -810,3 +816,4 @@ footer {
     }
 
 }
+

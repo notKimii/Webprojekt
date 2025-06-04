@@ -55,9 +55,15 @@ session_start();
                     <span class="cart-count">0</span> 
                     </a>
               </div>
+              <div class="header-action-item">
+                    <a href="/Webprojekt/php/Kundenkonto.php" id="cart-button">
+                    <span alt="Punkte">⭐</span>
+                    <p>0</p>
+                    </a>
+              </div>
         </div>
     </div>
-
+    
     <nav class="main-navigation">
         <div class="container">
             <ul>

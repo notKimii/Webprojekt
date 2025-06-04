@@ -35,25 +35,25 @@
                 <h2>Unsere Top-Kategorien</h2>
                 <div class="category-grid">
                     <div class="category-item">
-                        <a href="/Webprojekt/php/headsetskategorie.php">
-                            <img src="./images/pictures/indexpics/headset.png" alt="Bose">
+                        <a href="/Webprojekt/php/kategorien/headsetskategorie.php">
+                            <img src="/Webprojekt/images/pictures/indexpics/headset.png" alt="Bose">
                             <h3>Headsets</h3>
                         </a>
                     </div>
                     <div class="category-item">
-                        <a href="/Webprojekt/php/headsetskategorie.php">
+                        <a href="/Webprojekt/php/kategorien/headsetskategorie.php">
                             <img src="./images/pictures/indexpics/Sonnenbrille.png" alt="Schuhe">
                             <h3>Sonnenbrillen</h3>
                         </a>
                     </div>
                     <div class="category-item">
-                        <a href="/Webprojekt/php/flugtaschenkategorie.php">
+                        <a href="/Webprojekt/php/kategorien/flugtaschenkategorie.php">
                             <img src="./images/pictures/indexpics/Flugtasche.png" alt="Accessoires">
                             <h3>Flugtaschen</h3>
                         </a>
                     </div>
                     <div class="category-item">
-                        <a href="/kategorie/wohnene">
+                        <a href="/Webprojekt/php/kategorien/flugtaschenkategorie.php">
                             <img src="./images/pictures/indexpics/Clipboard.png" alt="Wohnen">
                             <h3>Kneeboards & Clipboards</h3>
                         </a>
@@ -273,9 +273,9 @@
                 <div class="footer-column">
                     <h3>Folge uns</h3>
                     <div class="social-media-icons">
-                        <a href="https://facebook.com" target="_blank" aria-label="Facebook">[FB_Icon]</a>
-                        <a href="https://instagram.com" target="_blank" aria-label="Instagram">[IG_Icon]</a>
-                        <a href="https://pinterest.com" target="_blank" aria-label="Pinterest">[PI_Icon]</a>
+                        <a href="https://facebook.com" target="_blank" aria-label="Facebook"><img src="/Webprojekt/images/pictures/socialmedia/facebook.png" alt="facebook"></a>
+                        <a href="https://instagram.com" target="_blank" aria-label="Instagram"><img src="/Webprojekt/images/pictures/socialmedia/instagram.png" alt=""></a>
+                        <a href="https://pinterest.com" target="_blank" aria-label="Pinterest"><img src="/Webprojekt/images/pictures/socialmedia/linkedin.png" alt=""></a>
                     </div>
                     <h3 class="payment-title">Sicher bezahlen mit</h3>
                     <div class="payment-methods-icons">
@@ -293,6 +293,5 @@
         </div>
     </footer>
 
-    <script src="script.js"></script>
 </body>
 </html
