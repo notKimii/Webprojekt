@@ -117,16 +117,23 @@ section {
     gap: 10px;
 }
 
-#online-button {
-    background-color: #e3e3e3;
-    color: rgb(73, 73, 73);
-    border: 1px solid #d3d3d3;
-    display: flex;
+
+.readonly-button {
+    display: inline-flex;
     justify-content: center;
     align-items: center;
     flex-direction: row;
-    gap: 10px;
+    gap: 6px;
+    font-size: 0.7rem; 
+    background-color: #e3e3e3;
+    color: rgb(55, 54, 54);
+    padding: 4px 8px; 
+    border-radius: 5px; 
+    text-decoration: none; 
+    line-height: 1;
 }
+
+
 
 #cart-button:hover{
     background-color: #d3d3d3;

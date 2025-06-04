@@ -55,8 +55,8 @@ if ($user && $password == $user['passwort']) {
     $stmt = $con->prepare("INSERT INTO logs (user_id, login_time, screen_resolution, operating_system) VALUES (?, ?, ?, ?)");
     $stmt->execute([$user['id'], $login_time, $screen_resolution, $operating_system]);
 
-    $stmt = $con->prepare("UPDATE user online=1");
-    $stmt->execute([$user['id'], $login_time, $screen_resolution, $operating_system]);
+    $stmt = $con->prepare("UPDATE user SET online=1 WHERE mail=?");
+    $stmt->execute([$user['mail']]);
 
 
     if ($user['google_secret'] == NULL) {
