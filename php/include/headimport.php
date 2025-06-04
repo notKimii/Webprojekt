@@ -58,7 +58,34 @@ session_start();
               <div class="header-action-item">
                     <a href="/Webprojekt/php/Kundenkonto.php" id="cart-button">
                     <span alt="Punkte">⭐</span>
-                    <p>0</p>
+                    <?php
+            
+                    if (isset($_SESSION['temp_user'])) {
+                        // Datenbankverbindung herstellen
+                        $con = new mysqli('localhost', 'root', '', 'dbpilotenshop');
+
+                        // Fehler abfangen
+                        if ($con->connect_error) {
+                            die("Verbindung fehlgeschlagen: " . $con->connect_error);
+                        }
+
+
+                        $userID = $_SESSION['temp_user']['id'];
+            
+                        $stmt = $con->prepare("SELECT punktestand FROM punkte WHERE user_id = ?");
+                        $stmt->bind_param("i", $userID); 
+                        $stmt->execute();
+                        $stmt->bind_result($punktestand);
+                        $stmt->fetch();
+
+                        $stmt->close();
+                        $con->close();
+                        echo $punktestand;
+                    } else {
+                        echo "-";
+                    }
+
+                    ?>
                     </a>
               </div>
         </div>
