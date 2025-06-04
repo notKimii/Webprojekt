@@ -1,14 +1,14 @@
 <?php
 session_start();
 ?>
-    <link rel="stylesheet" href="/Webprojekt/style.css">
-    
-    <div class="announcement-bar">
-        <p>🎉 Sommer Sale: Bis zu 50% Rabatt auf ausgewählte Artikel! Nur für kurze Zeit! <span class="extra-text">| Kostenloser Versand ab 50€ Bestellwert 🎉</span></p>
-    </div>
+<link rel="stylesheet" href="/Webprojekt/style.css">
+
+<div class="announcement-bar">
+    <p>🎉 Sommer Sale: Bis zu 50% Rabatt auf ausgewählte Artikel! Nur für kurze Zeit! <span class="extra-text">| Kostenloser Versand ab 50€ Bestellwert 🎉</span></p>
+</div>
 
 
-    <header>
+<header>
     <div class="header-top">
         <div class="container">
             <div class="header-top-left">
@@ -39,27 +39,24 @@ session_start();
 
             <div class="header-actions">
                 <div class="header-action-item">
-                        <?php if (isset($_SESSION['temp_user'])): ?>
-                            <a href="/mein-konto.php" id="login-button">
-                                <p>Mein Konto</p>
-                            </a>
-                        <?php else: ?>
-                            <a href="/Webprojekt/loginformular.php" id="login-button">
-                                <p>Anmelden</p>
-                            </a>
-                        <?php endif; ?>
+                    <?php if (isset($_SESSION['temp_user'])): ?>
+                        <a href="/mein-konto.php" id="login-button">
+                            <p>Mein Konto</p>
+                        </a>
+                    <?php else: ?>
+                        <a href="/Webprojekt/loginformular.php" id="login-button">
+                            <p>Anmelden</p>
+                        </a>
+                    <?php endif; ?>
                 </div>
-               <div class="header-action-item">
+                <div class="header-action-item">
                     <a href="/Webprojekt/php/warenkorb.php" id="cart-button">
                         <p>Warenkorb</p>
-                    <span class="cart-count">0</span> 
+                        <span class="cart-count">0</span>
                     </a>
-              </div>
-              <div class="header-action-item">
-                    <a href="/Webprojekt/php/Kundenkonto.php" id="cart-button">
-                    <span alt="Punkte">⭐</span>
+                </div>
+                <div class="header-action-item">
                     <?php
-            
                     if (isset($_SESSION['temp_user'])) {
                         // Datenbankverbindung herstellen
                         $con = new mysqli('localhost', 'root', '', 'dbpilotenshop');
@@ -71,49 +68,68 @@ session_start();
 
 
                         $userID = $_SESSION['temp_user']['id'];
-            
+
                         $stmt = $con->prepare("SELECT punktestand FROM punkte WHERE user_id = ?");
-                        $stmt->bind_param("i", $userID); 
+                        $stmt->bind_param("i", $userID);
                         $stmt->execute();
                         $stmt->bind_result($punktestand);
                         $stmt->fetch();
 
                         $stmt->close();
                         $con->close();
-                        echo $punktestand;
-                    } else {
-                        echo "-";
+
+
+                        echo "<a class='readonly-button'>
+                        <span alt='Punkte'>⭐:$punktestand</span>
+                        </a>";
+                    } //else {
+                    //     echo "-";
+                    // }
+                    ?>
+                    
+                    <?php
+                    if (isset($_SESSION['temp_user'])) {
+
+                        include 'connect.php';
+                        echo "<a class='readonly-button'>
+                         <p id='online-counter' alt='online'>Online:</p>
+                         </a>";
                     }
                     ?>
-                   </a>
-                   <a href="/Webprojekt/php/Kundenkonto.php" id="online-button">
-                   <?php
-                     if (isset($_SESSION['temp_user'])) {
-                        include 'connect.php';
-                        $stmt = $con->prepare("SELECT COUNT(*) FROM user WHERE online=1");
-                        $stmt->execute();
-                        $anzahl = $stmt->fetchColumn();
-                     }
-                    ?>
-                    </a>
-              </div>
-        </div>
-    </div>
-    
-    <nav class="main-navigation">
-        <div class="container">
-            <ul>
-                <li><a href="/kategorien/neuheiten">Neuheiten</a></li>
-                <li><a href="/Webprojekt/php/kategorien/headsetskategorie.php">Headsets</a></li>
-                <li><a href="/Webprojekt/php/kategorien/navigationkategorie.php">Navigation</a></li>
-                <li><a href="/Webprojekt/php/kategorien/kleidungkategorie.php">Kleidung & Accessoires</a></li>
-                <li><a href="/Webprojekt/php/kategorien/flugtaschenkategorie.php">Flugtaschen</a></li>
-                <li><a href="/Webprojekt/php/kategorien/lernmaterialkategorie.php">Lernmaterial</a></li>
-                <li><a href="/webprojekt/php/kategorien/zubehoerkategorie.php">Flugzeugzubehör</a></li>
-                <li><a href="/webprojekt/php/kategorien/sicherheitkategorie.php">Sicherheitsaustrüstung</a></li>
-                <li><a href="/ueber-uns">Über uns</a></li>
-            </ul>
-        </div>
-    </nav>
-</header>
 
+
+                </div>
+            </div>
+        </div>
+
+        <nav class="main-navigation">
+            <div class="container">
+                <ul>
+                    <li><a href="/kategorien/neuheiten">Neuheiten</a></li>
+                    <li><a href="/Webprojekt/php/kategorien/headsetskategorie.php">Headsets</a></li>
+                    <li><a href="/Webprojekt/php/kategorien/navigationkategorie.php">Navigation</a></li>
+                    <li><a href="/Webprojekt/php/kategorien/kleidungkategorie.php">Kleidung & Accessoires</a></li>
+                    <li><a href="/Webprojekt/php/kategorien/flugtaschenkategorie.php">Flugtaschen</a></li>
+                    <li><a href="/Webprojekt/php/kategorien/lernmaterialkategorie.php">Lernmaterial</a></li>
+                    <li><a href="/webprojekt/php/kategorien/zubehoerkategorie.php">Flugzeugzubehör</a></li>
+                    <li><a href="/webprojekt/php/kategorien/sicherheitkategorie.php">Sicherheitsaustrüstung</a></li>
+                    <li><a href="/ueber-uns">Über uns</a></li>
+                </ul>
+            </div>
+        </nav>
+        <script>
+            function updateOnlineCounter() {
+                fetch('/Webprojekt/php/online.php')
+                    .then(response => response.text())
+                    .then(data => {
+                        document.getElementById('online-counter').innerText = 'Online: ' + data;
+                    });
+            }
+
+            // Initial laden
+            updateOnlineCounter();
+
+            // Alle 10 Sekunden neu laden
+            setInterval(updateOnlineCounter, 1000);
+        </script>
+</header>
