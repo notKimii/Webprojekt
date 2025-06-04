@@ -29,5 +29,5 @@ if ($user && $passwordold == $user['passwort']) {
     exit;
 }
 
-header('Location: ../basis.html');
+header('Location: index.php');
 exit;
