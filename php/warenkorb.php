@@ -6,8 +6,10 @@ if (!$kunden_id) {
     exit;
 }
 else{
-    header("Location: /Webprojekt/warenkorb.php")
+    header("Location: /Webprojekt/warenkorb.php");
 }
+
+    
 ?>
 
 <?php include "include/connectcon.php";?>
