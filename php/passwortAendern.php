@@ -4,12 +4,11 @@ if (!isset($_SESSION["mail"])) {
     header("Location: login.php");
     exit;
 }
-
+    $mailFehler = null;
 ?>
 
 <!DOCTYPE html>
 <html lang="de">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -20,6 +19,19 @@ if (!isset($_SESSION["mail"])) {
         integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 
     <style>
+        body{
+            background-image: url(/Webprojekt/images/pictures/sky.jpg);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        header{
+            width: 100%;
+            text-align: center;
+            padding: 10px 0;
+            font-size: 14px;
+            background-color:rgba(255, 255, 255, 0.35) !important;
+        }
         .register-box {
             background-color: rgba(255, 255, 255, 0.95);
             padding: 30px;
@@ -28,6 +40,10 @@ if (!isset($_SESSION["mail"])) {
             width: 100%;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
+        button{
+            border-radius: 5px !important;
+        }
+        
     </style>
 </head>
 
@@ -43,7 +59,7 @@ if (!isset($_SESSION["mail"])) {
     <?php endif; ?>
     <header class="w-100 text-center bg-light py-2">
         <nav>
-            <a href="/"><img src="../favicon.ico" alt="Logo" style="width: 100px;"></a>
+            <a href="/Webprojekt/index.php"><img src="../favicon.ico" alt="Logo" style="width: 100px;"></a>
         </nav>
     </header>
     <?php

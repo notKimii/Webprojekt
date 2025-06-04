@@ -214,15 +214,15 @@
                     <div class="article-item">
                         <a href="/blog/artikel-fruehlingstrends">
                             <img src="https://picsum.photos/seed/blogA/400/250" alt="Frühlingstrends 2025">
-                            <h3>Die Top 5 Modetrends für den Frühling 2025</h3>
-                            <p>Entdecke, was in dieser Saison angesagt ist und wie du die neuesten Looks stylst...</p>
+                            <h3>AERO Friedrichshafen 2025</h3>
+                            <p>Starke Impulse für die Allgemeine Luftfahrt und Fokus auf Nachhaltigkeit</p>
                             <span>Weiterlesen &rarr;</span>
                         </a>
                     </div>
                     <div class="article-item">
                         <a href="/blog/artikel-nachhaltigkeit">
                             <img src="https://picsum.photos/seed/blogB/400/250" alt="Nachhaltige Mode">
-                            <h3>Nachhaltigkeit im Kleiderschrank: Tipps für bewussten Konsum</h3>
+                            <h3>Kompakte Notfall-ELTs</h3>
                             <p>So triffst du umweltfreundlichere Entscheidungen beim Shoppen...</p>
                             <span>Weiterlesen &rarr;</span>
                         </a>
