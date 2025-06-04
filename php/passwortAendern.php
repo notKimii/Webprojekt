@@ -52,7 +52,7 @@ if (!isset($_SESSION["mail"])) {
     <?php endif; ?>
     <header class="w-100 text-center bg-light py-2">
         <nav>
-            <a href="/"><img src="../favicon.ico" alt="Logo" style="width: 100px;"></a>
+            <a href="/Webprojekt/index.php"><img src="../favicon.ico" alt="Logo" style="width: 100px;"></a>
         </nav>
     </header>
     <?php
