@@ -25,13 +25,6 @@ if (!isset($_SESSION["mail"])) {
             background-position: center;
             background-repeat: no-repeat;
         }
-        header{
-            width: 100%;
-            text-align: center;
-            padding: 10px 0;
-            font-size: 14px;
-            background-color:rgba(255, 255, 255, 0.35) !important;
-        }
         .register-box {
             background-color: rgba(255, 255, 255, 0.95);
             padding: 30px;
