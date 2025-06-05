@@ -10,8 +10,6 @@
 
 </head>
 <body>
-  <?php include "../include/connectcon.php"; ?>
-
   <?php include "../include/headimport.php"; ?>
 <main>
   <div class="container">
@@ -69,7 +67,7 @@
         echo "<p>Keine Produkte in der Kategorie Headsets gefunden.</p>";
       }
 
-      $con->close();
+      
       ?>
     </div>
 

@@ -1,15 +1,5 @@
-<?php session_start();
-$kunden_id = $_SESSION['kunden_id'] ?? null;
-
-if (!$kunden_id) {
-    header("Location: /Webprojekt/loginformular.php");
-    exit;
-}
-else{
-    header("Location: /Webprojekt/warenkorb.php");
-}
-
-    
+<?php 
+include "include/loginpruef.php"   
 ?>
 
 <?php include "include/connectcon.php";?>

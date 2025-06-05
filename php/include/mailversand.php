@@ -14,6 +14,6 @@ $mailer->SMTPSecure = 'tls';
 $mailer->Port = 587;
 
 $mailer->setFrom('cockpitcorner@mailbox.org', 'Cockpit Corner');
-$mailer->addAddress($mail);
+
 $mailer->isHTML(true);
 ?>

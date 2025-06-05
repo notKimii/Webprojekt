@@ -61,6 +61,7 @@ try {
 	$stmt->execute([$vorname, $nachname, $mail, $adresse, $plz, $ort, $password, NULL]);
 
 	// E-Mail vorbereiten
+	$mailer->addAddress($mail);
 	$mailer->Subject = 'Willkommen bei Cockpit Corner';
 	$body = "<p>Herzlich Willkommen $vorname $nachname! 
 			<br><br>
@@ -79,6 +80,7 @@ try {
 			Die Eingabe des 2FA-Codes ist bei der ersten Anmeldung nicht notwendig.<br>
 			<br>Viel Spa&szlig; beim Shoppen!<br><br>Happy Landings<br>Ihr CockpitCorner-Team</p>";
 	$mailer->Body = $body;
+
 	// E-Mail senden
 	$mailer->send();
 

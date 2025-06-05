@@ -4,7 +4,7 @@ session_start();
 
 // DB-Verbindung mit Fehler-Reporting
 include 'include/connect.php';
-include 'include/debug.php';
+
 
 $email    = trim($_POST['email']);
 $code = $_POST['2fa_code'] ?? '';

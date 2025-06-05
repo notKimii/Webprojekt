@@ -64,8 +64,8 @@ session_start();
                         $stmt->bind_result($punktestand);
                         $stmt->fetch();
 
-                        $stmt->close();
-                        $con->close();
+                        //$stmt->close();
+                        //$con->close();
                         echo $punktestand;
                     } else {
                         echo "-";
@@ -75,11 +75,16 @@ session_start();
                    <a href="/Webprojekt/php/Kundenkonto.php" id="online-button">
                    <?php
                      if (isset($_SESSION['temp_user'])) {
-                        include 'connect.php';
-                        $stmt = $con->prepare("SELECT COUNT(*) FROM user WHERE online=1");
-                        $stmt->execute();
-                        $anzahl = $stmt->fetchColumn();
-                     }
+                        include 'connectcon.php';
+
+                        $result = $con->query("SELECT COUNT(*) AS anzahl FROM user WHERE online=1");
+
+                        if ($result) {
+                            $row = $result->fetch_assoc();
+                            $anzahl = $row['anzahl'];
+                        }
+                    }
+
                     ?>
                     </a>
               </div>
