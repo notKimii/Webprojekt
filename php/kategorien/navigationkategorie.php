@@ -43,13 +43,7 @@
 
           echo   '</a>';
 
-          // Navigation anzeigen wenn mehr als ein Bild
-          if (count($bilder) > 1) {
-            echo '<div class="image-nav">';
-            echo   '<button class="prev-btn" data-id="' . $produktId . '">&#10094;</button>';
-            echo   '<button class="next-btn" data-id="' . $produktId . '">&#10095;</button>';
-            echo '</div>';
-          }
+          
 
           echo   '<h3>' . $produktName . '</h3>';
           echo   '<p class="price">' . $preis . ' €</p>';
@@ -76,34 +70,7 @@
 
 <?php include "../include/footimport.php"; ?>
 
-<script>
-// Bildwechsel-Funktion
-document.addEventListener('DOMContentLoaded', function() {
-  document.querySelectorAll('.image-nav button').forEach(btn => {
-    btn.addEventListener('click', function(e) {
-      e.preventDefault();
-      const productId = this.getAttribute('data-id');
-      const images = window.productImages[productId];
-      const container = this.closest('.product-item');
-      const imgTag = container.querySelector('.product-image');
 
-      if (!images) return;
-
-      // Aktuelles Bild ermitteln
-      let currentIndex = images.indexOf(imgTag.getAttribute('src'));
-
-      // Vor oder zurück?
-      if (this.classList.contains('prev-btn')) {
-        currentIndex = (currentIndex - 1 + images.length) % images.length;
-      } else {
-        currentIndex = (currentIndex + 1) % images.length;
-      }
-
-      imgTag.setAttribute('src', images[currentIndex]);
-    });
-  });
-});
-</script>
 
 </body>
 </html>
