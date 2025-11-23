@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="/Webprojekt/produkt.css">
 </head>
 <body>
- <?php include "../include/connect.php"; ?>
+  <?php include "../include/connectcon.php"; ?>
 
   <?php include "../include/headimport.php"; ?>
 <main>
@@ -17,7 +17,7 @@
 
     <div class="product-grid">
       <?php
-      $sql = "SELECT * FROM artikel WHERE kategorie = 'Headsets'";
+      $sql = "SELECT * FROM artikel WHERE kategorie = 'Flugtaschen & Koffer'";
       $result = $con->query($sql);
 
       if ($result->num_rows > 0) {
@@ -63,7 +63,7 @@
           echo '</div>';
         }
       } else {
-        echo "<p>Keine Produkte in der Kategorie Navigation gefunden.</p>";
+        echo "<p>Keine Produkte in der Kategorie Flugtaschen & Koffer gefunden.</p>";
       }
 
       $con->close();

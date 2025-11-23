@@ -10,6 +10,7 @@
 
 </head>
 <body>
+  <?php include "../include/connectcon.php"; ?>
   <?php include "../include/headimport.php"; ?>
 <main>
   <div class="container">
