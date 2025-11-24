@@ -27,6 +27,9 @@ if (!$produkt) {
         'material' => 'k.A.',
         'massstab' => 'k.A.',
         'artikelnummer' => $produktId > 0 ? $produktId : 'Ungültig',
+        'bewertung' => 0,          // Standardwert
+        'anzahl_bewertungen' => 0, // Standardwert
+        'lagerbestand' => 0
     ];
 }
 
@@ -58,7 +61,7 @@ if ($absoluterPfad && is_dir($absoluterPfad)) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
     <style>
-    /* CSS aus dem zweiten Code (apple-product-style.css) */
+    /* CSS Styles */
     :root {
         --apple-font: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         --text-color-primary: #1d1d1f;
@@ -92,8 +95,8 @@ if ($absoluterPfad && is_dir($absoluterPfad)) {
     .main-product-image img {
         width: 100%;
         height: auto;
-        max-height: 600px; /* Optional: um sehr hohe Bilder zu begrenzen */
-        object-fit: contain; /* Oder 'cover', je nach Präferenz */
+        max-height: 600px;
+        object-fit: contain;
         border-radius: 18px;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
         display: block;
@@ -139,17 +142,30 @@ if ($absoluterPfad && is_dir($absoluterPfad)) {
         margin-bottom: 20px;
         font-weight: 400;
     }
-    .product-rating-summary { /* Statisch belassen, da keine dynamischen Daten dafür vorhanden sind */
+    
+    /* Rating Styles Update */
+    .product-rating-summary {
         display: flex;
         align-items: center;
         gap: 8px;
         margin-bottom: 20px;
         color: var(--text-color-secondary);
     }
-    .product-rating-summary .stars { color: #ffb400; font-size: 1.1rem; }
-    .product-rating-summary .stars .fa-star-half-alt { color: #ffb400; }
+    .product-rating-summary .stars { 
+        color: #ffb400; 
+        font-size: 1.1rem; 
+    }
+    .product-rating-summary .stars .fa-star-half-alt { 
+        color: #ffb400; 
+    }
+    /* Wichtig: Leere Sterne grau machen */
+    .product-rating-summary .stars .far.fa-star {
+        color: #d2d2d7;
+    }
+    
     .product-rating-summary .reviews-count { font-size: 0.9rem; color: var(--accent-color); text-decoration: none; }
     .product-rating-summary .reviews-count:hover { text-decoration: underline; }
+    
     .product-price {
         font-size: 2.5rem;
         font-weight: 700;
@@ -166,7 +182,7 @@ if ($absoluterPfad && is_dir($absoluterPfad)) {
         content: '✓'; color: var(--accent-color); font-weight: bold;
         position: absolute; left: 0; top: 1px;
     }
-    .product-variants { /* Statisch belassen oder dynamisch machen, falls Daten vorhanden */
+    .product-variants {
         margin-bottom: 30px; display: flex; flex-direction: column; gap: 15px;
     }
     .variant-option { display: flex; align-items: center; gap: 10px; }
@@ -187,13 +203,13 @@ if ($absoluterPfad && is_dir($absoluterPfad)) {
     .add-to-cart-button { background-color: var(--accent-color); color: white; border: none; }
     .add-to-cart-button:hover { background-color: #0077ed; }
     .add-to-cart-button:active { transform: scale(0.98); }
-    .buy-now-button { /* Dieser Button ist momentan ohne dynamische Funktion */
+    .buy-now-button {
         background-color: var(--background-color-light); color: var(--accent-color);
         border: 1px solid var(--accent-color);
     }
     .buy-now-button:hover { background-color: #e8e8ed; }
     .buy-now-button:active { transform: scale(0.98); }
-    .product-shipping-info { /* Statisch belassen oder dynamisch machen */
+    .product-shipping-info {
         margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border-color);
     }
     .shipping-detail {
@@ -201,7 +217,7 @@ if ($absoluterPfad && is_dir($absoluterPfad)) {
         font-size: 0.95rem; color: var(--text-color-secondary);
     }
     .shipping-detail i { color: var(--accent-color); font-size: 1.2rem; width: 20px; text-align: center; }
-    .additional-actions { /* Statisch belassen oder dynamisch machen */
+    .additional-actions {
         margin-top: 20px; display: flex; flex-direction: column; gap: 10px;
     }
     .additional-actions a { color: var(--accent-color); text-decoration: none; font-size: 0.9rem; font-weight: 500; }
@@ -228,7 +244,7 @@ if ($absoluterPfad && is_dir($absoluterPfad)) {
     .tab-content table td { padding: 12px 8px; border-bottom: 1px solid #efefef; }
     .tab-content table td:first-child { font-weight: 500; width: 30%; color: var(--text-color-primary); }
     .tab-content table td:last-child { color: var(--text-color-secondary); }
-    .review { /* Review-Sektion ist statisch */
+    .review {
         border: 1px solid var(--border-color); padding: 20px; margin-bottom: 20px;
         border-radius: 10px; background-color: var(--background-color-light);
     }
@@ -273,14 +289,6 @@ if ($absoluterPfad && is_dir($absoluterPfad)) {
         .variant-option select { width: 100%; }
     }
     </style>
-<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo htmlspecialchars($produkt['name']); ?> - Moderner Produkt-Showcase</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
 
@@ -319,27 +327,49 @@ if ($absoluterPfad && is_dir($absoluterPfad)) {
         <div class="product-details-section">
             <h1 class="product-title"><?php echo htmlspecialchars($produkt['name']); ?></h1>
             
-
             <div class="product-rating-summary">
+                <?php 
+                // Werte aus der Datenbank holen
+                // Nutzt den 'Null-Coalescing Operator' (??) um sicherzustellen, dass 0 genutzt wird, falls leer
+                $dbRating = isset($produkt['bewertung']) ? floatval($produkt['bewertung']) : 0;
+                $dbAnzahl = isset($produkt['anzahl_bewertungen']) ? intval($produkt['anzahl_bewertungen']) : 0;
+                ?>
+                
                 <div class="stars">
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                    <?php
+                    // Generiere 5 Sterne basierend auf $dbRating
+                    for ($i = 1; $i <= 5; $i++) {
+                        if ($dbRating >= $i) {
+                            // Voller Stern
+                            echo '<i class="fas fa-star"></i>';
+                        } elseif ($dbRating >= ($i - 0.5)) {
+                            // Halber Stern
+                            echo '<i class="fas fa-star-half-alt"></i>';
+                        } else {
+                            // Leerer Stern (durch CSS oben grau gefärbt)
+                            echo '<i class="far fa-star"></i>';
+                        }
+                    }
+                    ?>
                 </div>
-                <a href="#reviews-section" class="reviews-count">(Beispiel: 125 Bewertungen)</a>
-            </div>
 
+                <?php if ($dbAnzahl > 0): ?>
+                    <a href="#reviews-section" class="reviews-count">(<?php echo $dbAnzahl; ?> Bewertungen)</a>
+                <?php else: ?>
+                    <span class="reviews-count" style="color: #999; text-decoration: none;">(Noch keine Bewertungen)</span>
+                <?php endif; ?>
+            </div>
             <p class="product-price"><?php echo number_format(floatval($produkt['preis']), 2, ',', '.'); ?> €</p>
             <p class="tax-info">Inkl. MwSt., zzgl. Versandkosten</p>
 
             <div class="product-bestand">
-                <div class="shipping-detail"><i class="fas fa-box-open"></i><span><?php echo number_format(floatval($produkt['lagerbestand'])); ?> Stück auf lager</span></div>
+                <div class="shipping-detail"><i class="fas fa-box-open"></i><span><?php echo number_format(floatval($produkt['lagerbestand'])); ?> Stück auf Lager</span></div>
             </div>
 
             <form action="/php/cart-add.php" method="post" style="margin-bottom: 12px;">
-                
+                <input type="hidden" name="produkt_id" value="<?php echo $produktId; ?>">
             </form>
             <button class="buy-now-button">In den Warenkorb</button>
-
-            
 
             <div class="product-shipping-info">
                 <div class="shipping-detail"><i class="fas fa-truck"></i><span>Kostenloser Versand</span></div>
@@ -387,7 +417,18 @@ if ($absoluterPfad && is_dir($absoluterPfad)) {
         <div id="customer-reviews" class="tab-content">
             <h2>Kundenbewertungen</h2>
             <div class="overall-rating-summary">
-                <p><strong>Beispiel: 4.6 von 5 Sternen</strong> basierend auf 125 Bewertungen</p>
+                <?php if ($dbAnzahl > 0): ?>
+                    <p>
+                        <strong style="font-size: 1.5rem; color: #1d1d1f;">
+                            <?php echo number_format($dbRating, 1, ',', '.'); ?> von 5 Sternen
+                        </strong>
+                        <br>
+                        <span style="color: #6e6e73;">Basierend auf <?php echo $dbAnzahl; ?> Bewertungen</span>
+                    </p>
+                    <?php else: ?>
+                    <p>Für dieses Produkt wurde noch keine Bewertung abgegeben. Seien Sie der Erste!</p>
+                    <button class="button-secondary" style="margin-top: 10px;">Jetzt bewerten</button>
+                <?php endif; ?>
             </div>
         </div>
     </section>
