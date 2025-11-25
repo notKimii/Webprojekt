@@ -3,7 +3,7 @@
 include "include/connectcon.php";
 include "include/headimport.php";
 
-// Produkt-ID aus URL
+// Produkt-ID aus URL holen und sicherstellen, dass es eine Zahl ist
 $produktId = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
 $produkt = null;
@@ -27,26 +27,24 @@ if (!$produkt) {
         'material' => 'k.A.',
         'massstab' => 'k.A.',
         'artikelnummer' => $produktId > 0 ? $produktId : 'Ungültig',
-        'bewertung' => 0,          // Standardwert
-        'anzahl_bewertungen' => 0, // Standardwert
+        'bewertung' => 0,          
+        'anzahl_bewertungen' => 0, 
         'lagerbestand' => 0
     ];
 }
 
-// Bildpfade korrekt laden
+// Bildpfade aus dem Ordner laden
 $bilder = [];
 $relativerWebPfad = '/Webprojekt/images/pictures/productids/' . $produktId . '/';
 $absoluterPfad = realpath(__DIR__ . '/../images/pictures/productids/' . $produktId);
 
 if ($absoluterPfad && is_dir($absoluterPfad)) {
     $dateien = scandir($absoluterPfad);
-
     foreach ($dateien as $datei) {
         if (preg_match('/\.(jpg|jpeg|png|gif|webp)$/i', $datei)) {
             $bilder[] = $relativerWebPfad . $datei;
         }
     }
-
     sort($bilder, SORT_NATURAL | SORT_FLAG_CASE);
 }
 ?>
@@ -56,7 +54,7 @@ if ($absoluterPfad && is_dir($absoluterPfad)) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo htmlspecialchars($produkt['name']); ?> - Moderner Produkt-Showcase</title>
+    <title><?php echo htmlspecialchars($produkt['name']); ?> - Shop</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
@@ -143,7 +141,7 @@ if ($absoluterPfad && is_dir($absoluterPfad)) {
         font-weight: 400;
     }
     
-    /* Rating Styles Update */
+    /* Rating Styles */
     .product-rating-summary {
         display: flex;
         align-items: center;
@@ -155,12 +153,10 @@ if ($absoluterPfad && is_dir($absoluterPfad)) {
         color: #ffb400; 
         font-size: 1.1rem; 
     }
-    .product-rating-summary .stars .fa-star-half-alt { 
-        color: #ffb400; 
-    }
     /* Wichtig: Leere Sterne grau machen */
-    .product-rating-summary .stars .far.fa-star {
-        color: #d2d2d7;
+    .product-rating-summary .stars .far.fa-star,
+    .review-stars .far.fa-star {
+        color: #d2d2d7 !important;
     }
     
     .product-rating-summary .reviews-count { font-size: 0.9rem; color: var(--accent-color); text-decoration: none; }
@@ -244,16 +240,17 @@ if ($absoluterPfad && is_dir($absoluterPfad)) {
     .tab-content table td { padding: 12px 8px; border-bottom: 1px solid #efefef; }
     .tab-content table td:first-child { font-weight: 500; width: 30%; color: var(--text-color-primary); }
     .tab-content table td:last-child { color: var(--text-color-secondary); }
+    
+    /* Styles für die Bewertungsliste */
     .review {
-        border: 1px solid var(--border-color); padding: 20px; margin-bottom: 20px;
-        border-radius: 10px; background-color: var(--background-color-light);
+        /* CSS für einzelne Review-Blöcke */
     }
     .review-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
     .review-stars { color: #ffb400; }
     .review-author { font-weight: 600; font-size:0.95rem; }
     .review-date { font-size: 0.85rem; color: var(--text-color-secondary); margin-left:auto;}
-    .review-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 10px; }
     .review-text { font-size: 0.95rem; line-height: 1.7; }
+    
     .button-primary, .button-secondary {
         padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 500;
         cursor: pointer; display: inline-block; text-align: center;
@@ -329,25 +326,21 @@ if ($absoluterPfad && is_dir($absoluterPfad)) {
             
             <div class="product-rating-summary">
                 <?php 
-                // Werte aus der Datenbank holen
-                // Nutzt den 'Null-Coalescing Operator' (??) um sicherzustellen, dass 0 genutzt wird, falls leer
+                // Werte aus der Tabelle 'artikel' holen
                 $dbRating = isset($produkt['bewertung']) ? floatval($produkt['bewertung']) : 0;
                 $dbAnzahl = isset($produkt['anzahl_bewertungen']) ? intval($produkt['anzahl_bewertungen']) : 0;
                 ?>
                 
                 <div class="stars">
                     <?php
-                    // Generiere 5 Sterne basierend auf $dbRating
+                    // Sterne generieren (1 bis 5)
                     for ($i = 1; $i <= 5; $i++) {
                         if ($dbRating >= $i) {
-                            // Voller Stern
-                            echo '<i class="fas fa-star"></i>';
+                            echo '<i class="fas fa-star"></i>'; // Voll
                         } elseif ($dbRating >= ($i - 0.5)) {
-                            // Halber Stern
-                            echo '<i class="fas fa-star-half-alt"></i>';
+                            echo '<i class="fas fa-star-half-alt"></i>'; // Halb
                         } else {
-                            // Leerer Stern (durch CSS oben grau gefärbt)
-                            echo '<i class="far fa-star"></i>';
+                            echo '<i class="far fa-star"></i>'; // Leer (grau durch CSS)
                         }
                     }
                     ?>
@@ -368,7 +361,7 @@ if ($absoluterPfad && is_dir($absoluterPfad)) {
 
             <form action="/php/cart-add.php" method="post" style="margin-bottom: 12px;">
                 <input type="hidden" name="produkt_id" value="<?php echo $produktId; ?>">
-            </form>
+                </form>
             <button class="buy-now-button">In den Warenkorb</button>
 
             <div class="product-shipping-info">
@@ -416,7 +409,8 @@ if ($absoluterPfad && is_dir($absoluterPfad)) {
 
         <div id="customer-reviews" class="tab-content">
             <h2>Kundenbewertungen</h2>
-            <div class="overall-rating-summary">
+            
+            <div class="overall-rating-summary" style="margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid #eee;">
                 <?php if ($dbAnzahl > 0): ?>
                     <p>
                         <strong style="font-size: 1.5rem; color: #1d1d1f;">
@@ -425,13 +419,62 @@ if ($absoluterPfad && is_dir($absoluterPfad)) {
                         <br>
                         <span style="color: #6e6e73;">Basierend auf <?php echo $dbAnzahl; ?> Bewertungen</span>
                     </p>
-                    <?php else: ?>
-                    <p>Für dieses Produkt wurde noch keine Bewertung abgegeben. Seien Sie der Erste!</p>
-                    <button class="button-secondary" style="margin-top: 10px;">Jetzt bewerten</button>
+                <?php else: ?>
+                    <p>Für dieses Produkt wurde noch keine Bewertung abgegeben.</p>
                 <?php endif; ?>
+                <button class="button-secondary" style="margin-top: 10px;">Jetzt bewerten</button>
+            </div>
+
+            <div class="reviews-list">
+                <?php
+                // Abfrage: Bewertungen + Userdaten holen (JOIN)
+                $sqlReviews = "SELECT b.wert, b.kommentar, b.zeitstempel, u.vorname, u.nachname 
+                               FROM bewertungen b 
+                               LEFT JOIN user u ON b.user_id = u.id 
+                               WHERE b.artikel_id = $produktId 
+                               ORDER BY b.zeitstempel DESC";
+                
+                $resultReviews = $con->query($sqlReviews);
+
+                if ($resultReviews && $resultReviews->num_rows > 0):
+                    while ($review = $resultReviews->fetch_assoc()):
+                        // Namen sicherstellen (Fallback, falls User gelöscht)
+                        $userName = !empty($review['vorname']) ? htmlspecialchars($review['vorname'] . ' ' . $review['nachname']) : 'Anonym';
+                        $reviewDate = date('d.m.Y', strtotime($review['zeitstempel']));
+                        $reviewStars = intval($review['wert']);
+                ?>
+                    <div class="review" style="border-bottom: 1px solid #eee; padding: 20px 0; margin-bottom: 10px;">
+                        <div class="review-header" style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                            <div>
+                                <span class="review-author" style="font-weight: 600; margin-right: 10px;"><?php echo $userName; ?></span>
+                                <span class="review-stars" style="color: #ffb400;">
+                                    <?php
+                                    for ($i = 1; $i <= 5; $i++) {
+                                        if ($reviewStars >= $i) {
+                                            echo '<i class="fas fa-star"></i>';
+                                        } else {
+                                            echo '<i class="far fa-star"></i>';
+                                        }
+                                    }
+                                    ?>
+                                </span>
+                            </div>
+                            <span class="review-date" style="color: #6e6e73; font-size: 0.9rem;"><?php echo $reviewDate; ?></span>
+                        </div>
+                        
+                        <?php if (!empty($review['kommentar'])): ?>
+                            <div class="review-text" style="color: #333; line-height: 1.6;">
+                                <?php echo nl2br(htmlspecialchars($review['kommentar'])); ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                <?php 
+                    endwhile; 
+                endif; 
+                ?>
             </div>
         </div>
-    </section>
+        </section>
 </main>
 <?php endif; ?>
 

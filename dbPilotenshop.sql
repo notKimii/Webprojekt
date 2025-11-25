@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 24. Nov 2025 um 02:36
+-- Erstellungszeit: 25. Nov 2025 um 15:56
 -- Server-Version: 10.4.32-MariaDB
 -- PHP-Version: 8.2.12
 
@@ -44,9 +44,9 @@ CREATE TABLE `artikel` (
 --
 
 INSERT INTO `artikel` (`id`, `name`, `beschreibung`, `groesse`, `preis`, `lagerbestand`, `kategorie`, `bewertung`, `anzahl_bewertungen`) VALUES
-(1001, 'Bose A30 Aviation Headset', 'Premium ANR-Headset mit hohem Tragekomfort und exzellenter Lärmreduzierung.', 'O', 1299, 25, 'Headsets', 4, 6),
-(1002, 'Lightspeed Zulu 3 ANR Headset', 'Beliebtes ANR-Headset, bekannt für Komfort, Haltbarkeit und klare Audioqualität.', 'O', 950, 30, 'Headsets', 4, 3),
-(1003, 'David Clark H10-13.4 Aviation Headset', 'Klassisches, robustes PNR-Headset, ein Standard in der Allgemeinen Luftfahrt.', 'O', 389, 50, 'Headsets', 3, 4),
+(1001, 'Bose A30 Aviation Headset', 'Premium ANR-Headset mit hohem Tragekomfort und exzellenter Lärmreduzierung.', 'O', 1299, 25, 'Headsets', 5, 7),
+(1002, 'Lightspeed Zulu 3 ANR Headset', 'Beliebtes ANR-Headset, bekannt für Komfort, Haltbarkeit und klare Audioqualität.', 'O', 950, 30, 'Headsets', 4, 6),
+(1003, 'David Clark H10-13.4 Aviation Headset', 'Klassisches, robustes PNR-Headset, ein Standard in der Allgemeinen Luftfahrt.', 'O', 389, 50, 'Headsets', 3, 5),
 (1004, 'Yaesu FTA-550L Pro-X', 'Luftfahrt-Handfunkgerät mit NAV/COM und GPS-Empfänger.', 'O', 299, 15, 'Headsets', NULL, 0),
 (1005, 'Sennheiser S1 Digital Aviation Headset', 'ANR-Headset mit adaptiver Lärmkompensation und individuell einstellbarem Anpressdruck.', 'O', 1050, 18, 'Headsets', NULL, 0),
 (1006, 'Icom IC-A25NE (8.33/25 kHz)', 'Leistungsstarkes Handfunkgerät mit Navigation (VOR, GPS) und Bluetooth.', 'O', 489, 22, 'Headsets', NULL, 0),
@@ -123,28 +123,26 @@ CREATE TABLE `bestellposition` (
 
 CREATE TABLE `bewertungen` (
   `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
   `artikel_id` int(11) NOT NULL,
-  `wert` tinyint(1) NOT NULL COMMENT 'Bewertungswert von 1 bis 5'
+  `wert` tinyint(1) NOT NULL COMMENT 'Bewertungswert von 1 bis 5',
+  `kommentar` text DEFAULT NULL,
+  `zeitstempel` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Daten für Tabelle `bewertungen`
 --
 
-INSERT INTO `bewertungen` (`id`, `artikel_id`, `wert`) VALUES
-(1, 1001, 5),
-(2, 1001, 5),
-(3, 1001, 4),
-(4, 1002, 5),
-(5, 1002, 4),
-(6, 1002, 3),
-(7, 1003, 4),
-(8, 1003, 4),
-(9, 1003, 2),
-(10, 1003, 3),
-(11, 1001, 4),
-(12, 1001, 5),
-(13, 1001, 1);
+INSERT INTO `bewertungen` (`id`, `user_id`, `artikel_id`, `wert`, `kommentar`, `zeitstempel`) VALUES
+(14, 53, 1001, 5, 'Das beste Headset, das ich je hatte. Das Active Noise Cancelling ist der Wahnsinn! Jeden Cent wert.', '2023-10-15 12:30:00'),
+(15, 54, 1001, 5, 'Schnelle Lieferung, top Produkt. Gerne wieder.', '2023-10-20 07:15:00'),
+(16, 55, 1001, 4, 'Qualität ist super, aber der Preis ist schon heftig. Deshalb einen Stern Abzug.', '2023-11-05 17:00:00'),
+(17, 56, 1002, 5, 'Sehr bequem, drückt auch nach 4 Stunden Flug nicht. Die Bluetooth-Funktion ist super praktisch für Musik.', '2023-11-12 10:20:00'),
+(19, 57, 1002, 5, 'Preis-Leistung ist hier unschlagbar. Sehr robustes Kabel.', '2023-12-02 07:30:00'),
+(20, 58, 1003, 4, 'Der Klassiker. Unkaputtbar, aber halt nur passives Noise Cancelling. Für Schüler perfekt.', '2023-12-01 09:00:00'),
+(21, 59, 1003, 2, 'Nach einer Stunde bekomme ich Kopfschmerzen. Es ist mir persönlich etwas zu schwer.', '2023-12-05 12:30:00'),
+(22, 60, 1001, 5, 'Das beste Headset, das ich je hatte. Das ANC ist der Wahnsinn!', '2023-10-15 12:30:00');
 
 --
 -- Trigger `bewertungen`
@@ -248,12 +246,14 @@ CREATE TABLE `punkte` (
 --
 
 INSERT INTO `punkte` (`user_id`, `punktestand`) VALUES
-(1, 0),
-(46, 100),
-(47, 100),
-(49, 100),
-(51, 102),
-(52, 100);
+(53, 100),
+(54, 100),
+(55, 100),
+(56, 100),
+(57, 100),
+(58, 100),
+(59, 100),
+(60, 100);
 
 --
 -- Trigger `punkte`
@@ -305,7 +305,15 @@ INSERT INTO `punktelog` (`transaktions_id`, `user_id`, `datum`, `art`, `punkte_a
 (11, 51, '2025-06-05 01:30:50', 'Automatisch', 2, 102, 'Änderung am Punktestand'),
 (12, 50, '2025-06-05 01:38:03', 'Automatisch', 2, 116, 'Änderung am Punktestand'),
 (13, 50, '2025-06-05 02:09:47', 'Automatisch', 2, 118, 'Änderung am Punktestand'),
-(14, 52, '2025-11-22 13:13:45', NULL, 0, 100, NULL);
+(14, 52, '2025-11-22 13:13:45', NULL, 0, 100, NULL),
+(15, 53, '2025-11-25 15:51:46', NULL, 0, 100, NULL),
+(16, 54, '2025-11-25 15:51:46', NULL, 0, 100, NULL),
+(17, 55, '2025-11-25 15:51:46', NULL, 0, 100, NULL),
+(18, 56, '2025-11-25 15:51:46', NULL, 0, 100, NULL),
+(19, 57, '2025-11-25 15:51:46', NULL, 0, 100, NULL),
+(20, 58, '2025-11-25 15:51:46', NULL, 0, 100, NULL),
+(21, 59, '2025-11-25 15:51:46', NULL, 0, 100, NULL),
+(22, 60, '2025-11-25 15:51:46', NULL, 0, 100, NULL);
 
 -- --------------------------------------------------------
 
@@ -344,12 +352,14 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `vorname`, `nachname`, `mail`, `adresse`, `plz`, `ort`, `passwort`, `google_secret`, `online`) VALUES
-(1, 'dndjd', 'djdjdn', 'dj@qdd.de', 'jdjdkik', 2234, 'djdjsnn', 'djdjj3jjns', NULL, b'0'),
-(46, 'monty', 'miner', 'monty.isid@h.de', 'Moltkestraße 32', 72805, 'Lichtenstein', '40e235dd0c7c50a3af4019e342f6046fd5bef9c96c2150f556238fd5d3977fd25b819ec7391178ed62da388f0bf979d90d566056e2808aaa57ce1c880d2aec0b', NULL, b'0'),
-(47, 'hadfasd', 'dasdasas', 'monty.isisdd@hs.de', 'sasd 2', 31231, 'Lichtenstein', 'eb4872b5f8a88fe7bdbd52ee5ef10f9a74e937d061ec014be7eedb99f71921ed6e9983772e3dc16ec876b72f7cbdba49b2ce84c635b4d8a93f7ce92c1753e82d', NULL, b'0'),
-(49, 'awawe', 'weae', 'montwey.isisdd@hs.de', 'seeasd 2', 31211, 'Lichtenstein', '71244f86f9e78b572b692bda0f11e010dda7930ff4097d331f243955d593779d5473e04de6853003923b2f49cd3df1726a77b3bcfce2bdd60db61fb07c1d3eb9', NULL, b'0'),
-(51, 'sdfsdfsd', 'fsdfsdf', 'flarry.flurr@gmail.com', 'Moltkestraße 32', 72805, 'Lichtenstein', 'e12ae893923e3565312709f04a831b1f92710261af726b4ac4b33c3dfd31c30d8e76f2475cf401352c3dbebeb08fd0c3dff5e373b9757c120a2793950d692855', 'HJTHS4BIMT7EZA33', b'1'),
-(52, 'Andy', 'Reiff', 'andre.reiff@online.de', 'Moltkestraße 32', 72805, 'Lichtenstein', '0f862495a6bc097531b34328c34fe6345216ff8fe0573855fc434082f7558d503cc56299df8d79123451d79ead4b6cd3b866a20ba8ab3ddcc3888b733754339a', NULL, b'0');
+(53, 'Max', 'Mustermann', 'max.muster@example.com', 'Musterstraße 1', 10115, 'Berlin', '8c405ae1daf2575440a037284f934421', NULL, b'0'),
+(54, 'Lisa', 'Müller', 'lisa.mueller@web.de', 'Bahnhofsweg 4', 20095, 'Hamburg', '8c405ae1daf2575440a037284f934421', NULL, b'0'),
+(55, 'Johannes', 'Schmidt', 'j.schmidt@gmx.net', 'Schulstraße 12', 80331, 'München', '8c405ae1daf2575440a037284f934421', NULL, b'1'),
+(56, 'Sarah', 'Weber', 'sarah.w@outlook.com', 'Gartenweg 7', 50667, 'Köln', '8c405ae1daf2575440a037284f934421', NULL, b'0'),
+(57, 'Michael', 'Klein', 'm.klein@test.de', 'Hauptstraße 88', 60311, 'Frankfurt', '8c405ae1daf2575440a037284f934421', NULL, b'0'),
+(58, 'Anna', 'Wagner', 'anna.wagner@pilot.com', 'Flughafenring 2', 70173, 'Stuttgart', '8c405ae1daf2575440a037284f934421', NULL, b'1'),
+(59, 'Tom', 'Becker', 'tom.becker@aviation.org', 'Lindenallee 45', 4109, 'Leipzig', '8c405ae1daf2575440a037284f934421', NULL, b'0'),
+(60, 'Laura', 'Hoffmann', 'laura.h@student.de', 'Uniplatz 1', 69117, 'Heidelberg', '8c405ae1daf2575440a037284f934421', NULL, b'0');
 
 --
 -- Trigger `user`
@@ -496,7 +506,7 @@ ALTER TABLE `bestellposition`
 -- AUTO_INCREMENT für Tabelle `bewertungen`
 --
 ALTER TABLE `bewertungen`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT für Tabelle `cart`
@@ -508,7 +518,7 @@ ALTER TABLE `cart`
 -- AUTO_INCREMENT für Tabelle `punktelog`
 --
 ALTER TABLE `punktelog`
-  MODIFY `transaktions_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `transaktions_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT für Tabelle `rechnungskopf`
@@ -520,7 +530,7 @@ ALTER TABLE `rechnungskopf`
 -- AUTO_INCREMENT für Tabelle `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
 
 --
 -- AUTO_INCREMENT für Tabelle `warenkorbkopf`
