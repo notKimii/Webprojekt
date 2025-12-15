@@ -80,7 +80,7 @@
         text-decoration: none;
       }
 
-      ul.topnav li a:hover, .dropdown:hover .dropbtn (.active) {
+      ul.topnav li a:hover, .dropdown:hover .dropbtn.active {
         background-color: #0A7724;
       }
 
@@ -121,6 +121,7 @@
       @media screen and (max-width: 600px) {
         ul.topnav li.right, 
         ul.topnav li {float: none;}
+      }
     </style>
     
   </head>
@@ -271,16 +272,12 @@
              
       <!--Fußzeile-->
       <br><br>
-      <center><footer class="col-sm" style="background-color:  #D8D8D8;"><br>
+      <footer class="col-sm" style="background-color:  #D8D8D8; text-align: center;"><br>
         <a href="" style="color: black;">- Zurück nach oben -</a>
-        <p>&copy; Janine Reiff  &amp; Ellena Schorpp &middot; 
+        <p>&copy; Janine Reiff  & Ellena Schorpp &middot; 
         <a href="#" style="color: black;">Datenschutz</a> &middot; <a href="#" style="color: black;">AGBs</a> &middot; 
         <a href="kontakt.php" style="color: black;">Kontakt</a></p><br>
-      </footer></center>
+      </footer>
 
 	</body>
 </html>
-
-
-
-

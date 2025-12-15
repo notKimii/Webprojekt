@@ -132,7 +132,7 @@ if (!isset($_SESSION['csrf_token'])) {
         <button type="submit" class="btn btn-primary btn-block" style="background-color: #007aff; color: white; border: 2px solid #007aff; border-radius: 5px;">Registrieren</button>
 
         <div class="text-center mt-3">
-          Schon ein Konto? <a href="/Webprojekt/loginformular.php" style="color: #007aff;">Hier einloggen</a>
+          Schon ein Konto? <a href="/Webprojekt/php/login/loginformular.php" style="color: #007aff;">Hier einloggen</a>
         </div>
       </form>
     </div>

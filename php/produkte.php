@@ -1,6 +1,7 @@
 <?php
 	require 'include/connectcon.php';
-	$result = mysqli_query($con, 'select * from artikel');
+	$stmt = $conPDO->query('SELECT * FROM artikel');
+	$result = $stmt->fetchAll(PDO::FETCH_OBJ);
 ?>
 
 <table cellpadding="2" cellspacing="2" border="0">
@@ -10,8 +11,7 @@
 		<th>Beschreibung</th>
 		<th>Größe</th>
 		<th>Preis</th>
-	</tr>
-	<?php while ($product = mysqli_fetch_object($result)) { ?>
+	<?php foreach ($result as $product) { ?>
 		<tr>
 			<td><?php echo $product->id; ?></td>
 			<td><?php echo $product->name; ?></td>

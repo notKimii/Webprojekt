@@ -30,13 +30,13 @@ session_start();
                                 <p>Mein Konto</p>
                             </a>
                         <?php else: ?>
-                            <a href="/Webprojekt/loginformular.php" id="login-button">
+                            <a href="/Webprojekt/php/login/loginformular.php" id="login-button">
                                 <p>Anmelden</p>
                             </a>
                         <?php endif; ?>
                 </div>
                <div class="header-action-item">
-                    <a href="/Webprojekt/php/warenkorb.php" id="cart-button">
+                    <a href="/Webprojekt/php/bestellung/warenkorb.php" id="cart-button">
                         <p>Warenkorb</p>
                     <span class="cart-count">0</span> 
                     </a>

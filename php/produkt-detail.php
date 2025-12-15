@@ -12,7 +12,7 @@ if ($produktId > 0) {
     $sql = "SELECT * FROM artikel WHERE id = $produktId";
     $result = $con->query($sql);
 
-    if ($result && $result->num_rows > 0) {
+    if ($result instanceof mysqli_result && $result->num_rows > 0) {
         $produkt = $result->fetch_assoc();
     }
 }
@@ -436,7 +436,7 @@ if ($absoluterPfad && is_dir($absoluterPfad)) {
                 
                 $resultReviews = $con->query($sqlReviews);
 
-                if ($resultReviews && $resultReviews->num_rows > 0):
+                if ($resultReviews instanceof mysqli_result && $resultReviews->num_rows > 0):
                     while ($review = $resultReviews->fetch_assoc()):
                         // Namen sicherstellen (Fallback, falls User gelöscht)
                         $userName = !empty($review['vorname']) ? htmlspecialchars($review['vorname'] . ' ' . $review['nachname']) : 'Anonym';

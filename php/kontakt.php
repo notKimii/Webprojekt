@@ -55,7 +55,7 @@
         text-decoration: none;
       }
 
-      ul.topnav li a:hover, .dropdown:hover .dropbtn (.active) {
+      ul.topnav li a:hover, .dropdown:hover .dropbtn.active {
         background-color: #0A7724;
       }
 
@@ -96,6 +96,7 @@
       @media screen and (max-width: 600px) {
         ul.topnav li.right, 
         ul.topnav li {float: none;}
+      }
     </style>
     
   </head>

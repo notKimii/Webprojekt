@@ -59,7 +59,7 @@
         $mail = $_SESSION["temp_user"]['email'];
 
         //Secret abfragen
-        $stmt = $con->prepare("SELECT google_secret FROM user WHERE mail = ?");
+        $stmt = $conPDO->prepare("SELECT google_secret FROM user WHERE mail = ?");
         $stmt->execute([$mail]);
         $secret = $stmt->fetchColumn();
 

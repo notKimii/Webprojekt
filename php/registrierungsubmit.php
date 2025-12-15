@@ -38,15 +38,11 @@ function generatePassword($length = 10)
 	return $password;
 }
 
-$plainPassword = generatePassword(10);
-// SHA512
-$password = '';
-$password = hash('sha512', $plainPassword);
 
 try {
 	// Prüfung auf doppelten Eintrag
 	include 'include/connect.php';
-	$stmt = $con->prepare("SELECT COUNT(*) FROM user WHERE mail = ?");
+	$stmt = $conPDO->prepare("SELECT COUNT(*) FROM user WHERE mail = ?");
 	$stmt->execute([$mail]);
 	$anzahl = $stmt->fetchColumn();
 
@@ -56,10 +52,16 @@ try {
 		header("Location: registrierung.php");
 		exit;
 	}
+
+	$plainPassword = generatePassword(10);
+	// SHA512
+	$password = hash('sha512', $plainPassword);
 	$stmt = $con->prepare("INSERT INTO user (vorname, nachname, mail, adresse, plz, ort, passwort, google_secret) 
 		VALUES (?, ?, ?, ?, ?, ?, ?,?)");
 	$stmt->execute([$vorname, $nachname, $mail, $adresse, $plz, $ort, $password, NULL]);
-
+		echo "Generiertes Passwort: $plainPassword\n";
+	echo "<script>console.log('Generiertes Passwort: " . addslashes($plainPassword) . "');</script>";
+	exit;
 	// E-Mail vorbereiten
 	$mailer->addAddress($mail);
 	$mailer->Subject = 'Willkommen bei Cockpit Corner';
@@ -85,7 +87,7 @@ try {
 	$mailer->send();
 
 
-	header("Location: /Webprojekt/loginformular.php");
+	// header("Location: /Webprojekt/php/login/loginformular.php");
 } catch (Exception $e) {
 
 	$_SESSION['form_data'] = $_POST;
