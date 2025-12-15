@@ -3,7 +3,7 @@ session_start();
 
 
 // DB-Verbindung mit Fehler-Reporting
-include 'include/connect.php';
+include '../include/connect.php';
 
 
 $email    = trim($_POST['email']);
@@ -19,14 +19,14 @@ if (strlen($email) < 5 || strpos($email, '@') === false || empty($password)) {
 }
 
 if (strlen($password) < 9 || !preg_match('/[A-Z]/', $password) || !preg_match('/[a-z]/', $password) || !preg_match('/\d/', $password)) {
-    header("Location: ../loginformular.php");
+    header("Location: loginformular.php");
     exit;
 }
 
 // Wenn alle Prüfungen bestanden: Passwort hashen
 $password = hash('sha512', $_POST["password"]);
 
-include 'include/vendorconnect.php';
+include '../include/vendorconnect.php';
 $gAuth = new PHPGangsta_GoogleAuthenticator();
 
 
@@ -68,19 +68,19 @@ if ($user && $password == $user['passwort']) {
         $stmt->execute([$secret, $email]);
 
         //weiter zum QRCode
-        header("Location: qr2fa.php");
+        header("Location: ../qr2fa.php");
         exit;
     }
     $checkResult = $gAuth->verifyCode($user['google_secret'], $code, 2);
     if ($checkResult) {
-        header("Location: ../index.php");
+        header("Location: ../../index.php");
         exit;
     } else {
-        header("Location: ../loginformular.php");
+        header("Location: loginformular.php");
         exit;
     }
 } else {
-    header("Location: ../loginformular.php");
+    header("Location: loginformular.php");
     exit;
 }
 

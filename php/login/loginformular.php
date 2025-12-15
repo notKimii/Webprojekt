@@ -185,7 +185,7 @@
   </header>
   <main>
     <div class="login-box">
-      <form id="formlogin" action="/Webprojekt/php/login.php" method="POST" class="needs-validation" novalidate>
+      <form id="formlogin" action="/Webprojekt/php/login/login.php" method="POST" class="needs-validation" novalidate>
         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
         <fieldset>
           <legend>In mein Kundenkonto einloggen</legend>
