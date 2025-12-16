@@ -8,12 +8,12 @@ $mailer = new PHPMailer(true);
 $mailer->isSMTP();
 $mailer->Host = 'smtp.mailbox.org';
 $mailer->SMTPAuth = true;
-$mailer->Username = 'cockpitcorner@mailbox.org';
+$mailer->Username = 'info.cockpitcorner@mailbox.org';
 $mailer->Password = 'Mailbox.123';
 $mailer->SMTPSecure = 'tls';
 $mailer->Port = 587;
 
-$mailer->setFrom('cockpitcorner@mailbox.org', 'Cockpit Corner');
+$mailer->setFrom('info.cockpitcorner@mailbox.org', 'Cockpit Corner');
 
 $mailer->isHTML(true);
 ?>
