@@ -49,7 +49,28 @@ include "../include/connectcon.php";
                         <p>Dein Warenkorb ist leer.</p>
                     <?php else: ?>
                         <?php foreach ($result as $position): ?>
+                            <?php 
+                            // Bild-Pfad erstellen
+                            $produktId = $position['artikel_id'];
+                            $bildOrdner = "/Webprojekt/images/pictures/productids/" . $produktId . "/";
+                            $standardBild = $bildOrdner . "main.jpg"; // oder ein anderer Standard-Bildname
+                            
+                            // Prüfen ob Verzeichnis existiert und erstes Bild finden
+                            $bildPfad = $standardBild;
+                            $absoluterPfad = $_SERVER['DOCUMENT_ROOT'] . $bildOrdner;
+                            if (is_dir($absoluterPfad)) {
+                                $bilder = array_diff(scandir($absoluterPfad), array('.', '..'));
+                                if (!empty($bilder)) {
+                                    $erstesBild = reset($bilder);
+                                    $bildPfad = $bildOrdner . $erstesBild;
+                                }
+                            }
+                            ?>
                             <div class="cart-item">
+                                <img src="<?php echo htmlspecialchars($bildPfad); ?>" 
+                                     alt="<?php echo htmlspecialchars($position['name']); ?>" 
+                                     class="cart-item-img"
+                                     onerror="this.src='/Webprojekt/images/pictures/placeholder.jpg'">
                                 <div class="cart-item-details">
                                     <h2><?php echo htmlspecialchars($position['name']); ?></h2>
                                     <p>Menge: <?php echo htmlspecialchars($position['menge']); ?></p>
