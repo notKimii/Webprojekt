@@ -56,12 +56,9 @@ try {
 	$plainPassword = generatePassword(10);
 	// SHA512
 	$password = hash('sha512', $plainPassword);
-	$stmt = $con->prepare("INSERT INTO user (vorname, nachname, mail, adresse, plz, ort, passwort, google_secret) 
+	$stmt = $conPDO->prepare("INSERT INTO user (vorname, nachname, mail, adresse, plz, ort, passwort, google_secret) 
 		VALUES (?, ?, ?, ?, ?, ?, ?,?)");
 	$stmt->execute([$vorname, $nachname, $mail, $adresse, $plz, $ort, $password, NULL]);
-		echo "Generiertes Passwort: $plainPassword\n";
-	echo "<script>console.log('Generiertes Passwort: " . addslashes($plainPassword) . "');</script>";
-	exit;
 	// E-Mail vorbereiten
 	$mailer->addAddress($mail);
 	$mailer->Subject = 'Willkommen bei Cockpit Corner';
@@ -87,7 +84,7 @@ try {
 	$mailer->send();
 
 
-	// header("Location: /Webprojekt/php/login/loginformular.php");
+	header("Location: /Webprojekt/php/login/loginformular.php");
 } catch (Exception $e) {
 
 	$_SESSION['form_data'] = $_POST;
