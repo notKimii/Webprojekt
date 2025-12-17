@@ -24,10 +24,10 @@
     header {
       width: 100%;
       text-align: center;
-      padding: 15px 0;
+      padding: 10px 0;
+      background-color: rgba(255, 255, 255, 0.35);
       backdrop-filter: blur(10px);
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      background-color: rgba(255, 255, 255, 0.8);
     }
 
     header nav {
@@ -275,19 +275,17 @@
 </head>
 
 <body>
-  <header>
+<header>
     <nav>
-      <a href="/Webprojekt/index.php"><img src="favicon.ico" alt="Logo" role="presentation"></a>
+      <a href="/Webprojekt/index.php"><img src="/Webprojekt/favicon.ico" alt="Logo" role="presentation"></a>
     </nav>
   </header>
 
   <main>
     <div class="login-box">
-<<<<<<< Updated upstream:php/login/loginformular.php
+
       <form id="formlogin" action="/Webprojekt/php/login/login.php" method="POST" class="needs-validation" novalidate>
-=======
-      <form id="formlogin" action="/Webprojekt/php/login.php" method="POST">
->>>>>>> Stashed changes:loginformular.php
+
         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
         <fieldset>
           <legend>In mein Kundenkonto einloggen</legend>
@@ -321,7 +319,7 @@
         </fieldset>
 
         <div class="register-box">
-          <a href="/Webprojekt/php/registrierung.php" class="btn btn-outline">Jetzt registrieren</a>
+          <a href="/Webprojekt/php/registrierung/registrierung.php" class="btn btn-outline">Jetzt registrieren</a>
         </div>
 
         <!-- Versteckte Felder -->
