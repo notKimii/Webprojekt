@@ -1,6 +1,11 @@
 <?php
+// Session starten, falls noch nicht geschehen
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 // Datenbankverbindung und Head-Importe
-include "include/connectcon.php";
+include "include/connect.php"; 
 include "include/headimport.php";
 
 // Produkt-ID aus URL holen und sicherstellen, dass es eine Zahl ist
@@ -9,12 +14,10 @@ $produktId = isset($_GET['id']) ? intval($_GET['id']) : 0;
 $produkt = null;
 
 if ($produktId > 0) {
-    $sql = "SELECT * FROM artikel WHERE id = $produktId";
-    $result = $con->query($sql);
-
-    if ($result instanceof mysqli_result && $result->num_rows > 0) {
-        $produkt = $result->fetch_assoc();
-    }
+    // Prepared Statements sind sicherer
+    $stmt = $conPDO->prepare("SELECT * FROM artikel WHERE id = ?");
+    $stmt->execute([$produktId]);
+    $produkt = $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
 // Standardwerte, falls Produkt nicht gefunden
@@ -35,10 +38,11 @@ if (!$produkt) {
 
 // Bildpfade aus dem Ordner laden
 $bilder = [];
+// Pfade anpassen an deine Struktur
 $relativerWebPfad = '/Webprojekt/images/pictures/productids/' . $produktId . '/';
-$absoluterPfad = realpath(__DIR__ . '/../images/pictures/productids/' . $produktId);
+$absoluterPfad = $_SERVER['DOCUMENT_ROOT'] . '/Webprojekt/images/pictures/productids/' . $produktId;
 
-if ($absoluterPfad && is_dir($absoluterPfad)) {
+if (is_dir($absoluterPfad)) {
     $dateien = scandir($absoluterPfad);
     foreach ($dateien as $datei) {
         if (preg_match('/\.(jpg|jpeg|png|gif|webp)$/i', $datei)) {
@@ -153,7 +157,6 @@ if ($absoluterPfad && is_dir($absoluterPfad)) {
         color: #ffb400; 
         font-size: 1.1rem; 
     }
-    /* Wichtig: Leere Sterne grau machen */
     .product-rating-summary .stars .far.fa-star,
     .review-stars .far.fa-star {
         color: #d2d2d7 !important;
@@ -178,19 +181,6 @@ if ($absoluterPfad && is_dir($absoluterPfad)) {
         content: '✓'; color: var(--accent-color); font-weight: bold;
         position: absolute; left: 0; top: 1px;
     }
-    .product-variants {
-        margin-bottom: 30px; display: flex; flex-direction: column; gap: 15px;
-    }
-    .variant-option { display: flex; align-items: center; gap: 10px; }
-    .variant-option label { font-weight: 500; font-size: 0.95rem; width: 70px; }
-    .variant-option select {
-        flex-grow: 1; padding: 12px 15px; border: 1px solid var(--border-color);
-        border-radius: 8px; font-size: 1rem; background-color: var(--background-color-light);
-        color: var(--text-color-primary); -webkit-appearance: none; -moz-appearance: none;
-        appearance: none;
-        background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M5%208l5%205%205-5z%22%20fill%3D%22%23555%22/%3E%3C/svg%3E');
-        background-repeat: no-repeat; background-position: right 15px center; background-size: 12px;
-    }
     .add-to-cart-button, .buy-now-button {
         width: 100%; padding: 16px 20px; font-size: 1.1rem; font-weight: 600;
         border-radius: 10px; cursor: pointer; transition: background-color 0.2s ease, transform 0.1s ease;
@@ -206,7 +196,7 @@ if ($absoluterPfad && is_dir($absoluterPfad)) {
     .buy-now-button:hover { background-color: #e8e8ed; }
     .buy-now-button:active { transform: scale(0.98); }
 
-    /* ---- NEU: Styles für den Mengenzähler ---- */
+    /* Quantity Control */
     .cart-actions {
         display: flex;
         gap: 15px;
@@ -220,7 +210,7 @@ if ($absoluterPfad && is_dir($absoluterPfad)) {
         border: 1px solid var(--border-color);
         border-radius: 8px;
         background-color: var(--background-color-light);
-        height: 52px; /* Gleiche Höhe wie der Button (etwas angepasst) */
+        height: 52px;
         flex-shrink: 0;
     }
     .qty-btn {
@@ -235,9 +225,7 @@ if ($absoluterPfad && is_dir($absoluterPfad)) {
         align-items: center;
         justify-content: center;
     }
-    .qty-btn:hover {
-        background-color: rgba(0,0,0,0.05);
-    }
+    .qty-btn:hover { background-color: rgba(0,0,0,0.05); }
     .qty-input {
         width: 45px;
         height: 100%;
@@ -251,34 +239,23 @@ if ($absoluterPfad && is_dir($absoluterPfad)) {
         padding: 0;
     }
     .qty-input::-webkit-outer-spin-button,
-    .qty-input::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-    }
-    .add-to-cart-form {
-        width: 100%;
-    }
-    /* Buttons im Formular anpassen */
-    .add-to-cart-form .buy-now-button {
-        margin-bottom: 0; /* Reset für Flexbox */
-        flex-grow: 1;
-    }
-    /* ------------------------------------------- */
+    .qty-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .add-to-cart-form { width: 100%; }
+    .add-to-cart-form .buy-now-button { margin-bottom: 0; flex-grow: 1; }
 
-    .product-shipping-info {
-        margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border-color);
-    }
+    /* Shipping Info */
+    .product-shipping-info { margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border-color); }
     .shipping-detail {
         display: flex; align-items: center; gap: 12px; margin-bottom: 12px;
         font-size: 0.95rem; color: var(--text-color-secondary);
     }
     .shipping-detail i { color: var(--accent-color); font-size: 1.2rem; width: 20px; text-align: center; }
-    .additional-actions {
-        margin-top: 20px; display: flex; flex-direction: column; gap: 10px;
-    }
+    .additional-actions { margin-top: 20px; display: flex; flex-direction: column; gap: 10px; }
     .additional-actions a { color: var(--accent-color); text-decoration: none; font-size: 0.9rem; font-weight: 500; }
     .additional-actions a:hover { text-decoration: underline; }
     .additional-actions i { margin-right: 6px; }
+
+    /* Tabs */
     .product-more-info { margin-top: 60px; padding-top: 40px; border-top: 1px solid #e0e0e0; }
     .tabs { display: flex; border-bottom: 1px solid var(--border-color); margin-bottom: 30px; gap: 5px; }
     .tab-link {
@@ -301,10 +278,8 @@ if ($absoluterPfad && is_dir($absoluterPfad)) {
     .tab-content table td:first-child { font-weight: 500; width: 30%; color: var(--text-color-primary); }
     .tab-content table td:last-child { color: var(--text-color-secondary); }
     
-    /* Styles für die Bewertungsliste */
-    .review {
-        /* CSS für einzelne Review-Blöcke */
-    }
+    /* Bewertungs Styles */
+    .review { /* CSS für einzelne Review-Blöcke */ }
     .review-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
     .review-stars { color: #ffb400; }
     .review-author { font-weight: 600; font-size:0.95rem; }
@@ -321,6 +296,43 @@ if ($absoluterPfad && is_dir($absoluterPfad)) {
     .button-secondary { background-color: transparent; color: var(--accent-color); border: 1px solid var(--accent-color); }
     .button-secondary:hover { background-color: rgba(0, 113, 227, 0.05); }
 
+    /* --- NEU: Styles für das Bewertungsformular --- */
+    .review-form-container {
+        background-color: #f9f9f9;
+        padding: 20px;
+        border-radius: 12px;
+        margin-top: 20px;
+        border: 1px solid #e0e0e0;
+        display: none; /* Standardmäßig ausgeblendet */
+    }
+    .review-form-container.active { display: block; }
+    .star-rating-input {
+        display: flex;
+        flex-direction: row-reverse; /* Damit CSS Hover von rechts nach links funktioniert */
+        justify-content: flex-end;
+        gap: 5px;
+        margin-bottom: 15px;
+    }
+    .star-rating-input input { display: none; }
+    .star-rating-input label {
+        cursor: pointer; font-size: 1.5rem; color: #d2d2d7; transition: color 0.2s;
+    }
+    /* Hover-Effekte: Wenn man über einen Stern fährt, werden er und alle davor gelb */
+    .star-rating-input label:hover,
+    .star-rating-input label:hover ~ label,
+    .star-rating-input input:checked ~ label {
+        color: #ffb400; 
+    }
+    .review-textarea {
+        width: 100%; padding: 12px; border: 1px solid #d2d2d7;
+        border-radius: 8px; font-family: var(--apple-font); font-size: 1rem;
+        resize: vertical; min-height: 100px; margin-bottom: 15px;
+    }
+    .alert { padding: 15px; margin-bottom: 20px; border-radius: 8px; }
+    .alert-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+    .alert-danger { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+    /* Media Queries */
     @media (max-width: 992px) {
         .product-layout { gap: 30px; }
         .product-title { font-size: 2.4rem; }
@@ -341,10 +353,6 @@ if ($absoluterPfad && is_dir($absoluterPfad)) {
     @media (max-width: 480px) {
         .product-title { font-size: 1.8rem; }
         .product-price { font-size: 1.8rem; }
-        .variant-option { flex-direction: column; align-items: flex-start; }
-        .variant-option label { width: auto; margin-bottom: 5px; }
-        .variant-option select { width: 100%; }
-        /* Auf ganz kleinen Handys evtl. umbrechen */
         .cart-actions { flex-wrap: wrap; }
         .quantity-control { width: 100%; justify-content: space-between; margin-bottom: 10px; }
         .qty-input { flex-grow: 1; }
@@ -357,7 +365,7 @@ if ($absoluterPfad && is_dir($absoluterPfad)) {
     <div class="product-showcase-container">
         <h1>Produkt nicht gefunden</h1>
         <p>Das angeforderte Produkt mit der ID <?php echo htmlspecialchars($produktId); ?> konnte nicht gefunden werden.</p>
-        <p><a href="/">Zurück zur Startseite</a></p>
+        <p><a href="/Webprojekt/index.php">Zurück zur Startseite</a></p>
     </div>
 <?php else: ?>
 <main class="product-showcase-container">
@@ -390,21 +398,19 @@ if ($absoluterPfad && is_dir($absoluterPfad)) {
             
             <div class="product-rating-summary">
                 <?php 
-                // Werte aus der Tabelle 'artikel' holen
                 $dbRating = isset($produkt['bewertung']) ? floatval($produkt['bewertung']) : 0;
                 $dbAnzahl = isset($produkt['anzahl_bewertungen']) ? intval($produkt['anzahl_bewertungen']) : 0;
                 ?>
                 
                 <div class="stars">
                     <?php
-                    // Sterne generieren (1 bis 5)
                     for ($i = 1; $i <= 5; $i++) {
                         if ($dbRating >= $i) {
-                            echo '<i class="fas fa-star"></i>'; // Voll
+                            echo '<i class="fas fa-star"></i>';
                         } elseif ($dbRating >= ($i - 0.5)) {
-                            echo '<i class="fas fa-star-half-alt"></i>'; // Halb
+                            echo '<i class="fas fa-star-half-alt"></i>';
                         } else {
-                            echo '<i class="far fa-star"></i>'; // Leer (grau durch CSS)
+                            echo '<i class="far fa-star"></i>';
                         }
                     }
                     ?>
@@ -482,6 +488,20 @@ if ($absoluterPfad && is_dir($absoluterPfad)) {
         <div id="customer-reviews" class="tab-content">
             <h2>Kundenbewertungen</h2>
             
+            <?php if (isset($_GET['status']) && $_GET['status'] == 'success'): ?>
+                <div class="alert alert-success">Vielen Dank! Ihre Bewertung wurde erfolgreich gespeichert.</div>
+            <?php endif; ?>
+
+            <?php if (isset($_GET['error'])): ?>
+                <div class="alert alert-danger">
+                    <?php 
+                    if ($_GET['error'] == 'already_reviewed') echo "Sie haben dieses Produkt bereits bewertet.";
+                    elseif ($_GET['error'] == 'invalid_rating') echo "Bitte wählen Sie 1 bis 5 Sterne.";
+                    elseif ($_GET['error'] == 'db_error') echo "Ein Datenbankfehler ist aufgetreten.";
+                    else echo "Ein Fehler ist aufgetreten.";
+                    ?>
+                </div>
+            <?php endif; ?>
             <div class="overall-rating-summary" style="margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid #eee;">
                 <?php if ($dbAnzahl > 0): ?>
                     <p>
@@ -494,23 +514,54 @@ if ($absoluterPfad && is_dir($absoluterPfad)) {
                 <?php else: ?>
                     <p>Für dieses Produkt wurde noch keine Bewertung abgegeben.</p>
                 <?php endif; ?>
-                <button class="button-secondary" style="margin-top: 10px;">Jetzt bewerten</button>
+                
+                <button class="button-secondary" style="margin-top: 10px;" onclick="toggleReviewForm()">Jetzt bewerten</button>
             </div>
 
+            <div id="reviewForm" class="review-form-container">
+                <?php if (isset($_SESSION['temp_user']['id'])): ?>
+                    <h3>Ihre Bewertung abgeben</h3>
+                    <form action="/Webprojekt/php/bewertung/submit_review.php" method="POST">
+                        <input type="hidden" name="produkt_id" value="<?php echo $produktId; ?>">
+                        <input type="hidden" name="submit_review" value="1">
+                        
+                        <div style="margin-bottom: 10px; font-weight: 500;">Wie viele Sterne vergeben Sie?</div>
+                        <div class="star-rating-input">
+                            <input type="radio" name="rating" id="star5" value="5" required><label for="star5" title="5 Sterne"><i class="fas fa-star"></i></label>
+                            <input type="radio" name="rating" id="star4" value="4"><label for="star4" title="4 Sterne"><i class="fas fa-star"></i></label>
+                            <input type="radio" name="rating" id="star3" value="3"><label for="star3" title="3 Sterne"><i class="fas fa-star"></i></label>
+                            <input type="radio" name="rating" id="star2" value="2"><label for="star2" title="2 Sterne"><i class="fas fa-star"></i></label>
+                            <input type="radio" name="rating" id="star1" value="1"><label for="star1" title="1 Stern"><i class="fas fa-star"></i></label>
+                        </div>
+
+                        <div style="margin-bottom: 10px; font-weight: 500;">Ihr Kommentar:</div>
+                        <textarea name="kommentar" class="review-textarea" placeholder="Schreiben Sie hier Ihre Erfahrungen mit dem Produkt..." required></textarea>
+                        
+                        <button type="submit" class="button-primary">Bewertung absenden</button>
+                        <button type="button" class="button-secondary" onclick="toggleReviewForm()">Abbrechen</button>
+                    </form>
+                <?php else: ?>
+                    <div class="alert alert-danger" style="margin:0;">
+                        Bitte <a href="/Webprojekt/php/login/loginformular.php" style="color: inherit; font-weight: bold; text-decoration: underline;">melden Sie sich an</a>, um eine Bewertung zu schreiben.
+                    </div>
+                <?php endif; ?>
+            </div>
             <div class="reviews-list">
                 <?php
-                // Abfrage: Bewertungen + Userdaten holen (JOIN)
+                // Abfrage: Bewertungen + Userdaten holen
                 $sqlReviews = "SELECT b.wert, b.kommentar, b.zeitstempel, u.vorname, u.nachname 
                                FROM bewertungen b 
                                LEFT JOIN user u ON b.user_id = u.id 
-                               WHERE b.artikel_id = $produktId 
+                               WHERE b.artikel_id = :pid 
                                ORDER BY b.zeitstempel DESC";
                 
-                $resultReviews = $con->query($sqlReviews);
+                // Prepared Statement für Bewertungen
+                $stmtRev = $conPDO->prepare($sqlReviews);
+                $stmtRev->execute(['pid' => $produktId]);
+                $reviews = $stmtRev->fetchAll(PDO::FETCH_ASSOC);
 
-                if ($resultReviews instanceof mysqli_result && $resultReviews->num_rows > 0):
-                    while ($review = $resultReviews->fetch_assoc()):
-                        // Namen sicherstellen (Fallback, falls User gelöscht)
+                if (count($reviews) > 0):
+                    foreach ($reviews as $review):
                         $userName = !empty($review['vorname']) ? htmlspecialchars($review['vorname'] . ' ' . $review['nachname']) : 'Anonym';
                         $reviewDate = date('d.m.Y', strtotime($review['zeitstempel']));
                         $reviewStars = intval($review['wert']);
@@ -522,11 +573,8 @@ if ($absoluterPfad && is_dir($absoluterPfad)) {
                                 <span class="review-stars" style="color: #ffb400;">
                                     <?php
                                     for ($i = 1; $i <= 5; $i++) {
-                                        if ($reviewStars >= $i) {
-                                            echo '<i class="fas fa-star"></i>';
-                                        } else {
-                                            echo '<i class="far fa-star"></i>';
-                                        }
+                                        if ($reviewStars >= $i) echo '<i class="fas fa-star"></i>';
+                                        else echo '<i class="far fa-star"></i>';
                                     }
                                     ?>
                                 </span>
@@ -541,16 +589,16 @@ if ($absoluterPfad && is_dir($absoluterPfad)) {
                         <?php endif; ?>
                     </div>
                 <?php 
-                    endwhile; 
+                    endforeach; 
                 endif; 
                 ?>
             </div>
         </div>
-        </section>
+    </section>
 </main>
 <?php endif; ?>
 
-<?php include "./include/footimport.php"; ?>
+<?php include $_SERVER['DOCUMENT_ROOT'] . '/Webprojekt/php/include/footimport.php'; ?>
 
 <script>
     const currentProductImage = document.getElementById('currentProductImage');
@@ -590,34 +638,51 @@ if ($absoluterPfad && is_dir($absoluterPfad)) {
         }
     }
 
-    const activeTabLink = document.querySelector(".tab-link.active");
-    if (activeTabLink) {
-        const initialTabId = activeTabLink.getAttribute('onclick').match(/'([^']+)'/)[1];
-        openTab(null, initialTabId);
+    // Beim Laden prüfen, ob eine Tab-ID in der URL steht (z.B. ...#reviews-section)
+    // Wenn ja, den Reiter öffnen
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('status') || urlParams.get('error')) {
+        // Wenn eine Bewertung abgegeben wurde, Reviews Tab öffnen
+        openTab(null, 'customer-reviews');
+        // Button des Tabs auch aktiv setzen
+        const reviewBtn = document.querySelector("button[onclick*='customer-reviews']");
+        if(reviewBtn) {
+            document.querySelectorAll('.tab-link').forEach(b => b.classList.remove('active'));
+            reviewBtn.classList.add('active');
+        }
+    } else {
+        // Standard Tab öffnen
+        const activeTabLink = document.querySelector(".tab-link.active");
+        if (activeTabLink) {
+            const initialTabId = activeTabLink.getAttribute('onclick').match(/'([^']+)'/)[1];
+            openTab(null, initialTabId);
+        }
     }
 
-    // NEU: Funktion für Mengenänderung (+/- Buttons)
+    // NEU: Bewertungsformular ein/ausblenden
+    function toggleReviewForm() {
+        const form = document.getElementById('reviewForm');
+        if (form.classList.contains('active')) {
+            form.classList.remove('active');
+        } else {
+            form.classList.add('active');
+            form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }
+
+    // Funktion für Mengenänderung
     function updateQty(change) {
         const input = document.getElementById('qtyInput');
-        if (!input) return; // Sicherheitscheck
+        if (!input) return; 
         
         let currentValue = parseInt(input.value);
         if (isNaN(currentValue)) currentValue = 1;
 
-        // Lagerbestand als Limit holen
         const maxStock = input.getAttribute('max') ? parseInt(input.getAttribute('max')) : 999;
-        
         let newValue = currentValue + change;
 
-        // Nicht unter 1 gehen
-        if (newValue < 1) {
-            newValue = 1;
-        }
-        
-        // Nicht über Lagerbestand gehen (wenn Bestand > 0)
-        if (maxStock > 0 && newValue > maxStock) {
-            newValue = maxStock;
-        }
+        if (newValue < 1) newValue = 1;
+        if (maxStock > 0 && newValue > maxStock) newValue = maxStock;
 
         input.value = newValue;
     }
@@ -625,9 +690,3 @@ if ($absoluterPfad && is_dir($absoluterPfad)) {
 
 </body>
 </html>
-
-<?php
-if (isset($con) && $con instanceof mysqli) {
-    $con->close();
-}
-?>
