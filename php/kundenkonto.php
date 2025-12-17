@@ -1,7 +1,10 @@
 <?php
 // Überprüfung der Authentifizierung
-include 'include/loginpruef.php';
-include 'php/connect.php';
+
+include $_SERVER['DOCUMENT_ROOT'] . '/Webprojekt/php/include/loginpruef.php';
+
+include $_SERVER['DOCUMENT_ROOT'] . '/Webprojekt/php/include/connect.php'; 
+
 
 // Benutzer-ID aus Session abrufen
 $userID = $_SESSION['temp_user']['id'];
@@ -473,7 +476,7 @@ $stmtOnline->execute([$userID]);
     </style>
 </head>
 <body>
-    <?php include 'include/headimport.php'; ?>
+<?php include $_SERVER['DOCUMENT_ROOT'] . '/Webprojekt/php/include/headimport.php'; ?>
 
     <main>
         <div class="account-container">
