@@ -465,7 +465,7 @@ unset($_SESSION['form_data']);
     </div>
   </main>
 
-  <?php include "include/footimport.php"; ?>
+  <?php include $_SERVER['DOCUMENT_ROOT'] . '/Webprojekt/php/include/footimport.php'; ?>
 
   <script>
     (function () {

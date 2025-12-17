@@ -329,7 +329,7 @@
     </div>
   </main>
 
-  <?php include "/Webprojekt/php/include/footimport.php"; ?>
+  <?php include $_SERVER['DOCUMENT_ROOT'] . "/Webprojekt/php/include/footimport.php"; ?>
 
   <script>
     (function () {
