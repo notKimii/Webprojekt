@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 ?>
     <link rel="stylesheet" href="/Webprojekt/style.css">
     
@@ -619,7 +621,7 @@ session_start();
                 <div class="desktop-actions">
                     <div class="header-action-item">
                         <?php if (isset($_SESSION['temp_user'])): ?>
-                            <a href="/mein-konto.php">
+                            <a href="/Webprojekt/php/Kundenkonto.php">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                     <circle cx="12" cy="7" r="4"></circle>
