@@ -139,10 +139,44 @@ session_start();
     .points-badge {
         background: linear-gradient(135deg, #ffd700, #ffed4e);
         color: #333;
-        padding: 4px 10px;
-        border-radius: 15px;
+        border-radius: 50%;
+        padding: 2px 6px;
+        font-size: 11px;
         font-weight: bold;
-        font-size: 13px;
+        min-width: 18px;
+        text-align: center;
+    }
+
+    .online-users {
+        background: linear-gradient(135deg, #2ecc71, #27ae60);
+        color: white;
+        border-radius: 50%;
+        padding: 2px 6px;
+        font-size: 11px;
+        font-weight: bold;
+        min-width: 18px;
+        text-align: center;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+    }
+
+    .online-indicator {
+        width: 5px;
+        height: 5px;
+        background: #fff;
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { 
+            opacity: 1;
+        }
+        50% { 
+            opacity: 0.5;
+        }
     }
 
     /* Burger Menu Button */
@@ -613,23 +647,29 @@ session_start();
                             <span class="cart-count">0</span>
                         </a>
                     </div>
-
-                    <?php if (isset($_SESSION['temp_user'])): ?>
+                    
                     <div class="header-action-item">
                         <a href="/Webprojekt/php/Kundenkonto.php">
-                            <span style="font-size: 18px;">⭐</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                            </svg>
+                            <span>Punkte</span>
                             <span class="points-badge">
                                 <?php
-                                $con = new mysqli('localhost', 'root', '', 'dbpilotenshop');
-                                if (!$con->connect_error) {
-                                    $userID = $_SESSION['temp_user']['id'];
-                                    $stmt = $con->prepare("SELECT punktestand FROM punkte WHERE user_id = ?");
-                                    $stmt->bind_param("i", $userID);
-                                    $stmt->execute();
-                                    $stmt->bind_result($punktestand);
-                                    $stmt->fetch();
-                                    echo $punktestand ?? '0';
-                                    $stmt->close();
+                                if (isset($_SESSION['temp_user'])) {
+                                    $con = new mysqli('localhost', 'root', '', 'dbpilotenshop');
+                                    if (!$con->connect_error) {
+                                        $userID = $_SESSION['temp_user']['id'];
+                                        $stmt = $con->prepare("SELECT punktestand FROM punkte WHERE user_id = ?");
+                                        $stmt->bind_param("i", $userID);
+                                        $stmt->execute();
+                                        $stmt->bind_result($punktestand);
+                                        $stmt->fetch();
+                                        echo $punktestand ?? '0';
+                                        $stmt->close();
+                                    }
+                                } else {
+                                    echo '0';
                                 }
                                 ?>
                             </span>
@@ -638,24 +678,31 @@ session_start();
                     <div class="header-action-item">
                         <a href="/Webprojekt/php/Kundenkonto.php">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"></path>
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="9" cy="7" r="4"></circle>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"></path>
                             </svg>
-                            <span>Online:
+                            <span>Online</span>
+                            <span class="online-users">
+                                <span class="online-indicator"></span>
                                 <?php
-                                if (!$con->connect_error) {
-                                    $result = $con->query("SELECT COUNT(*) AS anzahl FROM user WHERE online=1");
-                                    if ($result) {
-                                        $row = $result->fetch_assoc();
-                                        echo $row['anzahl'];
+                                if (isset($_SESSION['temp_user'])) {
+                                    $con_online = new mysqli('localhost', 'root', '', 'dbpilotenshop');
+                                    if (!$con_online->connect_error) {
+                                        $result = $con_online->query("SELECT COUNT(*) AS anzahl FROM user WHERE online=1");
+                                        if ($result) {
+                                            $row = $result->fetch_assoc();
+                                            echo $row['anzahl'];
+                                        }
+                                        $con_online->close();
                                     }
-                                    $con->close();
+                                } else {
+                                    echo '0';
                                 }
                                 ?>
                             </span>
                         </a>
                     </div>
-                    <?php endif; ?>
                 </div>
 
                 <!-- Burger Menu Button -->
@@ -722,56 +769,6 @@ session_start();
                             <div class="item-value">Mein Konto</div>
                         </div>
                     </a>
-
-                    <a href="/Webprojekt/php/Kundenkonto.php" class="mobile-user-item">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                        </svg>
-                        <div class="item-content">
-                            <div class="item-label">Treuepunkte</div>
-                            <div class="item-value">Dein Punktestand</div>
-                        </div>
-                        <span class="points-badge-mobile">
-                            <?php
-                            $con_mobile = new mysqli('localhost', 'root', '', 'dbpilotenshop');
-                            if (!$con_mobile->connect_error) {
-                                $userID = $_SESSION['temp_user']['id'];
-                                $stmt = $con_mobile->prepare("SELECT punktestand FROM punkte WHERE user_id = ?");
-                                $stmt->bind_param("i", $userID);
-                                $stmt->execute();
-                                $stmt->bind_result($punktestand);
-                                $stmt->fetch();
-                                echo $punktestand ?? '0';
-                                $stmt->close();
-                            }
-                            ?>
-                        </span>
-                    </a>
-
-                    <a href="/Webprojekt/php/Kundenkonto.php" class="mobile-user-item">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="9" cy="7" r="4"></circle>
-                            <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"></path>
-                        </svg>
-                        <div class="item-content">
-                            <div class="item-label">Community</div>
-                            <div class="item-value">Aktive User</div>
-                        </div>
-                        <span class="online-badge">
-                            <span class="online-indicator"></span>
-                            <?php
-                            if (!$con_mobile->connect_error) {
-                                $result = $con_mobile->query("SELECT COUNT(*) AS anzahl FROM user WHERE online=1");
-                                if ($result) {
-                                    $row = $result->fetch_assoc();
-                                    echo $row['anzahl'];
-                                }
-                                $con_mobile->close();
-                            }
-                            ?>
-                        </span>
-                    </a>
                 <?php else: ?>
                     <a href="/Webprojekt/php/login/loginformular.php" class="mobile-user-item">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -795,6 +792,65 @@ session_start();
                         <div class="item-value">Warenkorb</div>
                     </div>
                     <span class="badge">0</span>
+                </a>
+
+                <a href="/Webprojekt/php/Kundenkonto.php" class="mobile-user-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    </svg>
+                    <div class="item-content">
+                        <div class="item-label">Treuepunkte</div>
+                        <div class="item-value">Dein Punktestand</div>
+                    </div>
+                    <span class="points-badge-mobile">
+                        <?php
+                        if (isset($_SESSION['temp_user'])) {
+                            $con_mobile = new mysqli('localhost', 'root', '', 'dbpilotenshop');
+                            if (!$con_mobile->connect_error) {
+                                $userID = $_SESSION['temp_user']['id'];
+                                $stmt = $con_mobile->prepare("SELECT punktestand FROM punkte WHERE user_id = ?");
+                                $stmt->bind_param("i", $userID);
+                                $stmt->execute();
+                                $stmt->bind_result($punktestand);
+                                $stmt->fetch();
+                                echo $punktestand ?? '0';
+                                $stmt->close();
+                            }
+                        } else {
+                            echo '0';
+                        }
+                        ?>
+                    </span>
+                </a>
+
+                <a href="/Webprojekt/php/Kundenkonto.php" class="mobile-user-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                    <div class="item-content">
+                        <div class="item-label">Community</div>
+                        <div class="item-value">Aktive User</div>
+                    </div>
+                    <span class="online-badge">
+                        <span class="online-indicator"></span>
+                        <?php
+                        if (isset($_SESSION['temp_user'])) {
+                            $con_mobile_online = new mysqli('localhost', 'root', '', 'dbpilotenshop');
+                            if (!$con_mobile_online->connect_error) {
+                                $result = $con_mobile_online->query("SELECT COUNT(*) AS anzahl FROM user WHERE online=1");
+                                if ($result) {
+                                    $row = $result->fetch_assoc();
+                                    echo $row['anzahl'];
+                                }
+                                $con_mobile_online->close();
+                            }
+                        } else {
+                            echo '0';
+                        }
+                        ?>
+                    </span>
                 </a>
             </div>
 
