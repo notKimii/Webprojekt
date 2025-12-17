@@ -83,40 +83,37 @@
                 <h2>Neuheiten</h2>
                 <div class="product-grid">
                     <div class="product-item">
-                        <a href="/produkt/stylisches-tshirt">
-                            <img src="https://picsum.photos/seed/produktA/300/350" alt="Stylisches T-Shirt">
-                            <h3>Stylisches T-Shirt</h3>
-                            <p class="price">29,99 €</p>
+                        <a href="./php/produkt-detail.php?id=1014">
+                            <img src="./images/pictures/productids/1014/14.1.png" alt="Garmin D2 Mach 1 Aviator Smartwatch">
+                            <h3>Garmin D2 Mach 1 Aviator Smartwatch</h3>
+                            <p class="price">1.199,00 €</p>
                         </a>
                         <button class="add-to-cart-button">In den Warenkorb</button>
                     </div>
                     <div class="product-item">
-                        <a href="/produkt/bequeme-sneaker">
-                            <img src="https://picsum.photos/seed/produktB/300/350" alt="Bequeme Sneaker">
-                            <h3>Bequeme Sneaker</h3>
-                            <p class="price">89,90 €</p>
+                        <a href="./php/produkt-detail.php?id=1035">
+                            <img src="./images/pictures/productids/1035/35.1.png" alt="Aero Cosmetics Wash Wax ALL (Konzentrat, 1L)">
+                            <h3>Aero Cosmetics Wash Wax ALL (Konzentrat, 1L)</h3>
+                            <p class="price">45,00 €</p>
                         </a>
                         <button class="add-to-cart-button">In den Warenkorb</button>
                     </div>
                     <div class="product-item">
-                        <a href="/produkt/elegante-handtasche">
-                            <img src="https://picsum.photos/seed/produktC/300/350" alt="Elegante Handtasche">
-                            <h3>Elegante Handtasche</h3>
-                            <p class="price">120,00 €</p>
+                        <a href="./php/produkt-detail.php?id=1040">
+                            <img src="./images/pictures/productids/1040/40.1.png" alt="H3R Aviation Halon 1211 Feuerlöscher (A344T)">
+                            <h3>H3R Aviation Halon 1211 Feuerlöscher (A344T)</h3>
+                            <p class="price">289,00 €</p>
                         </a>
                         <button class="add-to-cart-button">In den Warenkorb</button>
                     </div>
                     <div class="product-item">
-                        <a href="/produkt/moderne-vase">
-                            <img src="https://picsum.photos/seed/produktD/300/350" alt="Moderne Vase">
-                            <h3>Moderne Vase</h3>
-                            <p class="price">45,50 €</p>
+                        <a href="./php/produkt-detail.php?id=1007">
+                            <img src="./images/pictures/productids/1007/7.1.JPG" alt="Garmin aera 660 Portable Aviation GPS">
+                            <h3>Garmin aera 660 Portable Aviation GPS</h3>
+                            <p class="price">849,00 €</p>
                         </a>
                         <button class="add-to-cart-button">In den Warenkorb</button>
                     </div>
-                </div>
-                <div class="view-all-link">
-                    <a href="/kategorie/neuheiten" class="button-secondary">Alle Neuheiten anzeigen</a>
                 </div>
             </div>
         </section>
@@ -134,41 +131,39 @@
                 <h2>Unsere Bestseller</h2>
                 <div class="product-grid">
                     <div class="product-item">
-                        <a href="/produkt/klassische-jeans">
-                            <img src="https://picsum.photos/seed/bestsellerA/300/350" alt="Klassische Jeans">
-                            <h3>Klassische Jeans</h3>
-                            <p class="price">79,95 €</p>
+                        <a href="./php/produkt-detail.php?id=1001">
+                            <img src="./images/pictures/productids/1001/1.1.JPG" alt="Bose A30 Aviation Headset">
+                            <h3>Bose A30 Aviation Headset</h3>
+                            <p class="price">1.299,00 €</p>
                         </a>
                         <button class="add-to-cart-button">In den Warenkorb</button>
                     </div>
                     <div class="product-item">
-                        <a href="/produkt/kuscheliger-pullover">
-                            <img src="https://picsum.photos/seed/bestsellerB/300/350" alt="Kuscheliger Pullover">
-                            <h3>Kuscheliger Pullover</h3>
-                            <p class="price">59,99 €</p>
+                        <a href="./php/produkt-detail.php?id=1008">
+                            <img src="./images/pictures/productids/1008/8.1.JPG" alt="ICAO Karte Deutschland (Set)">
+                            <h3>ICAO Karte Deutschland (Set)</h3>
+                            <p class="price">25,00 €</p>
                         </a>
                         <button class="add-to-cart-button">In den Warenkorb</button>
                     </div>
                     <div class="product-item">
-                        <a href="/produkt/sportliche-uhr">
-                            <img src="https://picsum.photos/seed/bestsellerC/300/350" alt="Sportliche Uhr">
-                            <h3>Sportliche Uhr</h3>
-                            <p class="price">149,00 €</p>
+                        <a href="./php/produkt-detail.php?id=1003">
+                            <img src="./images/pictures/productids/1003/3.1.JPG" alt="David Clark H10-13.4 Aviation Headset">
+                            <h3>David Clark H10-13.4 Aviation Headset</h3>
+                            <p class="price">389,00 €</p>
                         </a>
                         <button class="add-to-cart-button">In den Warenkorb</button>
                     </div>
                     <div class="product-item">
-                        <a href="/produkt/duftkerze-set">
-                            <img src="https://picsum.photos/seed/bestsellerD/300/350" alt="Duftkerzen Set">
-                            <h3>Duftkerzen Set</h3>
-                            <p class="price">24,90 €</p>
+                        <a href="./php/produkt-detail.php?id=1026">
+                            <img src="./images/pictures/productids/1026/26.1.png" alt="ASA Standard Pilot Logbook">
+                            <h3>ASA Standard Pilot Logbook (SP-30)</h3>
+                            <p class="price">13,00 €</p>
                         </a>
                         <button class="add-to-cart-button">In den Warenkorb</button>
                     </div>
                 </div>
-                <div class="view-all-link">
-                    <a href="/kategorie/bestseller" class="button-secondary">Alle Bestseller anzeigen</a>
-                </div>
+                
             </div>
         </section>
 

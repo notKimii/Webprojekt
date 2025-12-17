@@ -403,7 +403,7 @@ section {
     gap: calc(var(--spacing-unit) * 3);
 }
 .brand-logos .logo-slider img {
-    max-height: 40px;
+    max-height: 150px;
     opacity: 0.6; /* Dezenter */
     transition: opacity var(--transition-speed) ease;
     filter: grayscale(100%); /* Graustufen für minimalistischen Look */
