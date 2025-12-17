@@ -15,34 +15,72 @@
     <main>
 
         <section class="hero-section">
-            <div class="hero-banner" style="background-image: url(./images/pictures/herobanner_2.png);">
-                <div class="hero-content">
-                    <?php
-                    if (isset($_SESSION['temp_user'])) {
-                        include 'php/include/connect.php';
-                        $name = $_SESSION['temp_user']['vorname'];
-                        $nachname = $_SESSION['temp_user']['nachname'];
-
-                        echo "<h1>Wilkommen an Board <span class='hero-highlight'>$name $nachname</span></h1>
-                        <br> Hochwertiges Pilotengear und unwiderstehliche Deals erwarten dich.
-                        <br> Bereit zum Abheben?</p>";
-                    } else {
-                    echo "<h1><span class='hero-highlight'>Next-Level</span> Equipment fürs Cockpit.</h1>
-                    <p>Bereit zum Abheben? Hochwertiges Pilotengear und unwiderstehliche Deals erwarten dich.</p>";
-                    }
-                    ?>
-                    <a href='/kategorie/neuheiten' class='cta-button'>Jetzt Entdecken</a>
-
+            <div class="hero-banner">
+                <div class="container">
+                    <div class="hero-content">
+                        <?php
+                        if (isset($_SESSION['temp_user'])) {
+                            $name = $_SESSION['temp_user']['vorname'];
+                            $nachname = $_SESSION['temp_user']['nachname'];
+                            echo "<div class='greeting'>
+                                    <span class='greeting-text'>Willkommen zurück, $name $nachname!</span>
+                                  </div>";
+                        } else {
+                            echo "<div class='greeting'>
+                                    <span class='greeting-text'>Premium Aviation Equipment</span>
+                                  </div>";
+                        }
+                        ?>
+                        
+                        <h1>
+                            <span class="hero-highlight">Next-Level</span><br>
+                            Equipment fürs Cockpit
+                        </h1>
+                        
+                        <p>
+                            Entdecke hochwertiges Pilotenequipment von führenden Marken. 
+                            Professionelle Headsets, GPS-Systeme, Flugtaschen und mehr für anspruchsvolle Piloten.
+                        </p>
+                        
+                        <div class="hero-cta-group">
+                            <a href="/kategorie/neuheiten" class="cta-button-primary">
+                                Jetzt Entdecken
+                            </a>
+                            <a href="/angebote" class="cta-button-secondary">
+                                Zu den Angeboten
+                            </a>
+                        </div>
+                        
+                        <div class="hero-stats">
+                            <div class="hero-stat-item">
+                                <span class="hero-stat-number">500+</span>
+                                <span class="hero-stat-label">Produkte</span>
+                            </div>
+                            <div class="hero-stat-item">
+                                <span class="hero-stat-number">1.000+</span>
+                                <span class="hero-stat-label">Zufriedene Kunden</span>
+                            </div>
+                            <div class="hero-stat-item">
+                                <span class="hero-stat-number">24/7</span>
+                                <span class="hero-stat-label">Support</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="scroll-indicator">
+                    <span class="scroll-indicator-text">Scroll</span>
+                    <div class="scroll-indicator-icon"></div>
                 </div>
             </div>
         </section>
 
         <section class="usp-bar">
             <div class="container">
-                <div class="usp-item">✓ Kostenloser Versand ab 50€</div>
-                <div class="usp-item">✓ Schnelle Lieferung</div>
-                <div class="usp-item">✓ 30 Tage Rückgaberecht</div>
-                <div class="usp-item">✓ Sichere Bezahlung</div>
+                <div class="usp-item">Kostenloser Versand ab 50€</div>
+                <div class="usp-item">Schnelle Lieferung</div>
+                <div class="usp-item">30 Tage Rückgaberecht</div>
+                <div class="usp-item">Sichere Bezahlung</div>
             </div>
         </section>
 
@@ -74,6 +112,9 @@
                             <h3>Kneeboards & Clipboards</h3>
                         </a>
                     </div>
+                </div>
+                <div class="view-all-link">
+                    <a href="/kategorie/alle" class="button-secondary">Zu allen Kategorien</a>
                 </div>
             </div>
         </section>
@@ -115,14 +156,9 @@
                         <button class="add-to-cart-button">In den Warenkorb</button>
                     </div>
                 </div>
-            </div>
-        </section>
-
-        <section class="special-offer-banner" style="background-image: url(./images/Cockpit_Corner/pictures/sale-banner.png);">
-            <div class="container">
-                <h2>Mid-Season Sale!</h2>
-                <p>Spare jetzt bis zu 30% auf ausgewählte Artikel der aktuellen Saison!</p>
-                <a href="/angebote" class="cta-button">Zu den Angeboten</a>
+                <div class="view-all-link">
+                    <a href="/kategorie/neuheiten" class="button-secondary">Zu den Neuheiten</a>
+                </div>
             </div>
         </section>
 
@@ -163,6 +199,9 @@
                         <button class="add-to-cart-button">In den Warenkorb</button>
                     </div>
                 </div>
+                <div class="view-all-link">
+                    <a href="/angebote" class="button-secondary">Zu den Angeboten</a>
+                </div>
                 
             </div>
         </section>
@@ -184,16 +223,40 @@
                 <h2>Was unsere Kunden sagen</h2>
                 <div class="testimonial-slider">
                     <div class="testimonial-item">
-                        <p>"Tolles Produkt, schnelle Lieferung! Bin sehr zufrieden mit der Qualität und dem Service."</p>
-                        <span>- Max M., Berlin</span>
+                        <div class="quote-icon"></div>
+                        <div class="rating"></div>
+                        <p>Tolles Produkt, schnelle Lieferung! Bin sehr zufrieden mit der Qualität und dem Service. Die Beratung war erstklassig.</p>
+                        <div class="author">
+                            <div class="author-avatar">MM</div>
+                            <div class="author-info">
+                                <span class="author-name">Max Müller</span>
+                                <span class="author-location">Berlin</span>
+                            </div>
+                        </div>
                     </div>
                     <div class="testimonial-item">
-                        <p>"Super Service und eine riesige Auswahl. Die Webseite ist sehr benutzerfreundlich. Kaufe gerne wieder hier."</p>
-                        <span>- Anna S., Hamburg</span>
+                        <div class="quote-icon"></div>
+                        <div class="rating"></div>
+                        <p>Super Service und eine riesige Auswahl. Die Webseite ist sehr benutzerfreundlich. Kaufe gerne wieder hier ein!</p>
+                        <div class="author">
+                            <div class="author-avatar">AS</div>
+                            <div class="author-info">
+                                <span class="author-name">Anna Schmidt</span>
+                                <span class="author-location">Hamburg</span>
+                            </div>
+                        </div>
                     </div>
                     <div class="testimonial-item">
-                        <p>"Die besten Preise, die ich online finden konnte! Und die Ware kam sogar früher als erwartet."</p>
-                        <span>- Tom K., München</span>
+                        <div class="quote-icon"></div>
+                        <div class="rating"></div>
+                        <p>Die besten Preise, die ich online finden konnte! Und die Ware kam sogar früher als erwartet. Absolute Empfehlung!</p>
+                        <div class="author">
+                            <div class="author-avatar">TK</div>
+                            <div class="author-info">
+                                <span class="author-name">Tom Koch</span>
+                                <span class="author-location">München</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -297,11 +360,11 @@
             <div class="footer-bottom">
                 <p>&copy; 2024-<script>
                         document.write(new Date().getFullYear())
-                    </script> [Shop-Name]. Alle Rechte vorbehalten.</p>
+                    </script> Cockpit Corner. Alle Rechte vorbehalten.</p>
             </div>
         </div>
     </footer>
 
 </body>
 
-</html
+</html>
