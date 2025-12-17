@@ -9,8 +9,11 @@ session_start();
 // 2. Pfade prüfen:
 // Wenn login.php in "php/login/" liegt und connect.php in "php/include/",
 // dann ist "../include/connect.php" korrekt.
-include '../include/connect.php';
-include '../include/vendorconnect.php';
+
+
+
+include $_SERVER['DOCUMENT_ROOT'] . '/Webprojekt/php/include/connect.php';
+include $_SERVER['DOCUMENT_ROOT'] . '/Webprojekt/php/include/vendorconnect.php';
 
 // POST-Daten abrufen
 $email = trim($_POST['email'] ?? '');
