@@ -30,18 +30,16 @@ class PHPGangsta_GoogleAuthenticator
             throw new Exception('Bad secret length');
         }
         $secret = '';
-        $rnd = false;
         if (function_exists('random_bytes')) {
             $rnd = random_bytes($secretLength);
-        } elseif (function_exists('mcrypt_create_iv')) {
-            $rnd = mcrypt_create_iv($secretLength, MCRYPT_DEV_URANDOM);
+            for ($i = 0; $i < $secretLength; ++$i) {
+                $secret .= $validChars[ord($rnd[$i]) & 31];
+            }
         } elseif (function_exists('openssl_random_pseudo_bytes')) {
             $rnd = openssl_random_pseudo_bytes($secretLength, $cryptoStrong);
             if (!$cryptoStrong) {
-                $rnd = false;
+                throw new Exception('No source of secure random');
             }
-        }
-        if ($rnd !== false) {
             for ($i = 0; $i < $secretLength; ++$i) {
                 $secret .= $validChars[ord($rnd[$i]) & 31];
             }
