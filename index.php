@@ -176,11 +176,10 @@
             <div class="container">
                 <h2>Beliebte Marken</h2>
                 <div class="logo-slider">
-                    <img src="https://via.placeholder.com/120x60?text=Marke+A" alt="Marke A">
-                    <img src="https://via.placeholder.com/120x60?text=Marke+B" alt="Marke B">
-                    <img src="https://via.placeholder.com/120x60?text=Marke+C" alt="Marke C">
-                    <img src="https://via.placeholder.com/120x60?text=Marke+D" alt="Marke D">
-                    <img src="https://via.placeholder.com/120x60?text=Marke+E" alt="Marke E">
+                    <img src="./images/pictures/marken/Bose.png" alt="Bose">
+                    <img src="./images/pictures/marken/Garmin.png" alt="Garmin">
+                    <img src="./images/pictures/marken/Jeppesen.jpg" alt="Jeppsen">
+                    <img src="./images/pictures/marken/Sennheiser.png" alt="Sennheiser">
                 </div>
             </div>
         </section>
