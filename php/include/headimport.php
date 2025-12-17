@@ -63,12 +63,13 @@ if (session_status() === PHP_SESSION_NONE) {
         margin: 0 30px;
     }
 
+    /* Suche diesen Block: */
     .desktop-search form {
         display: flex;
         border: 2px solid #e0e0e0;
         border-radius: 25px;
-        overflow: hidden;
         transition: border-color 0.3s ease;
+        position: relative; /* Das hier fügen wir zur Sicherheit hinzu */
     }
 
     .desktop-search form:focus-within {
@@ -337,11 +338,12 @@ if (session_status() === PHP_SESSION_NONE) {
         margin-bottom: 25px;
     }
 
+    /* Suche diesen Block: */
     .mobile-search form {
         display: flex;
         border: 2px solid #e0e0e0;
         border-radius: 25px;
-        overflow: hidden;
+        position: relative; 
     }
 
     .mobile-search input[type="search"] {
@@ -593,6 +595,63 @@ if (session_status() === PHP_SESSION_NONE) {
             max-height: 50px;
         }
     }
+    /* Live-Suche Vorschlagsliste */
+    .search-wrapper {
+        position: relative; /* Wichtig, damit die Liste am Input klebt */
+        width: 100%;
+    }
+
+    .search-suggestions {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: white;
+        border: 1px solid #ddd;
+        border-top: none;
+        border-radius: 0 0 8px 8px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        z-index: 1000;
+        display: none; /* Standardmäßig versteckt */
+        overflow: hidden;
+    }
+
+    .suggestion-item {
+        display: block;
+        padding: 10px 15px;
+        color: #333;
+        text-decoration: none;
+        border-bottom: 1px solid #f0f0f0;
+        font-size: 14px;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .suggestion-item:last-child {
+        border-bottom: none;
+    }
+
+    .suggestion-item:hover {
+        background-color: #f5f5f5;
+        color: #667eea;
+    }
+
+    .suggestion-price {
+        font-weight: bold;
+        color: #667eea;
+    }
+    /* Button Ecken rechts abrunden */
+    .desktop-search button, 
+    .mobile-search button {
+        border-radius: 0 22px 22px 0; /* Rechts oben/unten rund */
+    }
+
+    /* Input Feld Ecken links abrunden */
+    .desktop-search input[type="search"],
+    .mobile-search input[type="search"] {
+        border-radius: 22px 0 0 22px; /* Links oben/unten rund */
+    }
     </style>
 
     <div class="announcement-bar">
@@ -611,8 +670,11 @@ if (session_status() === PHP_SESSION_NONE) {
 
                 <!-- Desktop Search -->
                 <div class="desktop-search">
-                    <form action="/suche" method="get">
-                        <input type="search" name="query" placeholder="Produkte suchen..." required>
+                    <form action="/Webprojekt/php/suche.php" method="GET">
+                        <div class="search-wrapper">
+                            <input type="search" name="q" id="desktopSearchInput" placeholder="Produkte suchen..." autocomplete="off" required>
+                            <div id="desktopSuggestions" class="search-suggestions"></div>
+                        </div>
                         <button type="submit">Suchen</button>
                     </form>
                 </div>
@@ -747,8 +809,11 @@ if (session_status() === PHP_SESSION_NONE) {
         <div class="mobile-menu-content">
             <!-- Mobile Search -->
             <div class="mobile-search">
-                <form action="/suche" method="get">
-                    <input type="search" name="query" placeholder="Produkte suchen..." required>
+                <form action="/Webprojekt/php/suche.php" method="GET">
+                    <div class="search-wrapper">
+                        <input type="search" name="q" id="mobileSearchInput" placeholder="Produkte suchen..." autocomplete="off" required>
+                        <div id="mobileSuggestions" class="search-suggestions"></div>
+                    </div>
                     <button type="submit">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <circle cx="11" cy="11" r="8"></circle>
@@ -950,4 +1015,85 @@ document.addEventListener('DOMContentLoaded', function() {
 
     updateCartCount();
 });
+
+// --- DEBUG LIVE SUCHE START ---
+    
+    function setupLiveSearch(inputId, suggestionsId) {
+        const input = document.getElementById(inputId);
+        const suggestionsBox = document.getElementById(suggestionsId);
+
+        // Debugging: Prüfen ob Elemente gefunden wurden
+        if (!input) {
+            console.error("FEHLER: Input-Feld mit ID '" + inputId + "' nicht gefunden!");
+            return;
+        }
+        if (!suggestionsBox) {
+            console.error("FEHLER: Vorschlags-Box mit ID '" + suggestionsId + "' nicht gefunden!");
+            return;
+        }
+
+        input.addEventListener('input', function() {
+            const searchTerm = this.value.trim();
+
+            if (searchTerm.length < 1) {
+                suggestionsBox.style.display = 'none';
+                suggestionsBox.innerHTML = '';
+                return;
+            }
+
+            // Fetch starten
+            const url = '/Webprojekt/php/suche_live.php?term=' + encodeURIComponent(searchTerm);
+            console.log("Rufe URL auf:", url); // Zeigt in der Konsole (F12) was passiert
+
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Netzwerk-Antwort war nicht ok");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("Daten empfangen:", data); // Zeigt Daten in Konsole
+                    suggestionsBox.innerHTML = '';
+
+                    if (data.length > 0) {
+                        data.forEach(item => {
+                            const link = document.createElement('a');
+                            link.href = '/Webprojekt/php/produkt-detail.php?id=' + item.id;
+                            link.classList.add('suggestion-item');
+                            
+                            // Preis formatieren
+                            let preis = parseFloat(item.preis).toFixed(2).replace('.', ',');
+
+                            link.innerHTML = `
+                                <span style="font-weight:500;">${item.name}</span>
+                                <span class="suggestion-price" style="color:#667eea; font-weight:bold;">${preis} €</span>
+                            `;
+                            
+                            suggestionsBox.appendChild(link);
+                        });
+                        suggestionsBox.style.display = 'block';
+                    } else {
+                        suggestionsBox.style.display = 'none';
+                    }
+                })
+                .catch(error => {
+                    console.error('Fetch Fehler:', error);
+                });
+        });
+
+        // Schließen bei Klick außerhalb
+        document.addEventListener('click', function(e) {
+            if (e.target !== input && e.target !== suggestionsBox) {
+                suggestionsBox.style.display = 'none';
+            }
+        });
+    }
+
+    // Erst ausführen, wenn die Seite geladen ist
+    document.addEventListener('DOMContentLoaded', function() {
+        setupLiveSearch('desktopSearchInput', 'desktopSuggestions');
+        setupLiveSearch('mobileSearchInput', 'mobileSuggestions');
+    });
+    // --- DEBUG LIVE SUCHE ENDE ---
 </script>
