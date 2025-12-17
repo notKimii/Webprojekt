@@ -8,10 +8,10 @@
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <title>Cockpit Corner - Alles für Piloten: Flugtaschen, Zubehör & mehr</title>
     <link rel="stylesheet" href="style.css">
-    <?php include 'php/include/headimport.php'; ?>
 </head>
 
 <body>
+    <?php include 'php/include/headimport.php'; ?>
     <main>
 
         <section class="hero-section">

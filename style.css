@@ -250,22 +250,6 @@ header {
     gap: 30px;
 }
 
-
-.header-action-item {
-    display: flex;
-    justify-content: center;
-    text-align: center;
-    flex-direction: column;
-}
-
-.header-action-item > a{
-    border-radius: 5px;
-    padding: 5px 13px 5px 13px;
-    transition: box-shadow 0.3s ease;
-    color: white;
-    font-size: 0.9rem;
-}
-
 .cart-icon {
     font-size: 1.3rem;
     position: relative;
@@ -768,6 +752,7 @@ footer {
     .header-main .container {
         flex-wrap: wrap; /* Logo oben, Rest darunter */
         justify-content: center;
+        align-items: center;
     }
     .logo { width: 100%; text-align: center; margin-bottom: var(--spacing-unit); }
     .search-bar { order: 2; width: 100%; margin: 0 0 var(--spacing-unit) 0;}
