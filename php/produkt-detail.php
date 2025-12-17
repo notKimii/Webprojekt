@@ -205,6 +205,66 @@ if ($absoluterPfad && is_dir($absoluterPfad)) {
     }
     .buy-now-button:hover { background-color: #e8e8ed; }
     .buy-now-button:active { transform: scale(0.98); }
+
+    /* ---- NEU: Styles für den Mengenzähler ---- */
+    .cart-actions {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        margin-bottom: 15px;
+        width: 100%;
+    }
+    .quantity-control {
+        display: flex;
+        align-items: center;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        background-color: var(--background-color-light);
+        height: 52px; /* Gleiche Höhe wie der Button (etwas angepasst) */
+        flex-shrink: 0;
+    }
+    .qty-btn {
+        width: 40px;
+        height: 100%;
+        border: none;
+        background: transparent;
+        font-size: 1.2rem;
+        cursor: pointer;
+        color: var(--text-color-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .qty-btn:hover {
+        background-color: rgba(0,0,0,0.05);
+    }
+    .qty-input {
+        width: 45px;
+        height: 100%;
+        border: none;
+        background: transparent;
+        text-align: center;
+        font-size: 1.1rem;
+        font-weight: 500;
+        -moz-appearance: textfield;
+        color: var(--text-color-primary);
+        padding: 0;
+    }
+    .qty-input::-webkit-outer-spin-button,
+    .qty-input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    .add-to-cart-form {
+        width: 100%;
+    }
+    /* Buttons im Formular anpassen */
+    .add-to-cart-form .buy-now-button {
+        margin-bottom: 0; /* Reset für Flexbox */
+        flex-grow: 1;
+    }
+    /* ------------------------------------------- */
+
     .product-shipping-info {
         margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border-color);
     }
@@ -284,6 +344,10 @@ if ($absoluterPfad && is_dir($absoluterPfad)) {
         .variant-option { flex-direction: column; align-items: flex-start; }
         .variant-option label { width: auto; margin-bottom: 5px; }
         .variant-option select { width: 100%; }
+        /* Auf ganz kleinen Handys evtl. umbrechen */
+        .cart-actions { flex-wrap: wrap; }
+        .quantity-control { width: 100%; justify-content: space-between; margin-bottom: 10px; }
+        .qty-input { flex-grow: 1; }
     }
     </style>
 </head>
@@ -359,11 +423,19 @@ if ($absoluterPfad && is_dir($absoluterPfad)) {
                 <div class="shipping-detail"><i class="fas fa-box-open"></i><span><?php echo number_format(floatval($produkt['lagerbestand'])); ?> Stück auf Lager</span></div>
             </div>
 
-            <form action="/php/cart-add.php" method="post" style="margin-bottom: 12px;">
+            <form action="/php/cart-add.php" method="post" class="add-to-cart-form">
                 <input type="hidden" name="produkt_id" value="<?php echo $produktId; ?>">
-                </form>
-            <button class="buy-now-button">In den Warenkorb</button>
+                
+                <div class="cart-actions">
+                    <div class="quantity-control">
+                        <button type="button" class="qty-btn" onclick="updateQty(-1)">−</button>
+                        <input type="number" name="anzahl" id="qtyInput" class="qty-input" value="1" min="1" max="<?php echo $produkt['lagerbestand']; ?>">
+                        <button type="button" class="qty-btn" onclick="updateQty(1)">+</button>
+                    </div>
 
+                    <button type="submit" class="buy-now-button">In den Warenkorb</button>
+                </div>
+            </form>
             <div class="product-shipping-info">
                 <div class="shipping-detail"><i class="fas fa-truck"></i><span>Kostenloser Versand</span></div>
                 <div class="shipping-detail"><i class="fas fa-box-open"></i><span>Lieferung in 1-3 Werktagen</span></div>
@@ -522,6 +594,32 @@ if ($absoluterPfad && is_dir($absoluterPfad)) {
     if (activeTabLink) {
         const initialTabId = activeTabLink.getAttribute('onclick').match(/'([^']+)'/)[1];
         openTab(null, initialTabId);
+    }
+
+    // NEU: Funktion für Mengenänderung (+/- Buttons)
+    function updateQty(change) {
+        const input = document.getElementById('qtyInput');
+        if (!input) return; // Sicherheitscheck
+        
+        let currentValue = parseInt(input.value);
+        if (isNaN(currentValue)) currentValue = 1;
+
+        // Lagerbestand als Limit holen
+        const maxStock = input.getAttribute('max') ? parseInt(input.getAttribute('max')) : 999;
+        
+        let newValue = currentValue + change;
+
+        // Nicht unter 1 gehen
+        if (newValue < 1) {
+            newValue = 1;
+        }
+        
+        // Nicht über Lagerbestand gehen (wenn Bestand > 0)
+        if (maxStock > 0 && newValue > maxStock) {
+            newValue = maxStock;
+        }
+
+        input.value = newValue;
     }
 </script>
 
