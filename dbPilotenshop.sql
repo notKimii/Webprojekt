@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 25. Nov 2025 um 15:56
+-- Erstellungszeit: 18. Dez 2025 um 17:21
 -- Server-Version: 10.4.32-MariaDB
 -- PHP-Version: 8.2.12
 
@@ -46,10 +46,10 @@ CREATE TABLE `artikel` (
 INSERT INTO `artikel` (`id`, `name`, `beschreibung`, `groesse`, `preis`, `lagerbestand`, `kategorie`, `bewertung`, `anzahl_bewertungen`) VALUES
 (1001, 'Bose A30 Aviation Headset', 'Premium ANR-Headset mit hohem Tragekomfort und exzellenter Lärmreduzierung.', 'O', 1299, 25, 'Headsets', 5, 7),
 (1002, 'Lightspeed Zulu 3 ANR Headset', 'Beliebtes ANR-Headset, bekannt für Komfort, Haltbarkeit und klare Audioqualität.', 'O', 950, 30, 'Headsets', 4, 6),
-(1003, 'David Clark H10-13.4 Aviation Headset', 'Klassisches, robustes PNR-Headset, ein Standard in der Allgemeinen Luftfahrt.', 'O', 389, 50, 'Headsets', 3, 5),
+(1003, 'David Clark H10-13.4 Aviation Headset', 'Klassisches, robustes PNR-Headset, ein Standard in der Allgemeinen Luftfahrt.', 'O', 389, 50, 'Headsets', 3, 3),
 (1004, 'Yaesu FTA-550L Pro-X', 'Luftfahrt-Handfunkgerät mit NAV/COM und GPS-Empfänger.', 'O', 299, 15, 'Headsets', NULL, 0),
 (1005, 'Sennheiser S1 Digital Aviation Headset', 'ANR-Headset mit adaptiver Lärmkompensation und individuell einstellbarem Anpressdruck.', 'O', 1050, 18, 'Headsets', NULL, 0),
-(1006, 'Icom IC-A25NE (8.33/25 kHz)', 'Leistungsstarkes Handfunkgerät mit Navigation (VOR, GPS) und Bluetooth.', 'O', 489, 22, 'Headsets', NULL, 0),
+(1006, 'Icom IC-A25NE (8.33/25 kHz)', 'Leistungsstarkes Handfunkgerät mit Navigation (VOR, GPS) und Bluetooth.', 'O', 489, 22, 'Headsets', 4, 1),
 (1007, 'Garmin aera 660 Portable Aviation GPS', 'Tragbares GPS mit Touchscreen, 3D Vision und umfangreichen Navigationsfunktionen.', 'O', 849, 20, 'Navigation', NULL, 0),
 (1008, 'ICAO Karte Deutschland (Set)', 'Offizielles Kartenset der Deutschen Flugsicherung für VFR-Flüge in Deutschland.', 'O', 25, 150, 'Navigation', NULL, 0),
 (1009, 'Jeppesen CR-3 Circular Flight Computer', 'Klassischer mechanischer Flugrechner für Flugplanungsberechnungen.', 'O', 36, 70, 'Navigation', NULL, 0),
@@ -142,7 +142,9 @@ INSERT INTO `bewertungen` (`id`, `user_id`, `artikel_id`, `wert`, `kommentar`, `
 (19, 57, 1002, 5, 'Preis-Leistung ist hier unschlagbar. Sehr robustes Kabel.', '2023-12-02 07:30:00'),
 (20, 58, 1003, 4, 'Der Klassiker. Unkaputtbar, aber halt nur passives Noise Cancelling. Für Schüler perfekt.', '2023-12-01 09:00:00'),
 (21, 59, 1003, 2, 'Nach einer Stunde bekomme ich Kopfschmerzen. Es ist mir persönlich etwas zu schwer.', '2023-12-05 12:30:00'),
-(22, 60, 1001, 5, 'Das beste Headset, das ich je hatte. Das ANC ist der Wahnsinn!', '2023-10-15 12:30:00');
+(22, 60, 1001, 5, 'Das beste Headset, das ich je hatte. Das ANC ist der Wahnsinn!', '2023-10-15 12:30:00'),
+(32, 64, 1003, 4, 'Gut aber stört beim tragen', '2025-12-17 23:38:47'),
+(33, 65, 1006, 4, 'hört sich schlecht an', '2025-12-18 16:13:14');
 
 --
 -- Trigger `bewertungen`
@@ -216,7 +218,17 @@ INSERT INTO `logs` (`id`, `user_id`, `login_time`, `screen_resolution`, `operati
 (0, 50, '2025-06-05 01:27:15', '1920x1080', 'Win32'),
 (0, 51, '2025-06-05 01:30:50', '1920x1080', 'Win32'),
 (0, 50, '2025-06-05 01:38:03', '1920x1080', 'Win32'),
-(0, 50, '2025-06-05 02:09:47', '1920x1080', 'Win32');
+(0, 50, '2025-06-05 02:09:47', '1920x1080', 'Win32'),
+(0, 64, '2025-12-17 18:58:36', '1920x1080', 'Win32'),
+(0, 64, '2025-12-17 19:11:13', '1920x1080', 'Win32'),
+(0, 64, '2025-12-17 19:33:24', '1920x1080', 'Win32'),
+(0, 64, '2025-12-17 19:33:41', '1920x1080', 'Win32'),
+(0, 64, '2025-12-17 22:29:12', '1920x1080', 'Win32'),
+(0, 64, '2025-12-17 23:26:36', '1920x1080', 'Win32'),
+(0, 64, '2025-12-18 00:34:44', '1920x1080', 'Win32'),
+(0, 65, '2025-12-18 15:20:25', '1920x1080', 'Win32'),
+(0, 65, '2025-12-18 17:12:05', '1920x1080', 'Win32'),
+(0, 65, '2025-12-18 17:12:24', '1920x1080', 'Win32');
 
 --
 -- Trigger `logs`
@@ -253,7 +265,9 @@ INSERT INTO `punkte` (`user_id`, `punktestand`) VALUES
 (57, 100),
 (58, 100),
 (59, 100),
-(60, 100);
+(60, 100),
+(64, 114),
+(65, 106);
 
 --
 -- Trigger `punkte`
@@ -313,7 +327,22 @@ INSERT INTO `punktelog` (`transaktions_id`, `user_id`, `datum`, `art`, `punkte_a
 (19, 57, '2025-11-25 15:51:46', NULL, 0, 100, NULL),
 (20, 58, '2025-11-25 15:51:46', NULL, 0, 100, NULL),
 (21, 59, '2025-11-25 15:51:46', NULL, 0, 100, NULL),
-(22, 60, '2025-11-25 15:51:46', NULL, 0, 100, NULL);
+(22, 60, '2025-11-25 15:51:46', NULL, 0, 100, NULL),
+(23, 61, '2025-12-17 10:29:53', NULL, 0, 100, NULL),
+(24, 62, '2025-12-17 10:32:42', NULL, 0, 100, NULL),
+(25, 63, '2025-12-17 18:43:10', NULL, 0, 100, NULL),
+(26, 64, '2025-12-17 18:55:18', NULL, 0, 100, NULL),
+(27, 64, '2025-12-17 18:58:36', 'Automatisch', 2, 102, 'Änderung am Punktestand'),
+(28, 64, '2025-12-17 19:11:13', 'Automatisch', 2, 104, 'Änderung am Punktestand'),
+(29, 64, '2025-12-17 19:33:24', 'Automatisch', 2, 106, 'Änderung am Punktestand'),
+(30, 64, '2025-12-17 19:33:41', 'Automatisch', 2, 108, 'Änderung am Punktestand'),
+(31, 64, '2025-12-17 22:29:12', 'Automatisch', 2, 110, 'Änderung am Punktestand'),
+(32, 64, '2025-12-17 23:26:36', 'Automatisch', 2, 112, 'Änderung am Punktestand'),
+(33, 64, '2025-12-18 00:34:44', 'Automatisch', 2, 114, 'Änderung am Punktestand'),
+(34, 65, '2025-12-18 15:19:39', NULL, 0, 100, NULL),
+(35, 65, '2025-12-18 15:20:25', 'Automatisch', 2, 102, 'Änderung am Punktestand'),
+(36, 65, '2025-12-18 17:12:05', 'Automatisch', 2, 104, 'Änderung am Punktestand'),
+(37, 65, '2025-12-18 17:12:24', 'Automatisch', 2, 106, 'Änderung am Punktestand');
 
 -- --------------------------------------------------------
 
@@ -359,7 +388,9 @@ INSERT INTO `user` (`id`, `vorname`, `nachname`, `mail`, `adresse`, `plz`, `ort`
 (57, 'Michael', 'Klein', 'm.klein@test.de', 'Hauptstraße 88', 60311, 'Frankfurt', '8c405ae1daf2575440a037284f934421', NULL, b'0'),
 (58, 'Anna', 'Wagner', 'anna.wagner@pilot.com', 'Flughafenring 2', 70173, 'Stuttgart', '8c405ae1daf2575440a037284f934421', NULL, b'1'),
 (59, 'Tom', 'Becker', 'tom.becker@aviation.org', 'Lindenallee 45', 4109, 'Leipzig', '8c405ae1daf2575440a037284f934421', NULL, b'0'),
-(60, 'Laura', 'Hoffmann', 'laura.h@student.de', 'Uniplatz 1', 69117, 'Heidelberg', '8c405ae1daf2575440a037284f934421', NULL, b'0');
+(60, 'Laura', 'Hoffmann', 'laura.h@student.de', 'Uniplatz 1', 69117, 'Heidelberg', '8c405ae1daf2575440a037284f934421', NULL, b'0'),
+(64, 'Fabian', 'tittl', 'Andre.Reiff@Student.Reutlingen-University.DE', 'Moltkestraße 32', 72805, 'Lichtenstein', '47d658a097d490e0d26650c77ff4bf755fa8a3d86acc5df95b3844f4b3c9cb80b20ac1fe7e5b67564d4c15798a1b9b4c5bcfd2f7b5a6eeeb585381c95221fc1c', 'WOHLEZEIY7EBKYHJ', b'1'),
+(65, 'Andre', 'Reiff', 'andre.reiff@online.de', 'Moltkestraße 32', 72805, 'Lichtenstein', '47d658a097d490e0d26650c77ff4bf755fa8a3d86acc5df95b3844f4b3c9cb80b20ac1fe7e5b67564d4c15798a1b9b4c5bcfd2f7b5a6eeeb585381c95221fc1c', 'CTO6DGUKUT44GWV5', b'1');
 
 --
 -- Trigger `user`
@@ -382,117 +413,28 @@ DELIMITER ;
 --
 -- Tabellenstruktur für Tabelle `warenkorbkopf`
 --
--- phpMyAdmin SQL Dump
--- version 5.2.1
--- https://www.phpmyadmin.net/
---
--- Host: localhost
--- Erstellungszeit: 18. Dez 2025 um 17:14
--- Server-Version: 10.4.28-MariaDB
--- PHP-Version: 8.2.4
-
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-START TRANSACTION;
-SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-
---
--- Datenbank: `dbpilotenshop`
---
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `warenkorbkopf`
---
 
 CREATE TABLE `warenkorbkopf` (
   `id` int(11) NOT NULL,
-  `kunde_id` int(11) NOT NULL,
-  `erstellt_am` datetime DEFAULT current_timestamp(),
-  `aktiv` tinyint(1) NOT NULL
+  `kunde_id` int(11) DEFAULT NULL,
+  `erstellt_am` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Daten für Tabelle `warenkorbkopf`
---
-
-INSERT INTO `warenkorbkopf` (`id`, `kunde_id`, `erstellt_am`, `aktiv`) VALUES
-(1, 65, '2025-12-11 23:02:55', 1);
-
---
--- Indizes der exportierten Tabellen
---
-
---
--- Indizes für die Tabelle `warenkorbkopf`
---
-ALTER TABLE `warenkorbkopf`
-  ADD PRIMARY KEY (`id`);
-
---
--- AUTO_INCREMENT für exportierte Tabellen
---
-
---
--- AUTO_INCREMENT für Tabelle `warenkorbkopf`
---
-ALTER TABLE `warenkorbkopf`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `warenkorbposition`
---
-
-
 -- Tabellenstruktur für Tabelle `warenkorbposition`
 --
 
 CREATE TABLE `warenkorbposition` (
-  `id` int(11) NOT NULL,
-  `warenkorb_id` int(11) DEFAULT NULL,
-  `artikel_id` int(11) DEFAULT NULL,
+  `warenkorb_id` int(11) NOT NULL,
+  `artikel_id` int(11) NOT NULL,
   `menge` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Daten für Tabelle `warenkorbposition`
+-- Indizes der exportierten Tabellen
 --
-
-INSERT INTO `warenkorbposition` (`id`, `warenkorb_id`, `artikel_id`, `menge`) VALUES
-(1, 1, 1001, 2);
-
-
---
--- Indizes für die Tabelle `warenkorbposition`
---
-ALTER TABLE `warenkorbposition`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `warenkorb_id` (`warenkorb_id`),
-  ADD KEY `artikel_id` (`artikel_id`);
-
---
--- AUTO_INCREMENT für exportierte Tabellen
---
-
---
--- AUTO_INCREMENT für Tabelle `warenkorbposition`
---
-ALTER TABLE `warenkorbposition`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-COMMIT;
 
 --
 -- Indizes für die Tabelle `artikel`
@@ -595,7 +537,7 @@ ALTER TABLE `bestellposition`
 -- AUTO_INCREMENT für Tabelle `bewertungen`
 --
 ALTER TABLE `bewertungen`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT für Tabelle `cart`
@@ -607,7 +549,7 @@ ALTER TABLE `cart`
 -- AUTO_INCREMENT für Tabelle `punktelog`
 --
 ALTER TABLE `punktelog`
-  MODIFY `transaktions_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `transaktions_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- AUTO_INCREMENT für Tabelle `rechnungskopf`
@@ -619,7 +561,7 @@ ALTER TABLE `rechnungskopf`
 -- AUTO_INCREMENT für Tabelle `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
 
 --
 -- AUTO_INCREMENT für Tabelle `warenkorbkopf`
