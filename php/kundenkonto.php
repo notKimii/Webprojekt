@@ -53,37 +53,54 @@ $stmtOnline->execute([$userID]);
     <title>Mein Konto - Cockpit Corner</title>
     <link rel="stylesheet" href="/Webprojekt/style.css">
     <style>
-        /* Kundenkonto spezifische Styles */
+        /* Kundenkonto spezifische Styles - angepasst an Hauptdesign */
         .account-container {
-            max-width: 1400px;
+            max-width: var(--container-max-width);
             margin: 0 auto;
-            padding: 40px 20px;
+            padding: calc(var(--spacing-unit) * 3) calc(var(--spacing-unit) * 1.5);
         }
 
         .account-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 50%, #334155 100%);
             color: white;
-            padding: 40px 20px;
-            margin-bottom: 40px;
-            border-radius: 10px;
+            padding: calc(var(--spacing-unit) * 3) calc(var(--spacing-unit) * 2);
+            margin-bottom: calc(var(--spacing-unit) * 3);
+            border-radius: var(--border-radius-xl);
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .account-header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
         }
 
         .account-header h1 {
             margin: 0 0 10px 0;
-            font-size: 32px;
+            font-size: clamp(1.75rem, 4vw, 2.25rem);
+            color: white;
+            position: relative;
+            z-index: 1;
         }
 
         .account-header p {
             margin: 0;
             opacity: 0.9;
+            position: relative;
+            z-index: 1;
+            color: rgba(255, 255, 255, 0.85);
         }
 
         .account-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-bottom: 40px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: calc(var(--spacing-unit) * 2);
+            margin-bottom: calc(var(--spacing-unit) * 3);
         }
 
         @media (max-width: 768px) {
@@ -94,76 +111,136 @@ $stmtOnline->execute([$userID]);
 
         .account-card {
             background: white;
-            border-radius: 10px;
-            padding: 30px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-            border: 1px solid #e0e0e0;
+            border-radius: var(--border-radius-lg);
+            padding: calc(var(--spacing-unit) * 2);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .account-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
         }
 
         .account-card h2 {
-            color: #333;
+            color: var(--primary-color);
             margin-top: 0;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #667eea;
-            font-size: 22px;
+            padding-bottom: calc(var(--spacing-unit));
+            border-bottom: 2px solid var(--accent-color);
+            font-size: 1.25rem;
+            margin-bottom: calc(var(--spacing-unit) * 1.5);
         }
 
         .user-info-row {
             display: flex;
             justify-content: space-between;
-            padding: 15px 0;
-            border-bottom: 1px solid #f0f0f0;
+            padding: calc(var(--spacing-unit) * 0.75) 0;
+            border-bottom: 1px solid var(--light-color);
             align-items: center;
         }
 
-        .user-info-row:last-child {
+        .user-info-row:last-of-type {
             border-bottom: none;
         }
 
         .user-info-label {
             font-weight: 600;
-            color: #555;
-            min-width: 150px;
+            color: var(--text-light);
+            min-width: 130px;
+            font-size: 0.9rem;
         }
 
         .user-info-value {
-            color: #333;
+            color: var(--text-color);
             text-align: right;
+            font-size: 0.95rem;
         }
 
         .points-display {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 20px;
-            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-            border-radius: 8px;
-            margin: 20px 0;
+            padding: calc(var(--spacing-unit) * 1.5);
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+            border-radius: var(--border-radius);
+            margin: calc(var(--spacing-unit) * 1.5) 0;
         }
 
         .points-value {
-            font-size: 36px;
-            font-weight: bold;
-            color: #333;
+            font-size: 2.25rem;
+            font-weight: 800;
+            color: white;
         }
 
         .points-label {
-            font-size: 14px;
-            color: #555;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .points-icon {
+            font-size: 2rem;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 12px;
+            border-radius: 50%;
+        }
+
+        .points-info-box {
+            background: var(--light-color);
+            padding: calc(var(--spacing-unit) * 1.25);
+            border-radius: var(--border-radius);
+            margin-top: calc(var(--spacing-unit) * 1.5);
+            border: 1px solid var(--border-color);
+        }
+
+        .points-info-box h3 {
+            margin: 0 0 calc(var(--spacing-unit) * 0.75) 0;
+            color: var(--primary-color);
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .points-info-box ul {
+            margin: 0;
+            padding-left: calc(var(--spacing-unit) * 1.25);
+            color: var(--text-light);
+            font-size: 0.875rem;
+            list-style: disc;
+        }
+
+        .points-info-box ul li {
+            margin-bottom: 6px;
+        }
+
+        .points-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: calc(var(--spacing-unit));
+            color: var(--accent-color);
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .points-link:hover {
+            color: var(--accent-hover);
+            gap: 12px;
         }
 
         .edit-button-container {
-            margin-top: 20px;
+            margin-top: calc(var(--spacing-unit) * 1.5);
             display: flex;
             gap: 10px;
         }
 
         .btn-edit, .btn-logout {
             flex: 1;
-            padding: 12px 20px;
+            padding: 14px 20px;
             border: none;
-            border-radius: 8px;
-            font-size: 14px;
+            border-radius: var(--border-radius);
+            font-size: 0.9rem;
             font-weight: 600;
             cursor: pointer;
             text-decoration: none;
@@ -171,124 +248,207 @@ $stmtOnline->execute([$userID]);
             align-items: center;
             justify-content: center;
             gap: 8px;
-            transition: all 0.3s ease;
+            transition: var(--transition);
         }
 
         .btn-edit {
-            background: #667eea;
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
             color: white;
+            box-shadow: var(--shadow-sm);
         }
 
         .btn-edit:hover {
-            background: #5568d3;
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            box-shadow: var(--shadow-md);
         }
 
         .btn-logout {
-            background: #f44336;
-            color: white;
+            background: white;
+            color: #ef4444;
+            border: 2px solid #ef4444;
         }
 
         .btn-logout:hover {
-            background: #da190b;
+            background: #ef4444;
+            color: white;
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(244, 67, 54, 0.3);
         }
 
+        /* Edit Form Styles */
+        .hidden-form {
+            display: none;
+        }
+
+        .edit-form {
+            background: white;
+            border-radius: var(--border-radius-lg);
+            padding: calc(var(--spacing-unit) * 2);
+            margin-bottom: calc(var(--spacing-unit) * 3);
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-color);
+        }
+
+        .edit-form h2 {
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: calc(var(--spacing-unit) * 2);
+            font-size: 1.35rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: calc(var(--spacing-unit));
+        }
+
+        @media (max-width: 480px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-group {
+            margin-bottom: calc(var(--spacing-unit) * 1.25);
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: var(--text-color);
+            font-size: 0.9rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius);
+            font-size: 0.95rem;
+            transition: var(--transition);
+            background: white;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .save-button {
+            padding: 14px 28px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .save-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .cancel-button {
+            background: var(--secondary-color) !important;
+        }
+
+        /* Orders Section */
         .orders-section {
-            margin-top: 40px;
+            background: white;
+            border-radius: var(--border-radius-lg);
+            padding: calc(var(--spacing-unit) * 2);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
         }
 
         .orders-section h2 {
-            color: #333;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #667eea;
-            font-size: 22px;
+            color: var(--primary-color);
             margin-top: 0;
+            margin-bottom: calc(var(--spacing-unit) * 2);
+            font-size: 1.35rem;
         }
 
         .orders-list {
-            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: calc(var(--spacing-unit) * 1.5);
         }
 
         .order-item {
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-            border-left: 4px solid #667eea;
-            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            transition: var(--transition);
         }
 
         .order-item:hover {
-            box-shadow: 0 4px 15px rgba(0,0,0,0.12);
-            transform: translateY(-2px);
+            border-color: var(--accent-color);
+            box-shadow: var(--shadow-sm);
         }
 
         .order-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            padding: calc(var(--spacing-unit) * 1.25);
+            background: var(--light-color);
+            border-bottom: 1px solid var(--border-color);
             flex-wrap: wrap;
             gap: 10px;
         }
 
         .order-id {
-            font-size: 18px;
-            font-weight: 600;
-            color: #333;
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 1rem;
         }
 
         .order-date {
-            color: #666;
-            font-size: 14px;
+            color: var(--text-light);
+            font-size: 0.85rem;
+            margin-top: 4px;
         }
 
         .order-status {
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 0.8rem;
             font-weight: 600;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .status-pending {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .status-completed {
-            background: #d4edda;
-            color: #155724;
+            background: #fef3c7;
+            color: #d97706;
         }
 
         .status-shipped {
-            background: #d1ecf1;
-            color: #0c5460;
+            background: #dbeafe;
+            color: var(--accent-color);
         }
 
-        .status-cancelled {
-            background: #f8d7da;
-            color: #721c24;
+        .status-completed {
+            background: #d1fae5;
+            color: #059669;
         }
 
         .order-items {
-            background: #f9f9f9;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 15px;
+            padding: calc(var(--spacing-unit));
         }
 
         .order-item-row {
-            display: flex;
-            justify-content: space-between;
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            gap: calc(var(--spacing-unit));
+            padding: calc(var(--spacing-unit) * 0.75) 0;
+            border-bottom: 1px solid var(--light-color);
             align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid #e0e0e0;
-            font-size: 14px;
         }
 
         .order-item-row:last-child {
@@ -296,217 +456,124 @@ $stmtOnline->execute([$userID]);
         }
 
         .order-item-name {
-            flex: 1;
-            color: #333;
-            font-weight: 500;
+            color: var(--text-color);
+            font-size: 0.95rem;
         }
 
         .order-item-qty {
-            color: #666;
-            margin: 0 20px;
-            text-align: center;
-            min-width: 50px;
+            color: var(--text-light);
+            font-size: 0.875rem;
         }
 
         .order-item-price {
-            color: #667eea;
             font-weight: 600;
-            min-width: 100px;
-            text-align: right;
+            color: var(--primary-color);
+            font-size: 0.95rem;
         }
 
         .order-total {
             display: flex;
-            justify-content: flex-end;
-            padding-top: 10px;
-            border-top: 2px solid #667eea;
-            margin-top: 10px;
-            font-size: 16px;
-            font-weight: 600;
+            justify-content: space-between;
+            padding: calc(var(--spacing-unit) * 1.25);
+            background: var(--primary-color);
+            color: white;
         }
 
         .order-total-label {
-            margin-right: 20px;
+            font-weight: 500;
         }
 
         .order-total-value {
-            color: #667eea;
-            min-width: 120px;
-            text-align: right;
+            font-weight: 700;
+            font-size: 1.1rem;
         }
 
+        /* Empty State */
         .empty-state {
             text-align: center;
-            padding: 60px 20px;
-            color: #666;
+            padding: calc(var(--spacing-unit) * 4) calc(var(--spacing-unit) * 2);
         }
 
         .empty-state-icon {
-            font-size: 48px;
-            margin-bottom: 20px;
+            font-size: 4rem;
+            margin-bottom: calc(var(--spacing-unit));
+            opacity: 0.5;
         }
 
         .empty-state h3 {
-            color: #333;
-            margin-bottom: 10px;
+            color: var(--primary-color);
+            margin-bottom: calc(var(--spacing-unit) * 0.75);
+            font-size: 1.25rem;
         }
 
         .empty-state p {
-            margin-bottom: 20px;
+            color: var(--text-light);
+            margin-bottom: calc(var(--spacing-unit) * 1.5);
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .btn-shop {
-            display: inline-block;
-            padding: 12px 30px;
-            background: #667eea;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
             color: white;
             text-decoration: none;
-            border-radius: 8px;
+            border-radius: var(--border-radius);
             font-weight: 600;
-            transition: all 0.3s ease;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
         }
 
         .btn-shop:hover {
-            background: #5568d3;
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-        }
-
-        .two-column {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-top: 30px;
-        }
-
-        @media (max-width: 768px) {
-            .two-column {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .edit-form {
-            background: white;
-            border-radius: 10px;
-            padding: 30px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-            border: 1px solid #e0e0e0;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #333;
-        }
-
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 14px;
-            transition: border-color 0.3s ease;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        @media (max-width: 768px) {
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .save-button {
-            padding: 12px 30px;
-            background: #667eea;
+            box-shadow: var(--shadow-md);
             color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
         }
 
-        .save-button:hover {
-            background: #5568d3;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        /* Custom Footer für diese Seite */
+        .account-footer {
+            background: linear-gradient(180deg, var(--primary-color), var(--primary-light));
+            color: #cbd5e1;
+            padding: calc(var(--spacing-unit) * 2) 0;
+            margin-top: calc(var(--spacing-unit) * 4);
+            text-align: center;
+            font-size: 0.9rem;
         }
 
-        .hidden-form {
-            display: none;
-        }
-
-        .breadcrumb {
-            margin-bottom: 30px;
-            padding: 15px 0;
-        }
-
-        .breadcrumb a {
-            color: #667eea;
+        .account-footer a {
+            color: rgba(255, 255, 255, 0.8);
             text-decoration: none;
-            margin-right: 10px;
+            transition: var(--transition);
         }
 
-        .breadcrumb a:hover {
-            text-decoration: underline;
-        }
-
-        .breadcrumb span {
-            color: #999;
-            margin: 0 5px;
+        .account-footer a:hover {
+            color: white;
         }
     </style>
 </head>
 <body>
-<?php include $_SERVER['DOCUMENT_ROOT'] . '/Webprojekt/php/include/headimport.php'; ?>
-
+<?php include 'include/headimport.php'; ?>
     <main>
         <div class="account-container">
-            <!-- Breadcrumb -->
-            <div class="breadcrumb">
-                <a href="/Webprojekt/index.php">Home</a>
-                <span>›</span>
-                <span>Mein Konto</span>
-            </div>
-
-            <!-- Account Header -->
+            <!-- Header -->
             <div class="account-header">
-                <h1>👤 Willkommen, <?php echo htmlspecialchars($userData['vorname']); ?>!</h1>
-                <p>Verwalte deine Kontoinformationen, Bestellungen und Punkte</p>
+                <h1>👋 Willkommen, <?php echo htmlspecialchars($userData['vorname']); ?>!</h1>
+                <p>Verwalte dein Konto, sieh deine Bestellungen und sammle Treuepunkte.</p>
             </div>
 
-            <!-- Benutzerinformationen und Punkte -->
+            <!-- Profil und Punkte Grid -->
             <div class="account-grid">
-                <!-- Benutzerdaten Card -->
+                <!-- Profil Card -->
                 <div class="account-card">
-                    <h2>📋 Meine Kontoinformationen</h2>
+                    <h2>👤 Mein Profil</h2>
                     
                     <div class="user-info-row">
-                        <span class="user-info-label">Vorname:</span>
-                        <span class="user-info-value"><?php echo htmlspecialchars($userData['vorname']); ?></span>
-                    </div>
-                    
-                    <div class="user-info-row">
-                        <span class="user-info-label">Nachname:</span>
-                        <span class="user-info-value"><?php echo htmlspecialchars($userData['nachname']); ?></span>
+                        <span class="user-info-label">Name:</span>
+                        <span class="user-info-value"><?php echo htmlspecialchars($userData['vorname'] . ' ' . $userData['nachname']); ?></span>
                     </div>
                     
                     <div class="user-info-row">
@@ -548,20 +615,22 @@ $stmtOnline->execute([$userID]);
                             <div class="points-value"><?php echo $punktestand; ?></div>
                             <div class="points-label">Punkte verfügbar</div>
                         </div>
-                        <div>
-                            <div style="font-size: 24px;">🎁</div>
-                        </div>
+                        <div class="points-icon">🎁</div>
                     </div>
                     
-                    <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin-top: 20px;">
-                        <h3 style="margin-top: 0; color: #333; font-size: 16px;">So funktioniert's:</h3>
-                        <ul style="margin: 10px 0; padding-left: 20px; color: #666; font-size: 14px;">
+                    <div class="points-info-box">
+                        <h3>So funktioniert's:</h3>
+                        <ul>
                             <li>Erhalte Punkte bei jedem Kauf</li>
                             <li>Sammle Punkte über Zeit</li>
                             <li>Tausche Punkte gegen Rabatte ein</li>
                             <li>Erhöhe deinen Status im Shop</li>
                         </ul>
                     </div>
+
+                    <a href="/Webprojekt/php/punkte_historie.php" class="points-link">
+                        📊 Punkte-Historie ansehen →
+                    </a>
                 </div>
             </div>
 
@@ -604,7 +673,7 @@ $stmtOnline->execute([$userID]);
 
                         <div style="display: flex; gap: 10px;">
                             <button type="submit" class="save-button">💾 Änderungen speichern</button>
-                            <button type="button" class="save-button" onclick="toggleEditForm()" style="background: #999;">❌ Abbrechen</button>
+                            <button type="button" class="save-button cancel-button" onclick="toggleEditForm()">❌ Abbrechen</button>
                         </div>
                     </form>
                 </div>
@@ -673,12 +742,12 @@ $stmtOnline->execute([$userID]);
     </main>
 
     <!-- Footer -->
-    <footer style="background-color: #f8f9fa; border-top: 1px solid #e0e0e0; padding: 30px 20px; margin-top: 60px; text-align: center; color: #666;">
-        <div style="max-width: 1400px; margin: 0 auto;">
+    <footer class="account-footer">
+        <div style="max-width: var(--container-max-width); margin: 0 auto; padding: 0 calc(var(--spacing-unit) * 1.5);">
             <p>&copy; 2024 Cockpit Corner - Alles für Piloten · 
-                <a href="#" style="color: #667eea; text-decoration: none;">Datenschutz</a> · 
-                <a href="#" style="color: #667eea; text-decoration: none;">AGBs</a> · 
-                <a href="#" style="color: #667eea; text-decoration: none;">Kontakt</a>
+                <a href="#">Datenschutz</a> · 
+                <a href="#">AGBs</a> · 
+                <a href="#">Kontakt</a>
             </p>
         </div>
     </footer>
