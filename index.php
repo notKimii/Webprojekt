@@ -49,25 +49,9 @@
                             <a href="/angebote" class="cta-button-secondary">
                                 Zu den Angeboten
                             </a>
-                        </div>
-                        
-                        <div class="hero-stats">
-                            <div class="hero-stat-item">
-                                <span class="hero-stat-number">500+</span>
-                                <span class="hero-stat-label">Produkte</span>
-                            </div>
-                            <div class="hero-stat-item">
-                                <span class="hero-stat-number">1.000+</span>
-                                <span class="hero-stat-label">Zufriedene Kunden</span>
-                            </div>
-                            <div class="hero-stat-item">
-                                <span class="hero-stat-number">24/7</span>
-                                <span class="hero-stat-label">Support</span>
-                            </div>
-                        </div>
+                        </div>                
                     </div>
                 </div>
-                
                 <div class="scroll-indicator">
                     <span class="scroll-indicator-text">Scroll</span>
                     <div class="scroll-indicator-icon"></div>
