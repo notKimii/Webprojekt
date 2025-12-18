@@ -3,6 +3,14 @@ session_start();
 if (!isset($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
+
+// Session-Fehler und Formular-Daten auslesen
+$mailFehler = isset($_SESSION['mail_error']) ? $_SESSION['mail_error'] : '';
+$formData = isset($_SESSION['form_data']) ? $_SESSION['form_data'] : [];
+
+// Session-Variablen nach dem Auslesen löschen
+unset($_SESSION['mail_error']);
+unset($_SESSION['form_data']);
 ?>
 <!DOCTYPE html>
 <html lang="de">
@@ -98,6 +106,18 @@ if (!isset($_SESSION['csrf_token'])) {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .alert-danger {
@@ -440,13 +460,12 @@ if (!isset($_SESSION['csrf_token'])) {
 
         <div class="text-center">
           Schon ein Konto? <a href="/Webprojekt/php/login/loginformular.php">Hier einloggen</a>
-
         </div>
       </form>
     </div>
   </main>
 
-  <?php include "include/footimport.php"; ?>
+  <?php include $_SERVER['DOCUMENT_ROOT'] . '/Webprojekt/php/include/footimport.php'; ?>
 
   <script>
     (function () {
