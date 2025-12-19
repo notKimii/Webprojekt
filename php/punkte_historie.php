@@ -67,92 +67,144 @@ $con->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meine Treuepunkte - CockpitCorner</title>
+    <title>Meine Treuepunkte - Cockpit Corner</title>
     <link rel="stylesheet" href="/Webprojekt/style.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        /* Punkte Historie - angepasst an Hauptdesign */
+        .punkte-page {
             min-height: 100vh;
-            padding: 20px;
+            background: var(--light-color);
+            padding: calc(var(--spacing-unit) * 2) calc(var(--spacing-unit) * 1.5);
         }
 
-        .container {
-            max-width: 1200px;
+        .punkte-container {
+            max-width: var(--container-max-width);
             margin: 0 auto;
         }
 
-        /* Header Section */
-        .page-header {
+        /* Back Button */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
             background: white;
-            border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            color: var(--text-color);
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: calc(var(--spacing-unit) * 2);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .back-btn:hover {
+            background: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .back-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 50%, #334155 100%);
+            border-radius: var(--border-radius-xl);
+            padding: calc(var(--spacing-unit) * 2.5);
+            margin-bottom: calc(var(--spacing-unit) * 2);
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
         }
 
         .page-header h1 {
-            color: #333;
-            font-size: 32px;
-            margin-bottom: 10px;
+            color: white;
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            margin-bottom: calc(var(--spacing-unit) * 0.5);
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
+            position: relative;
+            z-index: 1;
         }
 
         .page-header h1 svg {
-            width: 40px;
-            height: 40px;
-            fill: #ffd700;
+            width: 32px;
+            height: 32px;
+            fill: #fbbf24;
         }
 
         .breadcrumb {
-            color: #666;
-            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.875rem;
+            position: relative;
+            z-index: 1;
         }
 
         .breadcrumb a {
-            color: #667eea;
+            color: rgba(255, 255, 255, 0.9);
             text-decoration: none;
+            transition: var(--transition);
         }
 
         .breadcrumb a:hover {
+            color: white;
             text-decoration: underline;
         }
 
-        /* Stats Cards */
+        /* Stats Grid */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: calc(var(--spacing-unit) * 1.5);
+            margin-bottom: calc(var(--spacing-unit) * 2);
         }
 
         .stat-card {
             background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-radius: var(--border-radius-lg);
+            padding: calc(var(--spacing-unit) * 2);
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
         }
 
         .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
         }
 
         .stat-card.current {
-            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+            border: none;
+        }
+
+        .stat-card.current .stat-label,
+        .stat-card.current .stat-value {
+            color: white;
         }
 
         .stat-card.earned {
-            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            background: linear-gradient(135deg, #10b981, #059669);
+            border: none;
         }
 
         .stat-card.earned .stat-label,
@@ -161,7 +213,8 @@ $con->close();
         }
 
         .stat-card.spent {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            border: none;
         }
 
         .stat-card.spent .stat-label,
@@ -170,258 +223,252 @@ $con->close();
         }
 
         .stat-label {
-            font-size: 14px;
-            color: #666;
+            font-size: 0.8rem;
+            color: var(--text-light);
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             font-weight: 600;
         }
 
-        .stat-card.current .stat-label {
-            color: #333;
-        }
-
         .stat-value {
-            font-size: 36px;
-            font-weight: bold;
-            color: #333;
+            font-size: clamp(1.75rem, 4vw, 2.25rem);
+            font-weight: 800;
+            color: var(--primary-color);
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
         .stat-icon {
-            width: 30px;
-            height: 30px;
+            width: 28px;
+            height: 28px;
+            opacity: 0.9;
         }
 
-        /* Historie Section */
+        /* Historie Container */
         .historie-container {
             background: white;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            border-radius: var(--border-radius-xl);
+            padding: calc(var(--spacing-unit) * 2);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
         }
 
         .historie-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 25px;
+            margin-bottom: calc(var(--spacing-unit) * 2);
             flex-wrap: wrap;
-            gap: 15px;
+            gap: calc(var(--spacing-unit));
         }
 
         .historie-header h2 {
-            color: #333;
-            font-size: 24px;
+            color: var(--primary-color);
+            font-size: 1.35rem;
             display: flex;
             align-items: center;
             gap: 10px;
+            margin: 0;
         }
 
         .filter-buttons {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             flex-wrap: wrap;
         }
 
         .filter-btn {
-            padding: 8px 16px;
-            border: 2px solid #e0e0e0;
+            padding: 10px 18px;
+            border: 2px solid var(--border-color);
             background: white;
-            border-radius: 20px;
+            border-radius: var(--border-radius);
             cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            color: #666;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-color);
+            transition: var(--transition);
         }
 
         .filter-btn:hover {
-            border-color: #667eea;
-            color: #667eea;
+            border-color: var(--accent-color);
+            color: var(--accent-color);
         }
 
         .filter-btn.active {
-            background: #667eea;
-            border-color: #667eea;
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
             color: white;
+            border-color: transparent;
         }
 
         /* Historie Table */
         .historie-table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 0;
         }
 
-        .historie-table thead {
-            background: #f8f9fa;
-        }
-
-        .historie-table th {
-            padding: 15px;
+        .historie-table thead th {
+            background: var(--light-color);
+            padding: calc(var(--spacing-unit)) calc(var(--spacing-unit) * 1.25);
             text-align: left;
             font-weight: 600;
-            color: #333;
-            font-size: 14px;
+            color: var(--text-light);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .historie-table thead th:first-child {
+            border-radius: var(--border-radius) 0 0 0;
+        }
+
+        .historie-table thead th:last-child {
+            border-radius: 0 var(--border-radius) 0 0;
+        }
+
+        .historie-table tbody tr {
+            transition: var(--transition);
+        }
+
+        .historie-table tbody tr:hover {
+            background: var(--light-color);
+        }
+
+        .historie-table tbody td {
+            padding: calc(var(--spacing-unit) * 1.25);
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-color);
+            font-size: 0.95rem;
+        }
+
+        .historie-table .datum {
+            color: var(--text-light);
+            font-size: 0.875rem;
+            white-space: nowrap;
+        }
+
+        .historie-table .beschreibung {
+            max-width: 350px;
+        }
+
+        .historie-table .beschreibung small {
+            color: var(--text-light);
+            font-size: 0.8rem;
+        }
+
+        /* Typ Badge */
+        .typ-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
-        .historie-table td {
-            padding: 18px 15px;
-            border-bottom: 1px solid #f0f0f0;
-            color: #666;
-            font-size: 14px;
+        .typ-badge.kauf {
+            background: #dbeafe;
+            color: var(--accent-color);
         }
 
-        .historie-table tbody tr {
-            transition: background 0.2s ease;
+        .typ-badge.bonus {
+            background: #fef3c7;
+            color: #d97706;
         }
 
-        .historie-table tbody tr:hover {
-            background: #f8f9fa;
+        .typ-badge.einloesung {
+            background: #fce7f3;
+            color: #db2777;
         }
 
-        .historie-table tbody tr:last-child td {
-            border-bottom: none;
+        .typ-badge.gutschrift {
+            background: #d1fae5;
+            color: #059669;
         }
 
+        .typ-badge.storno {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .typ-badge.aktion {
+            background: #e0e7ff;
+            color: #4f46e5;
+        }
+
+        /* Punkte Badge */
         .punkte-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 14px;
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: var(--border-radius);
+            font-weight: 700;
+            font-size: 0.95rem;
         }
 
         .punkte-badge.erhalten {
-            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            background: linear-gradient(135deg, #10b981, #059669);
             color: white;
         }
 
         .punkte-badge.ausgegeben {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            background: linear-gradient(135deg, #ef4444, #dc2626);
             color: white;
-        }
-
-        .typ-badge {
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .typ-badge.kauf {
-            background: #e3f2fd;
-            color: #1976d2;
-        }
-
-        .typ-badge.bonus {
-            background: #fff3e0;
-            color: #f57c00;
-        }
-
-        .typ-badge.einloesung {
-            background: #fce4ec;
-            color: #c2185b;
-        }
-
-        .typ-badge.gutschrift {
-            background: #f3e5f5;
-            color: #7b1fa2;
-        }
-
-        .datum {
-            color: #999;
-            font-size: 13px;
-        }
-
-        .beschreibung {
-            color: #333;
-            font-weight: 500;
         }
 
         /* Empty State */
         .empty-state {
             text-align: center;
-            padding: 60px 20px;
-            color: #999;
+            padding: calc(var(--spacing-unit) * 5) calc(var(--spacing-unit) * 2);
         }
 
         .empty-state svg {
             width: 80px;
             height: 80px;
-            margin-bottom: 20px;
-            opacity: 0.3;
+            margin-bottom: calc(var(--spacing-unit) * 1.5);
+            stroke: var(--text-light);
+            opacity: 0.4;
         }
 
         .empty-state h3 {
-            font-size: 20px;
-            color: #666;
-            margin-bottom: 10px;
+            color: var(--primary-color);
+            margin-bottom: calc(var(--spacing-unit) * 0.5);
+            font-size: 1.25rem;
         }
 
         .empty-state p {
-            font-size: 14px;
-        }
-
-        /* Back Button */
-        .back-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 12px 24px;
-            background: white;
-            color: #667eea;
-            text-decoration: none;
-            border-radius: 10px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-        }
-
-        .back-btn:hover {
-            background: #667eea;
-            color: white;
-            transform: translateX(-5px);
-        }
-
-        .back-btn svg {
-            width: 20px;
-            height: 20px;
+            color: var(--text-light);
+            max-width: 400px;
+            margin: 0 auto;
         }
 
         /* Responsive */
         @media screen and (max-width: 768px) {
-            body {
-                padding: 10px;
+            .punkte-page {
+                padding: calc(var(--spacing-unit)) calc(var(--spacing-unit));
             }
 
             .page-header,
             .historie-container {
-                padding: 20px;
-                border-radius: 15px;
+                padding: calc(var(--spacing-unit) * 1.5);
+                border-radius: var(--border-radius-lg);
             }
 
             .page-header h1 {
-                font-size: 24px;
+                font-size: 1.35rem;
             }
 
             .stat-value {
-                font-size: 28px;
+                font-size: 1.5rem;
             }
 
             .historie-table {
                 display: block;
                 overflow-x: auto;
-                white-space: nowrap;
+                -webkit-overflow-scrolling: touch;
             }
 
             .historie-header {
@@ -436,6 +483,8 @@ $con->close();
             .filter-btn {
                 flex: 1;
                 text-align: center;
+                padding: 10px 12px;
+                font-size: 0.8rem;
             }
         }
 
@@ -445,155 +494,158 @@ $con->close();
             }
 
             .stat-card {
-                padding: 20px;
+                padding: calc(var(--spacing-unit) * 1.5);
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <a href="/Webprojekt/php/Kundenkonto.php" class="back-btn">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M19 12H5M12 19l-7-7 7-7"/>
-            </svg>
-            Zurück zum Kundenkonto
-        </a>
-
-        <div class="page-header">
-            <h1>
-                <svg viewBox="0 0 24 24">
-                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+<?php include $_SERVER['DOCUMENT_ROOT'] . '/Webprojekt/php/include/headimport.php'; ?>
+    <div class="punkte-page">
+        <div class="punkte-container">
+            <a href="/Webprojekt/php/Kundenkonto.php" class="back-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
                 </svg>
-                Meine Treuepunkte
-            </h1>
-            <div class="breadcrumb">
-                <a href="/Webprojekt/index.php">Startseite</a> / 
-                <a href="/Webprojekt/php/Kundenkonto.php">Kundenkonto</a> / 
-                Treuepunkte
-            </div>
-        </div>
+                Zurück zum Kundenkonto
+            </a>
 
-        <!-- Statistik Karten -->
-        <div class="stats-grid">
-            <div class="stat-card current">
-                <div class="stat-label">Aktueller Punktestand</div>
-                <div class="stat-value">
-                    <svg class="stat-icon" viewBox="0 0 24 24" fill="currentColor">
+            <div class="page-header">
+                <h1>
+                    <svg viewBox="0 0 24 24">
                         <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
                     </svg>
-                    <?php echo number_format($aktuellerPunktestand, 0, ',', '.'); ?>
+                    Meine Treuepunkte
+                </h1>
+                <div class="breadcrumb">
+                    <a href="/Webprojekt/index.php">Startseite</a> / 
+                    <a href="/Webprojekt/php/Kundenkonto.php">Kundenkonto</a> / 
+                    Treuepunkte
                 </div>
             </div>
 
-            <div class="stat-card earned">
-                <div class="stat-label">Gesamt Erhalten</div>
-                <div class="stat-value">
-                    <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 5v14M5 12l7 7 7-7"/>
-                    </svg>
-                    +<?php echo number_format($gesamtErhalten, 0, ',', '.'); ?>
+            <!-- Statistik Karten -->
+            <div class="stats-grid">
+                <div class="stat-card current">
+                    <div class="stat-label">Aktueller Punktestand</div>
+                    <div class="stat-value">
+                        <svg class="stat-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                        </svg>
+                        <?php echo number_format($aktuellerPunktestand, 0, ',', '.'); ?>
+                    </div>
+                </div>
+
+                <div class="stat-card earned">
+                    <div class="stat-label">Gesamt Erhalten</div>
+                    <div class="stat-value">
+                        <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 5v14M5 12l7 7 7-7"/>
+                        </svg>
+                        +<?php echo number_format($gesamtErhalten, 0, ',', '.'); ?>
+                    </div>
+                </div>
+
+                <div class="stat-card spent">
+                    <div class="stat-label">Gesamt Ausgegeben</div>
+                    <div class="stat-value">
+                        <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 19V5M5 12l7-7 7 7"/>
+                        </svg>
+                        -<?php echo number_format($gesamtAusgegeben, 0, ',', '.'); ?>
+                    </div>
                 </div>
             </div>
 
-            <div class="stat-card spent">
-                <div class="stat-label">Gesamt Ausgegeben</div>
-                <div class="stat-value">
-                    <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 19V5M5 12l7-7 7 7"/>
-                    </svg>
-                    -<?php echo number_format($gesamtAusgegeben, 0, ',', '.'); ?>
+            <!-- Punkte Historie -->
+            <div class="historie-container">
+                <div class="historie-header">
+                    <h2>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                        Punkte-Historie
+                    </h2>
+                    <div class="filter-buttons">
+                        <button class="filter-btn active" data-filter="alle">Alle</button>
+                        <button class="filter-btn" data-filter="erhalten">Erhalten</button>
+                        <button class="filter-btn" data-filter="ausgegeben">Ausgegeben</button>
+                    </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- Punkte Historie -->
-        <div class="historie-container">
-            <div class="historie-header">
-                <h2>
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <polyline points="12 6 12 12 16 14"></polyline>
-                    </svg>
-                    Punkte-Historie
-                </h2>
-                <div class="filter-buttons">
-                    <button class="filter-btn active" data-filter="alle">Alle</button>
-                    <button class="filter-btn" data-filter="erhalten">Erhalten</button>
-                    <button class="filter-btn" data-filter="ausgegeben">Ausgegeben</button>
-                </div>
-            </div>
-
-            <?php if (empty($historie)): ?>
-                <div class="empty-state">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                    </svg>
-                    <h3>Noch keine Aktivitäten</h3>
-                    <p>Sammle Punkte durch Einkäufe und andere Aktionen.</p>
-                </div>
-            <?php else: ?>
-                <table class="historie-table">
-                    <thead>
-                        <tr>
-                            <th>Datum</th>
-                            <th>Beschreibung</th>
-                            <th>Typ</th>
-                            <th>Punkte</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($historie as $eintrag): ?>
-                            <?php 
-                                $isErhalten = $eintrag['punkte_aenderung'] > 0;
-                                $filterClass = $isErhalten ? 'erhalten' : 'ausgegeben';
-                                
-                                // Art der Transaktion bestimmen
-                                $art = $eintrag['art'] ?? 'Sonstiges';
-                                if (empty($art) || $art == 'Automatisch') {
-                                    // Versuche aus Bemerkung zu klassifizieren
-                                    $bemerkung = strtolower($eintrag['bemerkung'] ?? '');
-                                    if (strpos($bemerkung, 'bestellung') !== false || strpos($bemerkung, 'kauf') !== false) {
-                                        $art = 'Kauf';
-                                    } elseif (strpos($bemerkung, 'bonus') !== false || strpos($bemerkung, 'willkommen') !== false) {
-                                        $art = 'Bonus';
-                                    } elseif (strpos($bemerkung, 'eingelöst') !== false || strpos($bemerkung, 'gutschein') !== false) {
-                                        $art = 'Einloesung';
-                                    } elseif (strpos($bemerkung, 'gutschrift') !== false) {
-                                        $art = 'Gutschrift';
-                                    } elseif (strpos($bemerkung, 'storno') !== false) {
-                                        $art = 'Storno';
-                                    } else {
-                                        $art = 'Aktion';
-                                    }
-                                }
-                            ?>
-                            <tr class="historie-row" data-filter="<?php echo $filterClass; ?>">
-                                <td class="datum">
-                                    <?php 
-                                        $datum = new DateTime($eintrag['datum']);
-                                        echo $datum->format('d.m.Y - H:i'); 
-                                    ?> Uhr
-                                </td>
-                                <td class="beschreibung">
-                                    <?php echo htmlspecialchars($eintrag['bemerkung'] ?? 'Keine Beschreibung'); ?>
-                                    <br><small style="color: #999;">Neuer Stand: <?php echo number_format($eintrag['neuer_punktestand'], 0, ',', '.'); ?> Punkte</small>
-                                </td>
-                                <td>
-                                    <span class="typ-badge <?php echo strtolower($art); ?>">
-                                        <?php echo htmlspecialchars($art); ?>
-                                    </span>
-                                </td>
-                                <td>
-                                    <span class="punkte-badge <?php echo $filterClass; ?>">
-                                        <?php echo $isErhalten ? '+' : ''; ?>
-                                        <?php echo number_format($eintrag['punkte_aenderung'], 0, ',', '.'); ?>
-                                    </span>
-                                </td>
+                <?php if (empty($historie)): ?>
+                    <div class="empty-state">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                        </svg>
+                        <h3>Noch keine Aktivitäten</h3>
+                        <p>Sammle Punkte durch Einkäufe und andere Aktionen.</p>
+                    </div>
+                <?php else: ?>
+                    <table class="historie-table">
+                        <thead>
+                            <tr>
+                                <th>Datum</th>
+                                <th>Beschreibung</th>
+                                <th>Typ</th>
+                                <th>Punkte</th>
                             </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            <?php endif; ?>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($historie as $eintrag): ?>
+                                <?php 
+                                    $isErhalten = $eintrag['punkte_aenderung'] > 0;
+                                    $filterClass = $isErhalten ? 'erhalten' : 'ausgegeben';
+                                    
+                                    // Art der Transaktion bestimmen
+                                    $art = $eintrag['art'] ?? 'Sonstiges';
+                                    if (empty($art) || $art == 'Automatisch') {
+                                        // Versuche aus Bemerkung zu klassifizieren
+                                        $bemerkung = strtolower($eintrag['bemerkung'] ?? '');
+                                        if (strpos($bemerkung, 'bestellung') !== false || strpos($bemerkung, 'kauf') !== false) {
+                                            $art = 'Kauf';
+                                        } elseif (strpos($bemerkung, 'bonus') !== false || strpos($bemerkung, 'willkommen') !== false) {
+                                            $art = 'Bonus';
+                                        } elseif (strpos($bemerkung, 'eingelöst') !== false || strpos($bemerkung, 'gutschein') !== false) {
+                                            $art = 'Einloesung';
+                                        } elseif (strpos($bemerkung, 'gutschrift') !== false) {
+                                            $art = 'Gutschrift';
+                                        } elseif (strpos($bemerkung, 'storno') !== false) {
+                                            $art = 'Storno';
+                                        } else {
+                                            $art = 'Aktion';
+                                        }
+                                    }
+                                ?>
+                                <tr class="historie-row" data-filter="<?php echo $filterClass; ?>">
+                                    <td class="datum">
+                                        <?php 
+                                            $datum = new DateTime($eintrag['datum']);
+                                            echo $datum->format('d.m.Y - H:i'); 
+                                        ?> Uhr
+                                    </td>
+                                    <td class="beschreibung">
+                                        <?php echo htmlspecialchars($eintrag['bemerkung'] ?? 'Keine Beschreibung'); ?>
+                                        <br><small>Neuer Stand: <?php echo number_format($eintrag['neuer_punktestand'], 0, ',', '.'); ?> Punkte</small>
+                                    </td>
+                                    <td>
+                                        <span class="typ-badge <?php echo strtolower($art); ?>">
+                                            <?php echo htmlspecialchars($art); ?>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="punkte-badge <?php echo $filterClass; ?>">
+                                            <?php echo $isErhalten ? '+' : ''; ?>
+                                            <?php echo number_format($eintrag['punkte_aenderung'], 0, ',', '.'); ?>
+                                        </span>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                <?php endif; ?>
+            </div>
         </div>
     </div>
 
