@@ -304,7 +304,8 @@
 
           <div class="input-group">
             <label for="2fa_code">2FA Code</label>
-            <input type="text" id="2fa_code" name="2fa_code" pattern="\d{6}" maxlength="6" placeholder="6-stelliger Code">
+            <input type="text" id="2fa_code" name="2fa_code" pattern="\d{6}" maxlength="6" placeholder="6-stelliger Code" required>
+            <div class="invalid-feedback">Bitte geben Sie Ihren 6-stelligen 2FA-Code ein.</div>
           </div>
 
           <div id="form-error">
