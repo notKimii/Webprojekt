@@ -429,7 +429,7 @@ if (is_dir($absoluterPfad)) {
                 <div class="shipping-detail"><i class="fas fa-box-open"></i><span><?php echo number_format(floatval($produkt['lagerbestand'])); ?> Stück auf Lager</span></div>
             </div>
 
-            <form action="/php/cart-add.php" method="post" class="add-to-cart-form">
+            <form action="bestellung/cartAdd.php" method="post" class="add-to-cart-form">
                 <input type="hidden" name="produkt_id" value="<?php echo $produktId; ?>">
                 
                 <div class="cart-actions">
@@ -442,6 +442,17 @@ if (is_dir($absoluterPfad)) {
                     <button type="submit" class="buy-now-button">In den Warenkorb</button>
                 </div>
             </form>
+                  <?php if (isset($_GET['error'])): ?>
+                <div class="alert alert-danger">
+                    <?php 
+                    if ($_GET['error'] == 'invalid_input') echo "Fehlerhafte Eingabe";
+                    elseif ($_GET['error'] == 'unknown_product') echo "Das ausgewählte Produkt existiert nicht.";
+                    elseif ($_GET['error'] == 'cart_create_failed') echo "Fehler beim Erstellen des Warenkorbs. Bitte versuchen Sie es erneut.";
+                    elseif ($_GET['error'] == 'position_upsert_failed') echo "Fehler beim Updaten des Produkts zum Warenkorb. Bitte versuchen Sie es erneut.";
+                    else echo "Ein unbekannter Fehler ist aufgetreten.";
+                    ?>
+                </div>
+            <?php endif; ?>
             <div class="product-shipping-info">
                 <div class="shipping-detail"><i class="fas fa-truck"></i><span>Kostenloser Versand</span></div>
                 <div class="shipping-detail"><i class="fas fa-box-open"></i><span>Lieferung in 1-3 Werktagen</span></div>

@@ -116,6 +116,13 @@ if (session_status() === PHP_SESSION_NONE) {
         transition: all 0.3s ease;
         font-size: 14px;
         font-weight: 500;
+        /* Fix: sichtbare Icons/Labels, falls andere Styles die Farbe überschreiben */
+        color: #333 !important;
+    }
+
+    .header-action-item a svg {
+        color: inherit;
+        stroke: currentColor;
     }
 
     .header-action-item a:hover {

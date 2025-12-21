@@ -30,7 +30,7 @@ include "../include/connectcon.php";
         $sql = "SELECT wp.*, p.name, p.preis FROM warenkorbposition wp 
                 LEFT JOIN artikel p ON wp.artikel_id = p.id
                 WHERE wp.warenkorb_id = (
-                    SELECT id FROM warenkorbkopf WHERE kunde_id = ? AND aktiv = true LIMIT 1
+                    SELECT id FROM warenkorbkopf WHERE kunde_id = ? LIMIT 1
                 )";
         $stmt = $con->prepare($sql);
         $stmt->bind_param('i', $kundenId);
