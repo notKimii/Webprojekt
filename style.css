@@ -803,7 +803,7 @@ section {
 
 /* FIXED: Button always at bottom of card */
 .add-to-cart-button {
-    margin-top: auto;
+    margin-top: 50px;
     width: 100%;
     background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
     color: white;
