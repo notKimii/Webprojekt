@@ -59,7 +59,7 @@ try {
     // SHA512
     $password = hash('sha512', $plainPassword);
     $stmt = $conPDO->prepare("INSERT INTO user (vorname, nachname, mail, adresse, plz, ort, passwort, google_secret) 
-        VALUES (?, ?, ?, ?, ?, ?, ?,?)");
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
     $stmt->execute([$vorname, $nachname, $mail, $adresse, $plz, $ort, $password, NULL]);
     
     // E-Mail vorbereiten
@@ -94,8 +94,11 @@ try {
     // Kleine Sicherheit: Prüfen ob $mailer überhaupt existiert, falls der include oben schief ging
     $errorInfo = isset($mailer) ? $mailer->ErrorInfo : $e->getMessage();
     
-    $_SESSION['mail_error'] = "Die E-Mail konnte nicht gesendet werden. Fehler: " . $errorInfo;
-      echo "<script>console.log('Mailer Error: {$errorInfo}');</script>";
+        // Mehr Details: ErrorInfo von PHPMailer und Exception-Message
+        $exceptionMessage = $e->getMessage();
+        $_SESSION['mail_error'] = "Die E-Mail konnte nicht gesendet werden. Fehler: " . $errorInfo . " | Exception: " . $exceptionMessage;
+        error_log('Mailer ErrorInfo: ' . $errorInfo . ' | Exception: ' . $exceptionMessage);
+        echo "<script>console.log('Mailer Error: {$errorInfo} | Exception: {$exceptionMessage}');</script>";
     header("Location: registrierung.php");
     exit;
 }

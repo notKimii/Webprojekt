@@ -6,12 +6,6 @@ error_reporting(E_ALL);
 
 session_start();
 
-// 2. Pfade prüfen:
-// Wenn login.php in "php/login/" liegt und connect.php in "php/include/",
-// dann ist "../include/connect.php" korrekt.
-
-
-
 include $_SERVER['DOCUMENT_ROOT'] . '/Webprojekt/php/include/connect.php';
 include $_SERVER['DOCUMENT_ROOT'] . '/Webprojekt/php/include/vendorconnect.php';
 
@@ -43,11 +37,7 @@ if (strlen($passwordInput) < 9 ||
 // Passwort hashen (SHA512 wie bei der Registrierung)
 $passwordHash = hash('sha512', $passwordInput);
 
-// Google Authenticator initialisieren
-// Prüfen, ob die Klasse existiert, um Fehler 500 zu vermeiden
-if (!class_exists('PHPGangsta_GoogleAuthenticator')) {
-    die("Fehler: GoogleAuthenticator Klasse nicht gefunden. Überprüfe 'vendorconnect.php'.");
-}
+
 $gAuth = new PHPGangsta_GoogleAuthenticator();
 
 try {
