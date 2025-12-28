@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 19. Dez 2025 um 14:16
+-- Erstellungszeit: 28. Dez 2025 um 05:44
 -- Server-Version: 10.4.32-MariaDB
 -- PHP-Version: 8.2.12
 
@@ -209,39 +209,19 @@ CREATE TABLE `logs` (
 --
 
 INSERT INTO `logs` (`id`, `user_id`, `login_time`, `screen_resolution`, `operating_system`) VALUES
-(0, 45, '2025-06-03 11:36:36', '1920x1080', 'Win32'),
-(0, 50, '2025-06-04 10:59:04', '1920x1080', 'Win32'),
-(0, 50, '2025-06-04 12:05:12', '1920x1080', 'Win32'),
-(0, 50, '2025-06-05 00:09:19', '1920x1080', 'Win32'),
-(0, 50, '2025-06-05 00:09:44', '1920x1080', 'Win32'),
-(0, 50, '2025-06-05 01:16:57', '1920x1080', 'Win32'),
-(0, 50, '2025-06-05 01:19:32', '1920x1080', 'Win32'),
-(0, 50, '2025-06-05 01:20:08', '1920x1080', 'Win32'),
-(0, 50, '2025-06-05 01:27:15', '1920x1080', 'Win32'),
-(0, 51, '2025-06-05 01:30:50', '1920x1080', 'Win32'),
-(0, 50, '2025-06-05 01:38:03', '1920x1080', 'Win32'),
-(0, 50, '2025-06-05 02:09:47', '1920x1080', 'Win32'),
-(0, 64, '2025-12-17 18:58:36', '1920x1080', 'Win32'),
-(0, 64, '2025-12-17 19:11:13', '1920x1080', 'Win32'),
-(0, 64, '2025-12-17 19:33:24', '1920x1080', 'Win32'),
-(0, 64, '2025-12-17 19:33:41', '1920x1080', 'Win32'),
-(0, 64, '2025-12-17 22:29:12', '1920x1080', 'Win32'),
-(0, 64, '2025-12-17 23:26:36', '1920x1080', 'Win32'),
-(0, 64, '2025-12-18 00:34:44', '1920x1080', 'Win32'),
-(0, 65, '2025-12-18 15:20:25', '1920x1080', 'Win32'),
-(0, 65, '2025-12-18 17:12:05', '1920x1080', 'Win32'),
-(0, 65, '2025-12-18 17:12:24', '1920x1080', 'Win32'),
-(0, 65, '2025-12-18 17:55:31', '1920x1080', 'Win32');
+(29, 65, '2025-12-28 05:05:44', '1920x1080', 'Win32'),
+(30, 65, '2025-12-28 05:10:06', '1920x1080', 'Win32'),
+(31, 65, '2025-12-28 05:22:21', '1920x1080', 'Win32'),
+(32, 65, '2025-12-28 05:28:26', '1920x1080', 'Win32'),
+(34, 65, '2025-12-28 05:42:20', '1920x1080', 'Win32');
 
 --
 -- Trigger `logs`
 --
 DELIMITER $$
-CREATE TRIGGER `punkte_update` AFTER INSERT ON `logs` FOR EACH ROW BEGIN
-    UPDATE punkte
-    SET punktestand = punktestand + 2
-    WHERE user_id = NEW.user_id;
-END
+CREATE TRIGGER `punkte_update` AFTER INSERT ON `logs` FOR EACH ROW UPDATE punkte
+SET punktestand = punktestand + 2
+WHERE user_id = NEW.user_id
 $$
 DELIMITER ;
 
@@ -275,7 +255,7 @@ INSERT INTO `punkte` (`user_id`, `punktestand`) VALUES
 (59, 100),
 (60, 100),
 (64, 114),
-(65, 108);
+(65, 110);
 
 --
 -- Trigger `punkte`
@@ -314,44 +294,7 @@ CREATE TABLE `punktelog` (
 --
 
 INSERT INTO `punktelog` (`transaktions_id`, `user_id`, `datum`, `art`, `punkte_aenderung`, `neuer_punktestand`, `bemerkung`) VALUES
-(0, 65, '2025-12-18 17:55:31', 'Automatisch', 2, 108, 'Änderung am Punktestand'),
-(1, 49, '2025-06-03 22:14:35', NULL, 0, 100, NULL),
-(2, 50, '2025-06-04 10:57:28', NULL, 0, 100, NULL),
-(3, 50, '2025-06-04 12:05:12', 'Automatisch', 2, 102, 'Änderung am Punktestand'),
-(4, 50, '2025-06-05 00:09:19', 'Automatisch', 2, 104, 'Änderung am Punktestand'),
-(5, 50, '2025-06-05 00:09:44', 'Automatisch', 2, 106, 'Änderung am Punktestand'),
-(6, 50, '2025-06-05 01:16:57', 'Automatisch', 2, 108, 'Änderung am Punktestand'),
-(7, 50, '2025-06-05 01:19:32', 'Automatisch', 2, 110, 'Änderung am Punktestand'),
-(8, 50, '2025-06-05 01:20:08', 'Automatisch', 2, 112, 'Änderung am Punktestand'),
-(9, 50, '2025-06-05 01:27:15', 'Automatisch', 2, 114, 'Änderung am Punktestand'),
-(10, 51, '2025-06-05 01:29:52', NULL, 0, 100, NULL),
-(11, 51, '2025-06-05 01:30:50', 'Automatisch', 2, 102, 'Änderung am Punktestand'),
-(12, 50, '2025-06-05 01:38:03', 'Automatisch', 2, 116, 'Änderung am Punktestand'),
-(13, 50, '2025-06-05 02:09:47', 'Automatisch', 2, 118, 'Änderung am Punktestand'),
-(14, 52, '2025-11-22 13:13:45', NULL, 0, 100, NULL),
-(15, 53, '2025-11-25 15:51:46', NULL, 0, 100, NULL),
-(16, 54, '2025-11-25 15:51:46', NULL, 0, 100, NULL),
-(17, 55, '2025-11-25 15:51:46', NULL, 0, 100, NULL),
-(18, 56, '2025-11-25 15:51:46', NULL, 0, 100, NULL),
-(19, 57, '2025-11-25 15:51:46', NULL, 0, 100, NULL),
-(20, 58, '2025-11-25 15:51:46', NULL, 0, 100, NULL),
-(21, 59, '2025-11-25 15:51:46', NULL, 0, 100, NULL),
-(22, 60, '2025-11-25 15:51:46', NULL, 0, 100, NULL),
-(23, 61, '2025-12-17 10:29:53', NULL, 0, 100, NULL),
-(24, 62, '2025-12-17 10:32:42', NULL, 0, 100, NULL),
-(25, 63, '2025-12-17 18:43:10', NULL, 0, 100, NULL),
-(26, 64, '2025-12-17 18:55:18', NULL, 0, 100, NULL),
-(27, 64, '2025-12-17 18:58:36', 'Automatisch', 2, 102, 'Änderung am Punktestand'),
-(28, 64, '2025-12-17 19:11:13', 'Automatisch', 2, 104, 'Änderung am Punktestand'),
-(29, 64, '2025-12-17 19:33:24', 'Automatisch', 2, 106, 'Änderung am Punktestand'),
-(30, 64, '2025-12-17 19:33:41', 'Automatisch', 2, 108, 'Änderung am Punktestand'),
-(31, 64, '2025-12-17 22:29:12', 'Automatisch', 2, 110, 'Änderung am Punktestand'),
-(32, 64, '2025-12-17 23:26:36', 'Automatisch', 2, 112, 'Änderung am Punktestand'),
-(33, 64, '2025-12-18 00:34:44', 'Automatisch', 2, 114, 'Änderung am Punktestand'),
-(34, 65, '2025-12-18 15:19:39', NULL, 0, 100, NULL),
-(35, 65, '2025-12-18 15:20:25', 'Automatisch', 2, 102, 'Änderung am Punktestand'),
-(36, 65, '2025-12-18 17:12:05', 'Automatisch', 2, 104, 'Änderung am Punktestand'),
-(37, 65, '2025-12-18 17:12:24', 'Automatisch', 2, 106, 'Änderung am Punktestand');
+(1, 65, '2025-12-28 05:42:20', 'Automatisch', 2, 110, 'Änderung am Punktestand');
 
 -- --------------------------------------------------------
 
@@ -454,8 +397,8 @@ CREATE TABLE `warenkorbkopf` (
 -- Daten für Tabelle `warenkorbkopf`
 --
 
-INSERT INTO `warenkorbkopf` (`id`, `kunde_id`, `erstellt_am`) VALUES
-(1, 65, '2025-12-11 23:02:55');
+INSERT INTO `warenkorbkopf` (`id`, `kunde_id`, `erstellt_am`, `aktiv`) VALUES
+(1, 65, '2025-12-11 23:02:55', 0);
 
 -- --------------------------------------------------------
 
@@ -508,6 +451,12 @@ ALTER TABLE `cart`
   ADD PRIMARY KEY (`bestellungID`);
 
 --
+-- Indizes für die Tabelle `logs`
+--
+ALTER TABLE `logs`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indizes für die Tabelle `punkte`
 --
 ALTER TABLE `punkte`
@@ -550,7 +499,7 @@ ALTER TABLE `warenkorbkopf`
 -- Indizes für die Tabelle `warenkorbposition`
 --
 ALTER TABLE `warenkorbposition`
-  ADD PRIMARY KEY (`warenkorb_id`);
+  ADD PRIMARY KEY (`warenkorb_id`,`artikel_id`);
 
 --
 -- AUTO_INCREMENT für exportierte Tabellen
@@ -575,15 +524,24 @@ ALTER TABLE `bestellposition`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT für Tabelle `logs`
+--
+ALTER TABLE `logs`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+
+--
+-- AUTO_INCREMENT für Tabelle `punktelog`
+--
+ALTER TABLE `punktelog`
+  MODIFY `transaktions_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT für Tabelle `rechnungsposition`
 --
 ALTER TABLE `rechnungsposition`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
 
--- 
--- Primärschlüssel für Tabelle `warenkorbposition` anpassen
---
-ALTER TABLE warenkorbposition DROP PRIMARY KEY;
-ALTER TABLE warenkorbposition ADD PRIMARY KEY (warenkorb_id, artikel_id);
-
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
