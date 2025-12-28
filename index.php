@@ -52,10 +52,6 @@
                         </div>                
                     </div>
                 </div>
-                <div class="scroll-indicator">
-                    <span class="scroll-indicator-text">Scroll</span>
-                    <div class="scroll-indicator-icon"></div>
-                </div>
             </div>
         </section>
 
