@@ -64,8 +64,28 @@ $stmt = $con->prepare('INSERT INTO warenkorbposition (warenkorb_id, artikel_id, 
 $stmt->bind_param('iii', $cartId, $produktId, $menge);
 $ok = $stmt->execute();
 $stmt->close();
+$isAjax = isset($_POST['ajax']);
 if (!$ok) {
+    if ($isAjax) {
+        header('Content-Type: application/json');
+        echo json_encode(['success' => false, 'error' => 'position_upsert_failed']);
+        exit;
+    }
     header('Location: /Webprojekt/php/produkt-detail.php?error=position_upsert_failed');
+    exit;
+}
+
+if ($isAjax) {
+    // Get current cart count
+    $countStmt = $con->prepare('SELECT COUNT(wp.artikel_id) AS cnt FROM warenkorbkopf wk LEFT JOIN warenkorbposition wp ON wp.warenkorb_id = wk.id WHERE wk.kunde_id = ?');
+    $countStmt->bind_param('i', $kundenId);
+    $countStmt->execute();
+    $countStmt->bind_result($cartCount);
+    $countStmt->fetch();
+    $countStmt->close();
+    
+    header('Content-Type: application/json');
+    echo json_encode(['success' => true, 'cart_id' => $cartId, 'count' => (int)($cartCount ?? 0)]);
     exit;
 }
 

@@ -1,9 +1,4 @@
 
-      
-h1{
-    font-size: 2rem;
-}    
-
 .cart-section {
     padding: calc(var(--spacing-unit) * 4) 0;
     background: var(--light-color);

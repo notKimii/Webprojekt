@@ -1,3 +1,85 @@
+<?php
+ob_start();
+include "../include/connectcon.php";
+if (session_status() === PHP_SESSION_NONE) {
+  session_start();
+}
+
+// Versandarten mit Kosten
+$shippingMethods = [
+    'lpd' => ['name' => 'LPD', 'cost' => 11.90],
+    'dhl' => ['name' => 'DHL', 'cost' => 6.90],
+    'dhl-express' => ['name' => 'DHL Express', 'cost' => 16.90]
+];
+
+// Versandart aus POST oder Standard
+$shippingMethod = isset($_POST['shipping_method']) ? $_POST['shipping_method'] : 'dhl';
+if (!isset($shippingMethods[$shippingMethod])) {
+  $shippingMethod = 'dhl';
+}
+
+// determine customer id from session
+$kundenId = null;
+if (isset($_SESSION['temp_user']['id'])) {
+  $kundenId = (int)$_SESSION['temp_user']['id'];
+} elseif (isset($_SESSION['user']['id'])) {
+  $kundenId = (int)$_SESSION['user']['id'];
+} elseif (isset($_SESSION['user_id'])) {
+  $kundenId = (int)$_SESSION['user_id'];
+}
+
+function loadCartData(mysqli $con, int $kundenId, string $shippingMethod = 'dhl'): array {
+  global $shippingMethods;
+  
+  $sql = "SELECT wp.*, p.name, p.preis FROM warenkorbposition wp
+      LEFT JOIN artikel p ON wp.artikel_id = p.id
+      WHERE wp.warenkorb_id = (
+        SELECT id FROM warenkorbkopf WHERE kunde_id = ? LIMIT 1
+      )";
+  $stmt = $con->prepare($sql);
+  $stmt->bind_param('i', $kundenId);
+  $stmt->execute();
+  $res = $stmt->get_result();
+
+  $items = [];
+  $subtotal = 0;
+  while ($row = $res->fetch_assoc()) {
+    $row['name'] = $row['name'] ?? 'Unbekanntes Produkt';
+    $row['preis'] = $row['preis'] ?? 0.0;
+    $row['zeilensumme'] = $row['preis'] * $row['menge'];
+    $subtotal += $row['zeilensumme'];
+    $items[] = $row;
+  }
+  
+  // Versandkosten basierend auf Versandart
+  $shipping = ($subtotal > 0 && isset($shippingMethods[$shippingMethod])) 
+    ? $shippingMethods[$shippingMethod]['cost'] 
+    : 0;
+  $total = $subtotal + $shipping;
+
+  return [
+    'items' => $items,
+    'subtotal' => $subtotal,
+    'shipping' => $shipping,
+    'total' => $total,
+    'count' => count($items),
+    'shippingMethod' => $shippingMethod
+  ];
+}
+
+$cartData = ['items'=>[], 'subtotal'=>0, 'shipping'=>0, 'total'=>0, 'count'=>0, 'shippingMethod'=>'dhl'];
+if ($kundenId !== null) {
+  $cartData = loadCartData($con, $kundenId, $shippingMethod);
+}
+// use a distinct variable name to avoid collisions with included files
+$cartItems = $cartData['items'];
+$subtotal = $cartData['subtotal'];
+$shipping = $cartData['shipping'];
+$total = $cartData['total'];
+$count = $cartData['count'];
+
+?>
+
 <!doctype html>
 <html lang="de">
   <head>
@@ -7,56 +89,53 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
       /* Optional: Eigene Styles hier */
+      .site-max{ max-width:1400px; margin:0 auto; padding:0 1rem; }
+      /* Abstand zwischen Header (sticky) und Seiteninhalt */
+      main{ padding-top: 50px; }
+      @media (max-width: 768px){ main{ padding-top: 24px; } }
     </style>
   </head>
   <body class="bg-light">
+  <?php include "../include/headimport.php"; ?>
+  <div class="site-max">
     <div class="container">
       <main>
-        <div class="py-5 text-center">
-          <img class="d-block mx-auto mb-4" src="../../favicon.ico" alt="" width="72" height="57">
-          <h2>Checkout form</h2>
-          <p class="lead">Below is an example form built entirely with Bootstrap’s form controls. Each required form group has a validation state that can be triggered by attempting to submit the form without completing it.</p>
-        </div>
+
+        <?php if (isset($_GET['debug']) && $_GET['debug']): ?>
+          <pre style="background:#f8f9fa;padding:12px;border:1px solid #e6e6e6;overflow:auto;"><?php var_dump($cartItems); ?></pre>
+        <?php endif; ?>
 
         <div class="row g-5">
           <div class="col-md-5 col-lg-4 order-md-last">
             <h4 class="d-flex justify-content-between align-items-center mb-3">
               <span class="text-primary">Your cart</span>
-              <span class="badge bg-primary rounded-pill">3</span>
+              <span class="badge bg-primary rounded-pill"><?php echo $count; ?></span>
             </h4>
             <ul class="list-group mb-3">
-              <li class="list-group-item d-flex justify-content-between lh-sm">
-                <div>
-                  <h6 class="my-0">Product name</h6>
-                  <small class="text-muted">Brief description</small>
-                </div>
-                <span class="text-muted">$12</span>
-              </li>
-              <li class="list-group-item d-flex justify-content-between lh-sm">
-                <div>
-                  <h6 class="my-0">Second product</h6>
-                  <small class="text-muted">Brief description</small>
-                </div>
-                <span class="text-muted">$8</span>
-              </li>
-              <li class="list-group-item d-flex justify-content-between lh-sm">
-                <div>
-                  <h6 class="my-0">Third item</h6>
-                  <small class="text-muted">Brief description</small>
-                </div>
-                <span class="text-muted">$5</span>
-              </li>
-              <li class="list-group-item d-flex justify-content-between bg-light">
-                <div class="text-success">
-                  <h6 class="my-0">Promo code</h6>
-                  <small>EXAMPLECODE</small>
-                </div>
-                <span class="text-success">−$5</span>
-              </li>
-              <li class="list-group-item d-flex justify-content-between">
-                <span>Total (USD)</span>
-                <strong>$20</strong>
-              </li>
+              <?php if (empty($cartItems)): ?>
+                <li class="list-group-item">Dein Warenkorb ist leer.</li>
+              <?php else: ?>
+                <?php foreach ($cartItems as $item): ?>
+                  <li class="list-group-item d-flex justify-content-between lh-sm">
+                    <div>
+                      <h6 class="my-0"><?php echo htmlspecialchars($item['name']); ?></h6>
+                      <small class="text-muted">Artikel-Nr.: <?php echo (int)$item['artikel_id']; ?> &middot; Menge: <?php echo (int)$item['menge']; ?></small>
+                    </div>
+                    <span class="text-muted"><?php echo number_format($item['zeilensumme'], 2, ',', '.'); ?> €</span>
+                  </li>
+                <?php endforeach; ?>
+                <li class="list-group-item d-flex justify-content-between bg-light">
+                  <div class="text-success">
+                    <h6 class="my-0">Versand</h6>
+                    <small>Standard</small>
+                  </div>
+                  <span class="text-success"><?php echo ($shipping > 0) ? number_format($shipping, 2, ',', '.') . ' €' : 'Gratis'; ?></span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                  <span>Gesamt</span>
+                  <strong><?php echo number_format($total, 2, ',', '.'); ?> €</strong>
+                </li>
+              <?php endif; ?>
             </ul>
 
             <form class="card p-2">
@@ -222,15 +301,9 @@
           </div>
         </div>
       </main>
-      <footer class="my-5 pt-5 text-muted text-center text-small">
-        <p class="mb-1">&copy; 2017–2021 Company Name</p>
-        <ul class="list-inline">
-          <li class="list-inline-item"><a href="#">Privacy</a></li>
-          <li class="list-inline-item"><a href="#">Terms</a></li>
-          <li class="list-inline-item"><a href="#">Support</a></li>
-        </ul>
-      </footer>
     </div>
+  </div>
+  <?php include "../include/footimport.php"; ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="form-validation.js"></script>
   </body>

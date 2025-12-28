@@ -442,6 +442,7 @@ if (is_dir($absoluterPfad)) {
                     <button type="submit" class="buy-now-button">In den Warenkorb</button>
                 </div>
             </form>
+            <div id="add-cart-msg" style="display:none;margin-top:10px"></div>
                   <?php if (isset($_GET['error'])): ?>
                 <div class="alert alert-danger">
                     <?php 
@@ -608,6 +609,33 @@ if (is_dir($absoluterPfad)) {
     </section>
 </main>
 <?php endif; ?>
+<script>
+document.addEventListener('DOMContentLoaded', ()=>{
+    const form = document.querySelector('.add-to-cart-form');
+    const msg = document.getElementById('add-cart-msg');
+    if (!form) return;
+    form.addEventListener('submit', async e => {
+        e.preventDefault();
+        const fd = new FormData(form);
+        fd.append('ajax','1');
+        try {
+            const res = await fetch(form.action, { method: 'POST', body: fd });
+            if (!res.ok) throw new Error('Netzwerkfehler');
+            const d = await res.json();
+            if (d.success) {
+                msg.style.display = 'block'; msg.style.color = 'green';
+                msg.textContent = 'Artikel wurde zum Warenkorb hinzugefügt.';
+            } else {
+                msg.style.display = 'block'; msg.style.color = 'red';
+                msg.textContent = d.error || 'Fehler beim Hinzufügen';
+            }
+        } catch (err) {
+            msg.style.display = 'block'; msg.style.color = 'red';
+            msg.textContent = 'Fehler: ' + err.message;
+        }
+    });
+});
+</script>
 
 <?php include $_SERVER['DOCUMENT_ROOT'] . '/Webprojekt/php/include/footimport.php'; ?>
 
@@ -697,6 +725,46 @@ if (is_dir($absoluterPfad)) {
 
         input.value = newValue;
     }
+
+    // AJAX Handler für Add-to-Cart Form
+    document.querySelector('.add-to-cart-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        formData.append('ajax', '1');
+        
+        fetch(this.action, {
+            method: 'POST',
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                // Update header cart count direkt mit der Response-Data
+                const cartCountElements = document.querySelectorAll('.cart-count');
+                cartCountElements.forEach(el => {
+                    el.textContent = data.count;
+                });
+                
+                // Show message
+                const msgEl = document.getElementById('add-cart-msg');
+                msgEl.textContent = '✓ Artikel zum Warenkorb hinzugefügt';
+                msgEl.style.display = 'block';
+                msgEl.style.color = 'green';
+                
+                setTimeout(() => {
+                    msgEl.style.display = 'none';
+                }, 3000);
+            }
+        })
+        .catch(err => {
+            console.error('Error adding to cart:', err);
+            const msgEl = document.getElementById('add-cart-msg');
+            msgEl.textContent = '✗ Fehler beim Hinzufügen';
+            msgEl.style.display = 'block';
+            msgEl.style.color = 'red';
+        });
+    });
 </script>
 
 </body>

@@ -200,19 +200,6 @@ section {
 }
 
 /* ==========================
-   ANNOUNCEMENT BAR
-   ========================== */
-.announcement-bar {
-    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
-    color: white;
-    text-align: center;
-    padding: 12px 0;
-    font-size: 0.9rem;
-    font-weight: 500;
-    letter-spacing: 0.01em;
-}
-
-/* ==========================
    MODERN HERO SECTION - COMPLETELY REDESIGNED
    ========================== */
 

@@ -2,14 +2,16 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+include __DIR__ . '/connectcon.php';
 ?>
     <link rel="stylesheet" href="/Webprojekt/style.css">
     
     <style>
     /* Basis Header Styles */
     .announcement-bar {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+        background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+        color: white !important;
         text-align: center;
         padding: 10px 15px;
         font-size: 14px;
@@ -65,11 +67,11 @@ if (session_status() === PHP_SESSION_NONE) {
 
     /* Suche diesen Block: */
     .desktop-search form {
-        display: flex;
+        display: flex !important;
         border: 2px solid #e0e0e0;
         border-radius: 25px;
         transition: border-color 0.3s ease;
-        position: relative; /* Das hier fügen wir zur Sicherheit hinzu */
+        position: relative;
     }
 
     .desktop-search form:focus-within {
@@ -77,25 +79,52 @@ if (session_status() === PHP_SESSION_NONE) {
     }
 
     .desktop-search input[type="search"] {
-        flex: 1;
-        padding: 12px 20px;
-        border: none;
-        outline: none;
-        font-size: 14px;
+        flex: 1 !important;
+        padding: 12px 20px !important;
+        border: none !important;
+        outline: none !important;
+        font-size: 11px !important;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+        height: auto !important;
+        min-height: auto !important;
+        line-height: 1.5 !important;
+    }
+
+    .desktop-search input[type="search"]::-webkit-input-placeholder {
+        font-size: 11px !important;
+    }
+
+    .desktop-search input[type="search"]::placeholder {
+        font-size: 11px !important;
     }
 
     .desktop-search button {
-        padding: 12px 25px;
-        background: #667eea;
-        color: white;
-        border: none;
+        padding: 12px 25px !important;
+        background: #667eea !important;
+        color: white !important;
+        border: none !important;
         cursor: pointer;
-        font-weight: 600;
-        transition: background 0.3s ease;
+        font-weight: 600 !important;
+        transition: background 0.3s ease !important;
+        font-size: 11px !important;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+        height: auto !important;
+        min-height: auto !important;
+        line-height: 1.5 !important;
     }
 
     .desktop-search button:hover {
         background: #5568d3;
+    }
+
+    /* AGGRESSIVE BOOTSTRAP OVERRIDE */
+    .desktop-search .search-wrapper {
+        flex: 1 !important;
+        display: flex !important;
+    }
+
+    .desktop-search form input {
+        font-size: 11px !important;
     }
 
     /* Desktop Header Actions */
@@ -715,7 +744,28 @@ if (session_status() === PHP_SESSION_NONE) {
                                 <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
                             </svg>
                             <span>Warenkorb</span>
-                            <span class="cart-count">0</span>
+                            <span class="cart-count"><?php
+                                $cartCount = 10;
+                                if (isset($_SESSION['temp_user'])) {
+                                    $userID_cart = (int)$_SESSION['temp_user']['id'];
+                                    if (isset($con) && !$con->connect_error) {
+                                        $sql = "SELECT COUNT(wp.artikel_id) AS cnt
+                                                FROM warenkorbkopf wk
+                                                LEFT JOIN warenkorbposition wp ON wp.warenkorb_id = wk.id
+                                                WHERE wk.kunde_id = ?";
+                                        $stmt = $con->prepare($sql);
+                                        if ($stmt) {
+                                            $stmt->bind_param('i', $userID_cart);
+                                            $stmt->execute();
+                                            $stmt->bind_result($cnt);
+                                            $stmt->fetch();
+                                            $cartCount = (int)($cnt ?? 0);
+                                            $stmt->close();
+                                        }
+                                    }
+                                }
+                                echo $cartCount;
+                            ?></span>
                         </a>
                     </div>
                     
@@ -728,16 +778,21 @@ if (session_status() === PHP_SESSION_NONE) {
                             <span class="points-badge">
                                 <?php
                                 if (isset($_SESSION['temp_user'])) {
-                                    $con = new mysqli('localhost', 'root', '', 'dbpilotenshop');
-                                    if (!$con->connect_error) {
+                                    if (isset($con) && !$con->connect_error) {
                                         $userID = $_SESSION['temp_user']['id'];
                                         $stmt = $con->prepare("SELECT punktestand FROM punkte WHERE user_id = ?");
-                                        $stmt->bind_param("i", $userID);
-                                        $stmt->execute();
-                                        $stmt->bind_result($punktestand);
-                                        $stmt->fetch();
-                                        echo $punktestand ?? '0';
-                                        $stmt->close();
+                                        if ($stmt) {
+                                            $stmt->bind_param("i", $userID);
+                                            $stmt->execute();
+                                            $stmt->bind_result($punktestand);
+                                            $stmt->fetch();
+                                            echo $punktestand ?? '0';
+                                            $stmt->close();
+                                        } else {
+                                            echo '0';
+                                        }
+                                    } else {
+                                        echo '0';
                                     }
                                 } else {
                                     echo '0';
@@ -758,14 +813,14 @@ if (session_status() === PHP_SESSION_NONE) {
                                 <span class="online-indicator"></span>
                                 <?php
                                 if (isset($_SESSION['temp_user'])) {
-                                    $con_online = new mysqli('localhost', 'root', '', 'dbpilotenshop');
-                                    if (!$con_online->connect_error) {
-                                        $result = $con_online->query("SELECT COUNT(*) AS anzahl FROM user WHERE online=1");
+                                    if (isset($con) && !$con->connect_error) {
+                                        $result = $con->query("SELECT COUNT(*) AS anzahl FROM user WHERE online=1");
                                         if ($result) {
                                             $row = $result->fetch_assoc();
                                             echo $row['anzahl'];
                                         }
-                                        $con_online->close();
+                                    } else {
+                                        echo '0';
                                     }
                                 } else {
                                     echo '0';
@@ -865,7 +920,28 @@ if (session_status() === PHP_SESSION_NONE) {
                         <div class="item-label">Einkaufswagen</div>
                         <div class="item-value">Warenkorb</div>
                     </div>
-                    <span class="badge">0</span>
+                    <span class="badge"><?php
+                        $cartCount_mobile = 0;
+                        if (isset($_SESSION['temp_user'])) {
+                            $userID_cart = (int)$_SESSION['temp_user']['id'];
+                            if (isset($con) && !$con->connect_error) {
+                                $sql = "SELECT COUNT(wp.artikel_id) AS cnt
+                                        FROM warenkorbkopf wk
+                                        LEFT JOIN warenkorbposition wp ON wp.warenkorb_id = wk.id
+                                        WHERE wk.kunde_id = ?";
+                                $stmt = $con->prepare($sql);
+                                if ($stmt) {
+                                    $stmt->bind_param('i', $userID_cart);
+                                    $stmt->execute();
+                                    $stmt->bind_result($cnt);
+                                    $stmt->fetch();
+                                    $cartCount_mobile = (int)($cnt ?? 0);
+                                    $stmt->close();
+                                }
+                            }
+                        }
+                        echo $cartCount_mobile;
+                    ?></span>
                 </a>
 
                 <a href="/Webprojekt/php/Kundenkonto.php" class="mobile-user-item">
@@ -879,16 +955,21 @@ if (session_status() === PHP_SESSION_NONE) {
                     <span class="points-badge-mobile">
                         <?php
                         if (isset($_SESSION['temp_user'])) {
-                            $con_mobile = new mysqli('localhost', 'root', '', 'dbpilotenshop');
-                            if (!$con_mobile->connect_error) {
+                            if (isset($con) && !$con->connect_error) {
                                 $userID = $_SESSION['temp_user']['id'];
-                                $stmt = $con_mobile->prepare("SELECT punktestand FROM punkte WHERE user_id = ?");
-                                $stmt->bind_param("i", $userID);
-                                $stmt->execute();
-                                $stmt->bind_result($punktestand);
-                                $stmt->fetch();
-                                echo $punktestand ?? '0';
-                                $stmt->close();
+                                $stmt = $con->prepare("SELECT punktestand FROM punkte WHERE user_id = ?");
+                                if ($stmt) {
+                                    $stmt->bind_param("i", $userID);
+                                    $stmt->execute();
+                                    $stmt->bind_result($punktestand);
+                                    $stmt->fetch();
+                                    echo $punktestand ?? '0';
+                                    $stmt->close();
+                                } else {
+                                    echo '0';
+                                }
+                            } else {
+                                echo '0';
                             }
                         } else {
                             echo '0';
@@ -911,14 +992,14 @@ if (session_status() === PHP_SESSION_NONE) {
                         <span class="online-indicator"></span>
                         <?php
                         if (isset($_SESSION['temp_user'])) {
-                            $con_mobile_online = new mysqli('localhost', 'root', '', 'dbpilotenshop');
-                            if (!$con_mobile_online->connect_error) {
-                                $result = $con_mobile_online->query("SELECT COUNT(*) AS anzahl FROM user WHERE online=1");
+                            if (isset($con) && !$con->connect_error) {
+                                $result = $con->query("SELECT COUNT(*) AS anzahl FROM user WHERE online=1");
                                 if ($result) {
                                     $row = $result->fetch_assoc();
                                     echo $row['anzahl'];
                                 }
-                                $con_mobile_online->close();
+                            } else {
+                                echo '0';
                             }
                         } else {
                             echo '0';
@@ -1008,17 +1089,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Warenkorbanzahl aktualisieren (Beispiel)
-    function updateCartCount() {
-        // Hier deine Logik zum Abrufen der Warenkorbanzahl
-        // Beispiel:
-        const cartCount = 0; // Aus deiner Datenbank/Session
-        document.querySelectorAll('.cart-count, .mobile-user-item .badge').forEach(el => {
-            if (!el.classList.contains('points-badge-mobile') && !el.classList.contains('online-badge')) {
-                el.textContent = cartCount;
-            }
-        });
-    }
+
 
     updateCartCount();
 });
@@ -1103,4 +1174,17 @@ document.addEventListener('DOMContentLoaded', function() {
         setupLiveSearch('mobileSearchInput', 'mobileSuggestions');
     });
     // --- DEBUG LIVE SUCHE ENDE ---
+
+    // Funktion zum Aktualisieren des Header-Cart-Counts
+    window.updateHeaderCartCount = function() {
+        fetch('/Webprojekt/php/include/cart_count.php')
+            .then(res => res.json())
+            .then(data => {
+                const cartCountElements = document.querySelectorAll('.cart-count');
+                cartCountElements.forEach(el => {
+                    el.textContent = data.count;
+                });
+            })
+            .catch(err => console.error('Cart count update failed:', err));
+    };
 </script>
