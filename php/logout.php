@@ -74,7 +74,7 @@ session_destroy();
     <div class="logout-content">
         
 
-        <h1>Logout erfolgreich</h1>
+        <h1 style="margin-bottom: 20px !important;">Logout erfolgreich</h1>
         <p>Du wurdest erfolgreich abgemeldet.</p>
         <p>Wir freuen uns, dich bald wiederzusehen!</p>
 

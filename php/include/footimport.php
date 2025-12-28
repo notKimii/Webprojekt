@@ -6,8 +6,8 @@
             <div class="footer-columns">
                 <div class="footer-column">
                     <h3>Cockpit Corner</h3>
-                    <p>Deine erste Adresse für Pilotenequipment mit fairen Preisen.</p>
-                    <a href="/ueber-uns">Mehr über uns</a>
+                    <p style="text-align: left;">Deine erste Adresse für Pilotenequipment mit fairen Preisen.</p>
+                    <a style="color: #707784;" href="/ueber-uns">Mehr über uns</a>
                 </div>
 
                 <div class="footer-column">
