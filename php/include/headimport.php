@@ -745,7 +745,7 @@ include __DIR__ . '/connectcon.php';
                             </svg>
                             <span>Warenkorb</span>
                             <span class="cart-count"><?php
-                                $cartCount = 10;
+                                $cartCount = 0;
                                 if (isset($_SESSION['temp_user'])) {
                                     $userID_cart = (int)$_SESSION['temp_user']['id'];
                                     if (isset($con) && !$con->connect_error) {

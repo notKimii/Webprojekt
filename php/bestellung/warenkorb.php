@@ -36,6 +36,16 @@ $shippingMethods = [
     'dhl-express' => ['name' => 'DHL Express', 'cost' => 16.90]
 ];
 
+// Rabattstaffeln berechnen basierend auf der höchsten Menge aller Artikel
+function getDiscountRate($maxQuantity) {
+    if ($maxQuantity >= 10) {
+        return 0.10; // 10% ab Menge 10
+    } elseif ($maxQuantity >= 5) {
+        return 0.05; // 5% ab Menge 5
+    }
+    return 0.00; // Kein Rabatt
+}
+
 // Hilfsfunktion: Warenkorb laden und Summen berechnen
 function loadCartData(mysqli $con, int $kundenId, string $shippingMethod = 'dhl'): array {
     global $shippingMethods;
@@ -51,14 +61,36 @@ function loadCartData(mysqli $con, int $kundenId, string $shippingMethod = 'dhl'
     $res = $stmt->get_result();
 
     $items = [];
-    $subtotal = 0;
+    $maxQuantity = 0;
+    $subtotalVorRabatt = 0;
+    
+    // Erste Iteration: Alle Items laden und maximale Menge ermitteln
     while ($row = $res->fetch_assoc()) {
-        // Defaults für fehlende Artikel-Daten
         $row['name'] = $row['name'] ?? 'Unbekanntes Produkt';
         $row['preis'] = $row['preis'] ?? 0.0;
-        $row['zeilensumme'] = $row['preis'] * $row['menge'];
-        $subtotal += $row['zeilensumme'];
+        $row['menge'] = $row['menge'] ?? 0;
+        
         $items[(int)$row['artikel_id']] = $row;
+        $maxQuantity = max($maxQuantity, (int)$row['menge']);
+        $subtotalVorRabatt += $row['preis'] * $row['menge'];
+    }
+    
+    // Rabattsatz basierend auf maximaler Menge ermitteln
+    $discountRate = getDiscountRate($maxQuantity);
+    
+    // Zweite Iteration: Rabatt auf alle Items anwenden
+    $subtotal = 0;
+    $totalDiscount = 0;
+    
+    foreach ($items as &$item) {
+        $zeilensummeVorRabatt = $item['preis'] * $item['menge'];
+        $rabattBetrag = $zeilensummeVorRabatt * $discountRate;
+        $item['zeilensumme'] = $zeilensummeVorRabatt - $rabattBetrag;
+        $item['rabatt_prozent'] = $discountRate * 100;
+        $item['rabatt_betrag'] = $rabattBetrag;
+        
+        $subtotal += $item['zeilensumme'];
+        $totalDiscount += $rabattBetrag;
     }
     
     // Versandkosten basierend auf Versandart
@@ -70,9 +102,11 @@ function loadCartData(mysqli $con, int $kundenId, string $shippingMethod = 'dhl'
     return [
         'items' => $items,
         'subtotal' => $subtotal,
+        'totalDiscount' => $totalDiscount,
         'shipping' => $shipping,
         'total' => $total,
-        'count' => count($items)
+        'count' => count($items),
+        'maxQuantity' => $maxQuantity
     ];
 }
 
@@ -111,6 +145,23 @@ $stmtCart->close();
 
 // Aktionen: Menge per +/- ändern oder Artikel löschen
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $action = $_POST['action'] ?? '';
+    
+    // Spezial-Handler für Versandart-Änderung
+    if ($action === 'update_shipping') {
+        $shippingMethod = $_POST['shipping_method'] ?? 'dhl';
+        $cartData = loadCartData($con, $kundenId, $shippingMethod);
+        
+        if ($isAjax) {
+            header('Content-Type: application/json');
+            echo json_encode([
+                'shipping' => $cartData['shipping'],
+                'total' => $cartData['total']
+            ]);
+            exit;
+        }
+    }
+    
     // Warenkorb erstellen, falls nicht vorhanden
     if ($cartId === null) {
         $stmtInsert = $con->prepare('INSERT INTO warenkorbkopf (kunde_id) VALUES (?)');
@@ -120,7 +171,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmtInsert->close();
     }
 
-    $action = $_POST['action'] ?? '';
     $artikelId = isset($_POST['artikel_id']) ? (int)$_POST['artikel_id'] : 0;
     $success = false;
 
@@ -153,12 +203,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($isAjax) {
         header('Content-Type: application/json');
+        // Alle Items mit ihren Rabattinfos zurückgeben
+        $itemsData = [];
+        foreach ($cartData['items'] as $iId => $item) {
+            $itemsData[$iId] = [
+                'menge' => $item['menge'],
+                'zeilensumme' => $item['zeilensumme'],
+                'rabatt_betrag' => $item['rabatt_betrag'],
+                'rabatt_prozent' => $item['rabatt_prozent']
+            ];
+        }
         echo json_encode([
             'success' => $success,
             'artikel_id' => $artikelId,
-            'menge' => $currentItem['menge'] ?? 0,
-            'zeilensumme' => $currentItem['zeilensumme'] ?? 0,
+            'items' => $itemsData,
             'subtotal' => $cartData['subtotal'],
+            'totalDiscount' => $cartData['totalDiscount'],
             'shipping' => $cartData['shipping'],
             'total' => $cartData['total'],
             'count' => $cartData['count']
@@ -196,6 +256,7 @@ $total = $cartData['total'];
         // Removed duplicated session/post/SQL logic and rely on top-level handling (incl. AJAX support).
         $result = array_values($cartData['items']);
         $subtotal = $cartData['subtotal'];
+        $totalDiscount = $cartData['totalDiscount'];
         $shipping = $cartData['shipping'];
         $total = $cartData['total'];
         ?>
@@ -248,7 +309,10 @@ $total = $cartData['total'];
                                                                 <button type="submit" class="btn btn-primary px-3 ms-2"><i class="fas fa-plus"></i></button>
                                                             </form>
                                                         </div>
-                                                        <p class="text-start text-md-center mb-0"><strong><?php echo number_format($position['preis'], 2, ',', '.'); ?> €</strong></p>
+                                                        <p class="text-start text-md-center mb-0 price-text"><strong><?php echo number_format($position['preis'], 2, ',', '.'); ?> €</strong></p>
+                                                        <?php if ($position['rabatt_betrag'] > 0): ?>
+                                                            <p class="text-start text-md-center mb-1 text-danger discount-line"><small>-<?php echo number_format($position['rabatt_betrag'], 2, ',', '.'); ?> € (<?php echo (int)$position['rabatt_prozent']; ?>%)</small></p>
+                                                        <?php endif; ?>
                                                         <p class="text-start text-md-center">Gesamt: <strong id="line-<?php echo $id; ?>"><?php echo number_format($position['zeilensumme'], 2, ',', '.'); ?> €</strong></p>
                                                     </div>
                                                 </div>
@@ -268,16 +332,6 @@ $total = $cartData['total'];
                                         </select>
                                     </div>
                                 </div>
-                                <div class="card mb-4 mb-lg-0">
-                                    <div class="card-body">
-                                        <p class="mb-1"><strong>Akzeptierte Zahlarten</strong></p>
-                                        <div class="d-flex align-items-center gap-2 flex-wrap">
-                                            <span class="badge bg-light text-dark border">Visa</span>
-                                            <span class="badge bg-light text-dark border">Mastercard</span>
-                                            <span class="badge bg-light text-dark border">PayPal</span>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="card mb-4">
@@ -289,6 +343,10 @@ $total = $cartData['total'];
                                             <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
                                                 Produkte
                                                 <span id="summary-subtotal"><?php echo number_format($subtotal, 2, ',', '.'); ?> €</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center px-0 <?php echo $totalDiscount > 0 ? '' : 'd-none'; ?>" id="discount-row">
+                                                Rabatt
+                                                <span id="summary-discount" class="text-danger">-<?php echo number_format($totalDiscount, 2, ',', '.'); ?> €</span>
                                             </li>
                                             <li class="list-group-item d-flex justify-content-between align-items-center px-0">
                                                 Versand
@@ -330,13 +388,59 @@ $total = $cartData['total'];
                 const data = await res.json();
                 console.log('AJAX Response:', data);
                 if(!data) return;
-                const id = data.artikel_id;
-                const qtyEl = document.querySelector('#qty-' + id);
-                if(qtyEl) qtyEl.value = data.menge ?? 0;
-                const lineEl = document.querySelector('#line-' + id);
-                if(lineEl) lineEl.textContent = formatCurrency(data.zeilensumme ?? 0);
+                
+                // Alle Items aktualisieren mit neuen Rabattinfos
+                if (data.items) {
+                    Object.entries(data.items).forEach(([id, itemData]) => {
+                        const qtyEl = document.querySelector('#qty-' + id);
+                        if(qtyEl) qtyEl.value = itemData.menge ?? 0;
+                        
+                        const lineEl = document.querySelector('#line-' + id);
+                        if(lineEl) lineEl.textContent = formatCurrency(itemData.zeilensumme ?? 0);
+                        
+                        // Rabatt-Anzeige aktualisieren oder erstellen
+                        const row = document.querySelector('[data-artikel-id="' + id + '"]');
+                        if (row) {
+                            let discountLine = row.querySelector('.discount-line');
+                            
+                            if (itemData.rabatt_betrag > 0) {
+                                if (!discountLine) {
+                                    // Rabattzeile erstellen
+                                    const priceP = row.querySelector('.price-text');
+                                    if (priceP) {
+                                        discountLine = document.createElement('p');
+                                        discountLine.className = 'text-start text-md-center mb-1 text-danger discount-line';
+                                        discountLine.innerHTML = '<small>-' + formatCurrency(itemData.rabatt_betrag) + ' (' + Math.round(itemData.rabatt_prozent) + '%)</small>';
+                                        priceP.parentNode.insertBefore(discountLine, priceP.nextSibling);
+                                    }
+                                } else {
+                                    // Rabattzeile aktualisieren
+                                    discountLine.innerHTML = '<small>-' + formatCurrency(itemData.rabatt_betrag) + ' (' + Math.round(itemData.rabatt_prozent) + '%)</small>';
+                                }
+                            } else {
+                                // Rabattzeile entfernen, falls vorhanden
+                                if (discountLine) {
+                                    discountLine.remove();
+                                }
+                            }
+                        }
+                    });
+                }
+                
                 const subtotalEl = document.querySelector('#summary-subtotal');
                 if(subtotalEl) subtotalEl.textContent = formatCurrency(data.subtotal ?? 0);
+                
+                // Rabatt Update
+                const discountRow = document.querySelector('#discount-row');
+                const discountEl = document.querySelector('#summary-discount');
+                if (data.totalDiscount > 0) {
+                    if (discountRow) discountRow.classList.remove('d-none');
+                    if (discountEl) discountEl.textContent = '-' + formatCurrency(data.totalDiscount ?? 0);
+                } else {
+                    if (discountRow) discountRow.classList.add('d-none');
+                    if (discountEl) discountEl.textContent = '-' + formatCurrency(0);
+                }
+                
                 const shippingEl = document.querySelector('#summary-shipping');
                 if(shippingEl) shippingEl.textContent = (Number(data.shipping) > 0) ? formatCurrency(data.shipping) : 'Gratis';
                 const totalEl = document.querySelector('#summary-total');
@@ -350,8 +454,8 @@ $total = $cartData['total'];
                     el.textContent = data.count ?? 0;
                 });
 
-                if((data.menge ?? 0) === 0){
-                    const row = document.querySelector('[data-artikel-id="' + id + '"]');
+                if((data.items[data.artikel_id]?.menge ?? 0) === 0){
+                    const row = document.querySelector('[data-artikel-id="' + data.artikel_id + '"]');
                     if(row) {
                         // Nächstes <hr> Element finden und löschen
                         const nextHr = row.nextElementSibling;
@@ -384,13 +488,8 @@ $total = $cartData['total'];
         // Handler für Versandart-Änderung
         const shippingMethodSelect = document.getElementById('shipping-method');
         if(shippingMethodSelect) {
-            shippingMethodSelect.addEventListener('change', function() {
+            shippingMethodSelect.addEventListener('change', async function() {
                 const method = this.value;
-                const shippingCosts = {
-                    'lpd': 11.90,
-                    'dhl': 6.90,
-                    'dhl-express': 16.90
-                };
                 
                 // Update Hidden Input für Checkout
                 const hiddenInput = document.getElementById('shipping_method_input');
@@ -398,20 +497,37 @@ $total = $cartData['total'];
                     hiddenInput.value = method;
                 }
                 
-                const newShippingCost = shippingCosts[method] || 0;
-                const subtotalEl = document.querySelector('#summary-subtotal');
-                const subtotal = subtotalEl ? parseFloat(subtotalEl.textContent.replace(' €', '').replace(',', '.')) : 0;
-                const newTotal = subtotal + newShippingCost;
-                
-                // Update Versand und Gesamtbetrag
-                const shippingEl = document.querySelector('#summary-shipping');
-                if(shippingEl) {
-                    shippingEl.textContent = newShippingCost.toFixed(2).replace('.', ',') + ' €';
-                }
-                
-                const totalEl = document.querySelector('#summary-total');
-                if(totalEl) {
-                    totalEl.textContent = newTotal.toFixed(2).replace('.', ',') + ' €';
+                // AJAX-Request um neue Werte vom Backend zu holen
+                try {
+                    const fd = new FormData();
+                    fd.append('action', 'update_shipping');
+                    fd.append('shipping_method', method);
+                    fd.append('ajax', '1');
+                    
+                    const res = await fetch(location.pathname, { 
+                        method: 'POST', 
+                        body: fd, 
+                        credentials: 'same-origin' 
+                    });
+                    
+                    if(!res.ok) throw new Error('Netzwerkfehler');
+                    const data = await res.json();
+                    console.log('Shipping Update Response:', data);
+                    
+                    if(data && data.shipping !== undefined && data.total !== undefined) {
+                        // Update Versand und Gesamtbetrag
+                        const shippingEl = document.querySelector('#summary-shipping');
+                        if(shippingEl) {
+                            shippingEl.textContent = (Number(data.shipping) > 0) ? formatCurrency(data.shipping) : 'Gratis';
+                        }
+                        
+                        const totalEl = document.querySelector('#summary-total');
+                        if(totalEl) {
+                            totalEl.textContent = formatCurrency(data.total);
+                        }
+                    }
+                } catch(err) {
+                    console.error('Fehler bei Versandart-Änderung:', err);
                 }
             });
         }

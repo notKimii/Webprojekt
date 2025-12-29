@@ -12,6 +12,16 @@ $shippingMethods = [
     'dhl-express' => ['name' => 'DHL Express', 'cost' => 16.90]
 ];
 
+// Rabattstaffeln berechnen basierend auf der höchsten Menge aller Artikel
+function getDiscountRate($maxQuantity) {
+    if ($maxQuantity >= 10) {
+        return 0.10; // 10% ab Menge 10
+    } elseif ($maxQuantity >= 5) {
+        return 0.05; // 5% ab Menge 5
+    }
+    return 0.00; // Kein Rabatt
+}
+
 // Versandart aus POST oder Standard
 $shippingMethod = isset($_POST['shipping_method']) ? $_POST['shipping_method'] : 'dhl';
 if (!isset($shippingMethods[$shippingMethod])) {
@@ -42,13 +52,36 @@ function loadCartData(mysqli $con, int $kundenId, string $shippingMethod = 'dhl'
   $res = $stmt->get_result();
 
   $items = [];
-  $subtotal = 0;
+  $maxQuantity = 0;
+  $subtotalVorRabatt = 0;
+  
+  // Erste Iteration: Alle Items laden und maximale Menge ermitteln
   while ($row = $res->fetch_assoc()) {
     $row['name'] = $row['name'] ?? 'Unbekanntes Produkt';
     $row['preis'] = $row['preis'] ?? 0.0;
-    $row['zeilensumme'] = $row['preis'] * $row['menge'];
-    $subtotal += $row['zeilensumme'];
-    $items[] = $row;
+    $row['menge'] = $row['menge'] ?? 0;
+    
+    $items[(int)$row['artikel_id']] = $row;
+    $maxQuantity = max($maxQuantity, (int)$row['menge']);
+    $subtotalVorRabatt += $row['preis'] * $row['menge'];
+  }
+  
+  // Rabattsatz basierend auf maximaler Menge ermitteln
+  $discountRate = getDiscountRate($maxQuantity);
+  
+  // Zweite Iteration: Rabatt auf alle Items anwenden
+  $subtotal = 0;
+  $totalDiscount = 0;
+  
+  foreach ($items as &$item) {
+    $zeilensummeVorRabatt = $item['preis'] * $item['menge'];
+    $rabattBetrag = $zeilensummeVorRabatt * $discountRate;
+    $item['zeilensumme'] = $zeilensummeVorRabatt - $rabattBetrag;
+    $item['rabatt_prozent'] = $discountRate * 100;
+    $item['rabatt_betrag'] = $rabattBetrag;
+    
+    $subtotal += $item['zeilensumme'];
+    $totalDiscount += $rabattBetrag;
   }
   
   // Versandkosten basierend auf Versandart
@@ -60,6 +93,7 @@ function loadCartData(mysqli $con, int $kundenId, string $shippingMethod = 'dhl'
   return [
     'items' => $items,
     'subtotal' => $subtotal,
+    'totalDiscount' => $totalDiscount,
     'shipping' => $shipping,
     'total' => $total,
     'count' => count($items),
@@ -67,13 +101,14 @@ function loadCartData(mysqli $con, int $kundenId, string $shippingMethod = 'dhl'
   ];
 }
 
-$cartData = ['items'=>[], 'subtotal'=>0, 'shipping'=>0, 'total'=>0, 'count'=>0, 'shippingMethod'=>'dhl'];
+$cartData = ['items'=>[], 'subtotal'=>0, 'totalDiscount'=>0, 'shipping'=>0, 'total'=>0, 'count'=>0, 'shippingMethod'=>'dhl'];
 if ($kundenId !== null) {
   $cartData = loadCartData($con, $kundenId, $shippingMethod);
 }
 // use a distinct variable name to avoid collisions with included files
-$cartItems = $cartData['items'];
+$cartItems = array_values($cartData['items']);
 $subtotal = $cartData['subtotal'];
+$totalDiscount = $cartData['totalDiscount'];
 $shipping = $cartData['shipping'];
 $total = $cartData['total'];
 $count = $cartData['count'];
@@ -120,10 +155,19 @@ $count = $cartData['count'];
                     <div>
                       <h6 class="my-0"><?php echo htmlspecialchars($item['name']); ?></h6>
                       <small class="text-muted">Artikel-Nr.: <?php echo (int)$item['artikel_id']; ?> &middot; Menge: <?php echo (int)$item['menge']; ?></small>
+                      <?php if ($item['rabatt_betrag'] > 0): ?>
+                        <small class="text-danger d-block">Rabatt: -<?php echo number_format($item['rabatt_betrag'], 2, ',', '.'); ?> € (<?php echo (int)$item['rabatt_prozent']; ?>%)</small>
+                      <?php endif; ?>
                     </div>
                     <span class="text-muted"><?php echo number_format($item['zeilensumme'], 2, ',', '.'); ?> €</span>
                   </li>
                 <?php endforeach; ?>
+                <?php if ($totalDiscount > 0): ?>
+                  <li class="list-group-item d-flex justify-content-between bg-light text-danger">
+                    <span>Gesamtrabatt</span>
+                    <strong>-<?php echo number_format($totalDiscount, 2, ',', '.'); ?> €</strong>
+                  </li>
+                <?php endif; ?>
                 <li class="list-group-item d-flex justify-content-between bg-light">
                   <div class="text-success">
                     <h6 class="my-0">Versand</h6>
@@ -231,66 +275,12 @@ $count = $cartData['count'];
               <hr class="my-4">
 
               <div class="form-check">
-                <input type="checkbox" class="form-check-input" id="same-address">
-                <label class="form-check-label" for="same-address">Shipping address is the same as my billing address</label>
-              </div>
-
-              <div class="form-check">
-                <input type="checkbox" class="form-check-input" id="save-info">
-                <label class="form-check-label" for="save-info">Save this information for next time</label>
-              </div>
-
-              <hr class="my-4">
-
-              <h4 class="mb-3">Payment</h4>
-
-              <div class="my-3">
-                <div class="form-check">
-                  <input id="credit" name="paymentMethod" type="radio" class="form-check-input" checked required>
-                  <label class="form-check-label" for="credit">Credit card</label>
-                </div>
-                <div class="form-check">
-                  <input id="debit" name="paymentMethod" type="radio" class="form-check-input" required>
-                  <label class="form-check-label" for="debit">Debit card</label>
-                </div>
-                <div class="form-check">
-                  <input id="paypal" name="paymentMethod" type="radio" class="form-check-input" required>
-                  <label class="form-check-label" for="paypal">PayPal</label>
-                </div>
-              </div>
-
-              <div class="row gy-3">
-                <div class="col-md-6">
-                  <label for="cc-name" class="form-label">Name on card</label>
-                  <input type="text" class="form-control" id="cc-name" placeholder="" required>
-                  <small class="text-muted">Full name as displayed on card</small>
-                  <div class="invalid-feedback">
-                    Name on card is required
-                  </div>
-                </div>
-
-                <div class="col-md-6">
-                  <label for="cc-number" class="form-label">Credit card number</label>
-                  <input type="text" class="form-control" id="cc-number" placeholder="" required>
-                  <div class="invalid-feedback">
-                    Credit card number is required
-                  </div>
-                </div>
-
-                <div class="col-md-3">
-                  <label for="cc-expiration" class="form-label">Expiration</label>
-                  <input type="text" class="form-control" id="cc-expiration" placeholder="" required>
-                  <div class="invalid-feedback">
-                    Expiration date required
-                  </div>
-                </div>
-
-                <div class="col-md-3">
-                  <label for="cc-cvv" class="form-label">CVV</label>
-                  <input type="text" class="form-control" id="cc-cvv" placeholder="" required>
-                  <div class="invalid-feedback">
-                    Security code required
-                  </div>
+                <input type="checkbox" class="form-check-input" id="privacy-policy" required>
+                <label class="form-check-label" for="privacy-policy">
+                  Ich akzeptiere die Datenschutzerklärung und Allgemeinen Geschäftsbedingungen
+                </label>
+                <div class="invalid-feedback">
+                  Sie müssen den Datenschutzbedingungen zustimmen.
                 </div>
               </div>
 
@@ -306,5 +296,23 @@ $count = $cartData['count'];
   <?php include "../include/footimport.php"; ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="form-validation.js"></script>
+    <script>
+      // Bootstrap form validation
+      (function () {
+        'use strict';
+        window.addEventListener('load', function () {
+          var forms = document.querySelectorAll('.needs-validation');
+          Array.prototype.slice.call(forms).forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+              if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+              }
+              form.classList.add('was-validated');
+            }, false);
+          });
+        });
+      })();
+    </script>
   </body>
 </html>
