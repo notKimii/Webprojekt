@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Erstellungszeit: 28. Dez 2025 um 05:44
--- Server-Version: 10.4.32-MariaDB
--- PHP-Version: 8.2.12
+-- Host: localhost
+-- Erstellungszeit: 30. Dez 2025 um 22:16
+-- Server-Version: 10.4.28-MariaDB
+-- PHP-Version: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -36,56 +36,59 @@ CREATE TABLE `artikel` (
   `lagerbestand` int(11) DEFAULT NULL,
   `kategorie` varchar(30) DEFAULT NULL,
   `bewertung` tinyint(1) DEFAULT NULL,
-  `anzahl_bewertungen` int(11) UNSIGNED NOT NULL DEFAULT 0
+  `anzahl_bewertungen` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `rabatt` int(3) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Daten für Tabelle `artikel`
 --
 
-INSERT INTO `artikel` (`id`, `name`, `beschreibung`, `groesse`, `preis`, `lagerbestand`, `kategorie`, `bewertung`, `anzahl_bewertungen`) VALUES
-(1001, 'Bose A30 Aviation Headset', 'Premium ANR-Headset mit hohem Tragekomfort und exzellenter Lärmreduzierung.', 'O', 1299, 25, 'Headsets', 5, 7),
-(1002, 'Lightspeed Zulu 3 ANR Headset', 'Beliebtes ANR-Headset, bekannt für Komfort, Haltbarkeit und klare Audioqualität.', 'O', 950, 30, 'Headsets', 4, 6),
-(1003, 'David Clark H10-13.4 Aviation Headset', 'Klassisches, robustes PNR-Headset, ein Standard in der Allgemeinen Luftfahrt.', 'O', 389, 50, 'Headsets', 4, 4),
-(1004, 'Yaesu FTA-550L Pro-X', 'Luftfahrt-Handfunkgerät mit NAV/COM und GPS-Empfänger.', 'O', 299, 15, 'Headsets', NULL, 0),
-(1005, 'Sennheiser S1 Digital Aviation Headset', 'ANR-Headset mit adaptiver Lärmkompensation und individuell einstellbarem Anpressdruck.', 'O', 1050, 18, 'Headsets', NULL, 0),
-(1006, 'Icom IC-A25NE (8.33/25 kHz)', 'Leistungsstarkes Handfunkgerät mit Navigation (VOR, GPS) und Bluetooth.', 'O', 489, 22, 'Headsets', 4, 1),
-(1007, 'Garmin aera 660 Portable Aviation GPS', 'Tragbares GPS mit Touchscreen, 3D Vision und umfangreichen Navigationsfunktionen.', 'O', 849, 20, 'Navigation', NULL, 0),
-(1008, 'ICAO Karte Deutschland (Set)', 'Offizielles Kartenset der Deutschen Flugsicherung für VFR-Flüge in Deutschland.', 'O', 25, 150, 'Navigation', NULL, 0),
-(1009, 'Jeppesen CR-3 Circular Flight Computer', 'Klassischer mechanischer Flugrechner für Flugplanungsberechnungen.', 'O', 36, 70, 'Navigation', 1, 1),
-(1010, 'ASA KB-3 Tri-Fold Kneeboard', 'Dreifach faltbares Kniebrett mit Klemmbrett, Stifthaltern und Kartentaschen.', 'O', 50, 40, 'Navigation', NULL, 0),
-(1011, 'Garmin GDL 50 Portable ADS-B Receiver', 'Tragbarer Empfänger für ADS-B Wetter- und Verkehrsdaten, Anzeige auf kompatiblen Geräten.', 'O', 799, 15, 'Navigation', NULL, 0),
-(1012, 'SkyDemon Lizenz (1 Jahr)', 'Umfassende Flugplanungs- und Navigationssoftware für VFR-Piloten in Europa.', 'O', 149, 0, 'Navigation', NULL, 0),
-(1013, 'Randolph Engineering Aviator (55mm, Gold)', 'Klassische Piloten-Sonnenbrille, nach US Militärspezifikationen gefertigt.', 'O', 219, 35, 'Pilotenkleidung & Accessoires', NULL, 0),
-(1014, 'Garmin D2 Mach 1 Aviator Smartwatch', 'Premium GPS-Smartwatch für Piloten mit umfassenden Flug-, Wetter- und Fitnessfunktionen.', 'O', 1199, 10, 'Pilotenkleidung & Accessoires', NULL, 0),
-(1015, '\"Alpha\" Pilotenhemd, weiß, Kurzarm', 'Pilotenhemd aus pflegeleichtem Baumwollmischung, mit Schulterklappen.', 'O', 40, 100, 'Pilotenkleidung & Accessoires', NULL, 0),
-(1016, 'Design4Pilots \"Pilot Case Daily\"', 'Kompakter und robuster Pilotentrolley für den täglichen Gebrauch oder kurze Reisen.', 'O', 189, 12, 'Pilotenkleidung & Accessoires', NULL, 0),
-(1017, 'Ray-Ban Aviator Classic RB3025', 'Die originale Pilotenbrille, ein zeitloser Klassiker mit hervorragendem UV-Schutz.', 'O', 150, 60, 'Pilotenkleidung & Accessoires', NULL, 0),
-(1018, 'Alpha Industries MA-1 Fliegerjacke', 'Kultige Nylon-Fliegerjacke mit orangem Innenfutter und robuster Verarbeitung.', 'O', 179, 45, 'Pilotenkleidung & Accessoires', NULL, 0),
-(1019, 'Jeppesen Captain Flight Bag', 'Geräumige Flugtasche mit vielen Fächern für Headsets, Karten und Zubehör.', 'O', 129, 28, 'Flugtaschen & Koffer', NULL, 0),
-(1020, 'Design4Pilots \"Pilot Weekend\" Tasche', 'Kompakte und stilvolle Tasche für Kurztrips oder als Alltagstasche für Piloten.', 'O', 99, 22, 'Flugtaschen & Koffer', NULL, 0),
-(1021, 'Brightline Bags B7 Flight \"Echo\" Konfiguration', 'Hochgradig anpassbare, modulare Flugtasche.', 'O', 229, 19, 'Flugtaschen & Koffer', NULL, 0),
-(1022, 'ASA AirClassics Flight Bag', 'Strapazierfähige und kompakte Tasche für die wichtigsten Pilotenutensilien.', 'O', 80, 33, 'Flugtaschen & Koffer', NULL, 0),
-(1023, 'Lightspeed \"The Cann\" Flight Bag', 'Elegante Leder-Flugtasche, benannt nach dem berühmten Autor Ernest K. Gann.', 'O', 199, 14, 'Flugtaschen & Koffer', NULL, 0),
-(1024, 'Aerocoast Pro EFB + Cooler II', 'Speziell für Airline-Piloten entwickelte Tasche mit EFB-Fach und integriertem Kühler.', 'O', 165, 17, 'Flugtaschen & Koffer', NULL, 0),
-(1025, 'PPL-A Lehrbuch Set (z.B. Oxford Aviation)', 'Umfassendes Lehrbuchset für die EASA PPL(A) Theorie.', 'O', 249, 40, 'Flugbücher & Lernmaterial', NULL, 0),
-(1026, 'ASA Standard Pilot Logbook (SP-30)', 'Standardisiertes Logbuch zur Erfassung von Flugzeiten und Erfahrungen.', 'O', 13, 200, 'Flugbücher & Lernmaterial', NULL, 0),
-(1027, '\"Stick and Rudder\" von Wolfgang Langewiesche', 'Ein Klassiker über die Kunst des Fliegens, tiefgründig und zeitlos.', 'O', 23, 35, 'Flugbücher & Lernmaterial', NULL, 0),
-(1028, 'Aviationexam PPL Fragensammlung (1 Jahr Zugang)', 'Online-Zugang zu einer umfangreichen Datenbank mit EASA PPL Prüfungsfragen.', 'O', 89, 0, 'Flugbücher & Lernmaterial', NULL, 0),
-(1029, 'Jeppesen ATPL Training Set (E-Books)', 'Kompletter Satz an E-Books für die ATPL(A) Theorie gemäß EASA-Richtlinien.', 'O', 699, 0, 'Flugbücher & Lernmaterial', NULL, 0),
-(1030, '\"Pilots Weather\" by Brian Cosgrove', 'Detailliertes Buch über Meteorologie speziell für Piloten.', 'O', 35, 25, 'Flugbücher & Lernmaterial', NULL, 0),
-(1031, '\"Remove Before Flight\" Pitot Cover Universal', 'Schützt das Pitot-Rohr vor Verstopfung durch Insekten oder Schmutz am Boden.', 'O', 10, 300, 'Flugzeugzubehör (GA)', NULL, 0),
-(1032, 'Flugzeug Radkeile, Gummi (Paar)', 'Robuste Gummikeile zur Sicherung von Leichtflugzeugen am Boden.', 'O', 30, 90, 'Flugzeugzubehör (GA)', NULL, 0),
-(1033, 'GATS Jar Fuel Tester', 'Transparenter Treibstofftester zur Prüfung auf Wasser und Sedimente im Kraftstoff.', 'O', 19, 120, 'Flugzeugzubehör (GA)', NULL, 0),
-(1034, 'Aircraft Tie-Down Kit (3x Spanngurte, Seile)', 'Set zur sicheren Verankerung von Flugzeugen im Freien.', 'O', 59, 40, 'Flugzeugzubehör (GA)', NULL, 0),
-(1035, 'Aero Cosmetics Wash Wax ALL (Konzentrat, 1L)', 'Wasserloses Reinigungs- und Wachsystsem für Flugzeuge, umweltfreundlich.', 'O', 45, 55, 'Flugzeugzubehör (GA)', NULL, 0),
-(1036, 'Tempest AA472 Oil Filter Cutter', 'Werkzeug zum sauberen Öffnen von Ölfiltern zur Inspektion auf Metallpartikel.', 'O', 89, 12, 'Flugzeugzubehör (GA)', NULL, 0),
-(1037, 'Crewsaver Crewfit 165N Schwimmweste', 'Automatische Rettungsweste über Wasser, leicht und komfortabel.', 'O', 99, 20, 'Sicherheitsaustrüstung', NULL, 0),
-(1038, 'ACR ResQLink 400 PLB', 'Kompakte und robuste persönliche Ortungsbake (PLB) für Notfälle.', 'O', 329, 8, 'Sicherheitsaustrüstung', NULL, 0),
-(1039, 'Lufthansa Erste-Hilfe-Set DIN 13157 erweitert', 'Umfassendes Erste-Hilfe-Set, erweitert mit flugspezifischen Inhalten oder Empfehlungen.', 'O', 45, 38, 'Sicherheitsaustrüstung', NULL, 0),
-(1040, 'H3R Aviation Halon 1211 Feuerlöscher (A344T)', 'Kompakter Halon 1211 Feuerlöscher, für den Einsatz im Cockpit zugelassen.', 'O', 289, 10, 'Sicherheitsaustrüstung', NULL, 0),
-(1041, 'SOL Escape Bivvy Bag Orange', 'Isolierender Notfall-Biwacksack, reflektiert 70% der Körperwärme.', 'O', 36, 36, 'Sicherheitsaustrüstung', NULL, 0),
-(1042, 'Forensics Detectors CO Detector for Aircraft', 'Tragbarer Kohlenmonoxid-Detektor speziell für Flugzeuge, mit Alarm.', 'O', 159, 7, 'Sicherheitsaustrüstung', NULL, 0);
+INSERT INTO `artikel` (`id`, `name`, `beschreibung`, `groesse`, `preis`, `lagerbestand`, `kategorie`, `bewertung`, `anzahl_bewertungen`, `rabatt`) VALUES
+(2, 'NeuJahr2026', 'Gutschein: NeuJahr2026', '', 0, 0, 'Code', NULL, 0, 26),
+(3, 'GutenRutsch', 'Gutschein: GutenRutsch', 'O', 0, 0, 'Code', NULL, 0, 10),
+(1001, 'Bose A30 Aviation Headset', 'Premium ANR-Headset mit hohem Tragekomfort und exzellenter Lärmreduzierung.', 'O', 1299, 25, 'Headsets', 5, 7, NULL),
+(1002, 'Lightspeed Zulu 3 ANR Headset', 'Beliebtes ANR-Headset, bekannt für Komfort, Haltbarkeit und klare Audioqualität.', 'O', 950, 30, 'Headsets', 4, 6, NULL),
+(1003, 'David Clark H10-13.4 Aviation Headset', 'Klassisches, robustes PNR-Headset, ein Standard in der Allgemeinen Luftfahrt.', 'O', 389, 50, 'Headsets', 4, 4, NULL),
+(1004, 'Yaesu FTA-550L Pro-X', 'Luftfahrt-Handfunkgerät mit NAV/COM und GPS-Empfänger.', 'O', 299, 15, 'Headsets', NULL, 0, NULL),
+(1005, 'Sennheiser S1 Digital Aviation Headset', 'ANR-Headset mit adaptiver Lärmkompensation und individuell einstellbarem Anpressdruck.', 'O', 1050, 18, 'Headsets', NULL, 0, NULL),
+(1006, 'Icom IC-A25NE (8.33/25 kHz)', 'Leistungsstarkes Handfunkgerät mit Navigation (VOR, GPS) und Bluetooth.', 'O', 489, 22, 'Headsets', 4, 1, NULL),
+(1007, 'Garmin aera 660 Portable Aviation GPS', 'Tragbares GPS mit Touchscreen, 3D Vision und umfangreichen Navigationsfunktionen.', 'O', 849, 20, 'Navigation', NULL, 0, NULL),
+(1008, 'ICAO Karte Deutschland (Set)', 'Offizielles Kartenset der Deutschen Flugsicherung für VFR-Flüge in Deutschland.', 'O', 25, 150, 'Navigation', NULL, 0, NULL),
+(1009, 'Jeppesen CR-3 Circular Flight Computer', 'Klassischer mechanischer Flugrechner für Flugplanungsberechnungen.', 'O', 36, 70, 'Navigation', 1, 1, NULL),
+(1010, 'ASA KB-3 Tri-Fold Kneeboard', 'Dreifach faltbares Kniebrett mit Klemmbrett, Stifthaltern und Kartentaschen.', 'O', 50, 40, 'Navigation', NULL, 0, NULL),
+(1011, 'Garmin GDL 50 Portable ADS-B Receiver', 'Tragbarer Empfänger für ADS-B Wetter- und Verkehrsdaten, Anzeige auf kompatiblen Geräten.', 'O', 799, 15, 'Navigation', NULL, 0, NULL),
+(1012, 'SkyDemon Lizenz (1 Jahr)', 'Umfassende Flugplanungs- und Navigationssoftware für VFR-Piloten in Europa.', 'O', 149, 0, 'Navigation', NULL, 0, NULL),
+(1013, 'Randolph Engineering Aviator (55mm, Gold)', 'Klassische Piloten-Sonnenbrille, nach US Militärspezifikationen gefertigt.', 'O', 219, 35, 'Pilotenkleidung & Accessoires', NULL, 0, NULL),
+(1014, 'Garmin D2 Mach 1 Aviator Smartwatch', 'Premium GPS-Smartwatch für Piloten mit umfassenden Flug-, Wetter- und Fitnessfunktionen.', 'O', 1199, 10, 'Pilotenkleidung & Accessoires', NULL, 0, NULL),
+(1015, '\"Alpha\" Pilotenhemd, weiß, Kurzarm', 'Pilotenhemd aus pflegeleichtem Baumwollmischung, mit Schulterklappen.', 'O', 40, 100, 'Pilotenkleidung & Accessoires', NULL, 0, NULL),
+(1016, 'Design4Pilots \"Pilot Case Daily\"', 'Kompakter und robuster Pilotentrolley für den täglichen Gebrauch oder kurze Reisen.', 'O', 189, 12, 'Pilotenkleidung & Accessoires', NULL, 0, NULL),
+(1017, 'Ray-Ban Aviator Classic RB3025', 'Die originale Pilotenbrille, ein zeitloser Klassiker mit hervorragendem UV-Schutz.', 'O', 150, 60, 'Pilotenkleidung & Accessoires', NULL, 0, NULL),
+(1018, 'Alpha Industries MA-1 Fliegerjacke', 'Kultige Nylon-Fliegerjacke mit orangem Innenfutter und robuster Verarbeitung.', 'O', 179, 45, 'Pilotenkleidung & Accessoires', NULL, 0, NULL),
+(1019, 'Jeppesen Captain Flight Bag', 'Geräumige Flugtasche mit vielen Fächern für Headsets, Karten und Zubehör.', 'O', 129, 28, 'Flugtaschen & Koffer', NULL, 0, NULL),
+(1020, 'Design4Pilots \"Pilot Weekend\" Tasche', 'Kompakte und stilvolle Tasche für Kurztrips oder als Alltagstasche für Piloten.', 'O', 99, 22, 'Flugtaschen & Koffer', NULL, 0, NULL),
+(1021, 'Brightline Bags B7 Flight \"Echo\" Konfiguration', 'Hochgradig anpassbare, modulare Flugtasche.', 'O', 229, 19, 'Flugtaschen & Koffer', NULL, 0, NULL),
+(1022, 'ASA AirClassics Flight Bag', 'Strapazierfähige und kompakte Tasche für die wichtigsten Pilotenutensilien.', 'O', 80, 33, 'Flugtaschen & Koffer', NULL, 0, NULL),
+(1023, 'Lightspeed \"The Cann\" Flight Bag', 'Elegante Leder-Flugtasche, benannt nach dem berühmten Autor Ernest K. Gann.', 'O', 199, 14, 'Flugtaschen & Koffer', NULL, 0, NULL),
+(1024, 'Aerocoast Pro EFB + Cooler II', 'Speziell für Airline-Piloten entwickelte Tasche mit EFB-Fach und integriertem Kühler.', 'O', 165, 17, 'Flugtaschen & Koffer', NULL, 0, NULL),
+(1025, 'PPL-A Lehrbuch Set (z.B. Oxford Aviation)', 'Umfassendes Lehrbuchset für die EASA PPL(A) Theorie.', 'O', 249, 40, 'Flugbücher & Lernmaterial', NULL, 0, NULL),
+(1026, 'ASA Standard Pilot Logbook (SP-30)', 'Standardisiertes Logbuch zur Erfassung von Flugzeiten und Erfahrungen.', 'O', 13, 200, 'Flugbücher & Lernmaterial', NULL, 0, NULL),
+(1027, '\"Stick and Rudder\" von Wolfgang Langewiesche', 'Ein Klassiker über die Kunst des Fliegens, tiefgründig und zeitlos.', 'O', 23, 35, 'Flugbücher & Lernmaterial', NULL, 0, NULL),
+(1028, 'Aviationexam PPL Fragensammlung (1 Jahr Zugang)', 'Online-Zugang zu einer umfangreichen Datenbank mit EASA PPL Prüfungsfragen.', 'O', 89, 0, 'Flugbücher & Lernmaterial', NULL, 0, NULL),
+(1029, 'Jeppesen ATPL Training Set (E-Books)', 'Kompletter Satz an E-Books für die ATPL(A) Theorie gemäß EASA-Richtlinien.', 'O', 699, 0, 'Flugbücher & Lernmaterial', NULL, 0, NULL),
+(1030, '\"Pilots Weather\" by Brian Cosgrove', 'Detailliertes Buch über Meteorologie speziell für Piloten.', 'O', 35, 25, 'Flugbücher & Lernmaterial', NULL, 0, NULL),
+(1031, '\"Remove Before Flight\" Pitot Cover Universal', 'Schützt das Pitot-Rohr vor Verstopfung durch Insekten oder Schmutz am Boden.', 'O', 10, 300, 'Flugzeugzubehör (GA)', NULL, 0, NULL),
+(1032, 'Flugzeug Radkeile, Gummi (Paar)', 'Robuste Gummikeile zur Sicherung von Leichtflugzeugen am Boden.', 'O', 30, 90, 'Flugzeugzubehör (GA)', NULL, 0, NULL),
+(1033, 'GATS Jar Fuel Tester', 'Transparenter Treibstofftester zur Prüfung auf Wasser und Sedimente im Kraftstoff.', 'O', 19, 120, 'Flugzeugzubehör (GA)', NULL, 0, NULL),
+(1034, 'Aircraft Tie-Down Kit (3x Spanngurte, Seile)', 'Set zur sicheren Verankerung von Flugzeugen im Freien.', 'O', 59, 40, 'Flugzeugzubehör (GA)', NULL, 0, NULL),
+(1035, 'Aero Cosmetics Wash Wax ALL (Konzentrat, 1L)', 'Wasserloses Reinigungs- und Wachsystsem für Flugzeuge, umweltfreundlich.', 'O', 45, 55, 'Flugzeugzubehör (GA)', NULL, 0, NULL),
+(1036, 'Tempest AA472 Oil Filter Cutter', 'Werkzeug zum sauberen Öffnen von Ölfiltern zur Inspektion auf Metallpartikel.', 'O', 89, 12, 'Flugzeugzubehör (GA)', NULL, 0, NULL),
+(1037, 'Crewsaver Crewfit 165N Schwimmweste', 'Automatische Rettungsweste über Wasser, leicht und komfortabel.', 'O', 99, 20, 'Sicherheitsaustrüstung', NULL, 0, NULL),
+(1038, 'ACR ResQLink 400 PLB', 'Kompakte und robuste persönliche Ortungsbake (PLB) für Notfälle.', 'O', 329, 8, 'Sicherheitsaustrüstung', NULL, 0, NULL),
+(1039, 'Lufthansa Erste-Hilfe-Set DIN 13157 erweitert', 'Umfassendes Erste-Hilfe-Set, erweitert mit flugspezifischen Inhalten oder Empfehlungen.', 'O', 45, 38, 'Sicherheitsaustrüstung', NULL, 0, NULL),
+(1040, 'H3R Aviation Halon 1211 Feuerlöscher (A344T)', 'Kompakter Halon 1211 Feuerlöscher, für den Einsatz im Cockpit zugelassen.', 'O', 289, 10, 'Sicherheitsaustrüstung', NULL, 0, NULL),
+(1041, 'SOL Escape Bivvy Bag Orange', 'Isolierender Notfall-Biwacksack, reflektiert 70% der Körperwärme.', 'O', 36, 36, 'Sicherheitsaustrüstung', NULL, 0, NULL),
+(1042, 'Forensics Detectors CO Detector for Aircraft', 'Tragbarer Kohlenmonoxid-Detektor speziell für Flugzeuge, mit Alarm.', 'O', 159, 7, 'Sicherheitsaustrüstung', NULL, 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -193,6 +196,70 @@ CREATE TABLE `cart` (
 -- --------------------------------------------------------
 
 --
+-- Tabellenstruktur für Tabelle `gutscheincodes`
+--
+
+CREATE TABLE `gutscheincodes` (
+  `gutscheinCode` varchar(11) NOT NULL,
+  `erstelltAm` date NOT NULL DEFAULT current_timestamp(),
+  `aktiv` tinyint(1) NOT NULL,
+  `wert` int(3) NOT NULL,
+  `art` int(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Daten für Tabelle `gutscheincodes`
+--
+
+INSERT INTO `gutscheincodes` (`gutscheinCode`, `erstelltAm`, `aktiv`, `wert`, `art`) VALUES
+('GutenRutsch', '2025-12-30', 1, 10, 0),
+('NeuJahr2026', '2025-12-30', 1, 10, 0);
+
+--
+-- Trigger `gutscheincodes`
+--
+DELIMITER $$
+CREATE TRIGGER `GutscheinCodes als Artikel` AFTER INSERT ON `gutscheincodes` FOR EACH ROW BEGIN
+    DECLARE next_id INT DEFAULT NULL;
+
+    IF NOT EXISTS (SELECT 1 FROM artikel WHERE id = 1) THEN
+        SET next_id = 1;
+    ELSE
+        SELECT MIN(a1.id + 1) INTO next_id
+        FROM artikel a1
+        WHERE a1.id < 1000
+        AND NOT EXISTS (
+            SELECT 1 FROM artikel a2 
+            WHERE a2.id = a1.id + 1 AND a2.id < 1000
+        );
+    END IF;
+    
+    -- Prüfen ob ID gefunden und unter 1000
+    IF next_id IS NULL OR next_id >= 1000 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Keine freie ID unter 1000 verfügbar für Gutscheincode';
+    END IF;
+    
+    INSERT INTO `artikel` (`id`, `name`, `beschreibung`, `groesse`, `preis`, `rabatt`, `lagerbestand`, `kategorie`, `bewertung`, `anzahl_bewertungen`)
+    VALUES (
+        next_id,
+        NEW.gutscheinCode,
+        CONCAT('Gutschein: ', NEW.gutscheinCode),
+        'O',
+        0,
+        NEW.wert,
+        0,
+        'Code',
+        NULL,
+        0
+    );
+END
+$$
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
 -- Tabellenstruktur für Tabelle `logs`
 --
 
@@ -213,7 +280,8 @@ INSERT INTO `logs` (`id`, `user_id`, `login_time`, `screen_resolution`, `operati
 (30, 65, '2025-12-28 05:10:06', '1920x1080', 'Win32'),
 (31, 65, '2025-12-28 05:22:21', '1920x1080', 'Win32'),
 (32, 65, '2025-12-28 05:28:26', '1920x1080', 'Win32'),
-(34, 65, '2025-12-28 05:42:20', '1920x1080', 'Win32');
+(34, 65, '2025-12-28 05:42:20', '1920x1080', 'Win32'),
+(35, 66, '2025-12-30 18:23:03', '1440x932', 'MacIntel');
 
 --
 -- Trigger `logs`
@@ -255,7 +323,8 @@ INSERT INTO `punkte` (`user_id`, `punktestand`) VALUES
 (59, 100),
 (60, 100),
 (64, 114),
-(65, 110);
+(65, 110),
+(66, 102);
 
 --
 -- Trigger `punkte`
@@ -294,7 +363,9 @@ CREATE TABLE `punktelog` (
 --
 
 INSERT INTO `punktelog` (`transaktions_id`, `user_id`, `datum`, `art`, `punkte_aenderung`, `neuer_punktestand`, `bemerkung`) VALUES
-(1, 65, '2025-12-28 05:42:20', 'Automatisch', 2, 110, 'Änderung am Punktestand');
+(1, 65, '2025-12-28 05:42:20', 'Automatisch', 2, 110, 'Änderung am Punktestand'),
+(2, 66, '2025-12-30 18:15:19', NULL, 0, 100, NULL),
+(3, 66, '2025-12-30 18:23:03', 'Automatisch', 2, 102, 'Änderung am Punktestand');
 
 -- --------------------------------------------------------
 
@@ -362,7 +433,8 @@ INSERT INTO `user` (`id`, `vorname`, `nachname`, `mail`, `adresse`, `plz`, `ort`
 (59, 'Tom', 'Becker', 'tom.becker@aviation.org', 'Lindenallee 45', 4109, 'Leipzig', '8c405ae1daf2575440a037284f934421', NULL, b'0'),
 (60, 'Laura', 'Hoffmann', 'laura.h@student.de', 'Uniplatz 1', 69117, 'Heidelberg', '8c405ae1daf2575440a037284f934421', NULL, b'0'),
 (64, 'Fabian', 'tittl', 'Andre.Reiff@Student.Reutlingen-University.DE', 'Moltkestraße 32', 72805, 'Lichtenstein', '47d658a097d490e0d26650c77ff4bf755fa8a3d86acc5df95b3844f4b3c9cb80b20ac1fe7e5b67564d4c15798a1b9b4c5bcfd2f7b5a6eeeb585381c95221fc1c', 'WOHLEZEIY7EBKYHJ', b'1'),
-(65, 'Andre', 'Reiff', 'andre.reiff@online.de', 'Moltkestraße 32', 72805, 'Lichtenstein', '47d658a097d490e0d26650c77ff4bf755fa8a3d86acc5df95b3844f4b3c9cb80b20ac1fe7e5b67564d4c15798a1b9b4c5bcfd2f7b5a6eeeb585381c95221fc1c', 'CTO6DGUKUT44GWV5', b'1');
+(65, 'Andre', 'Reiff', 'andre.reiff@online.de', 'Moltkestraße 32', 72805, 'Lichtenstein', '47d658a097d490e0d26650c77ff4bf755fa8a3d86acc5df95b3844f4b3c9cb80b20ac1fe7e5b67564d4c15798a1b9b4c5bcfd2f7b5a6eeeb585381c95221fc1c', 'CTO6DGUKUT44GWV5', b'1'),
+(66, 'Kimi', 'Kimi', 'esrr1979@hotmail.com', 'Straße der Einheit 43', 80983, 'Niederschwalben', '588d191ff5118b793a93bfe317ed53f77490923747c07eeb9924a7c1168f0cddc4289803d47abb44f1b57f14fc47cab399c61351dbdd932db9feddb6aedfa0ce', 'V7XSGPSBLERGODIY', b'1');
 
 --
 -- Trigger `user`
@@ -389,16 +461,16 @@ DELIMITER ;
 CREATE TABLE `warenkorbkopf` (
   `id` int(11) NOT NULL,
   `kunde_id` int(11) DEFAULT NULL,
-  `erstellt_am` datetime DEFAULT current_timestamp(),
-  `aktiv` tinyint(1) NOT NULL
+  `erstellt_am` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Daten für Tabelle `warenkorbkopf`
 --
 
-INSERT INTO `warenkorbkopf` (`id`, `kunde_id`, `erstellt_am`, `aktiv`) VALUES
-(1, 65, '2025-12-11 23:02:55', 0);
+INSERT INTO `warenkorbkopf` (`id`, `kunde_id`, `erstellt_am`) VALUES
+(1, 65, '2025-12-11 23:02:55'),
+(2, 66, '2025-12-30 18:24:01');
 
 -- --------------------------------------------------------
 
@@ -417,7 +489,10 @@ CREATE TABLE `warenkorbposition` (
 --
 
 INSERT INTO `warenkorbposition` (`warenkorb_id`, `artikel_id`, `menge`) VALUES
-(1, 1001, 2);
+(1, 1001, 2),
+(2, 3, 1),
+(2, 1026, 5),
+(2, 1038, 10);
 
 --
 -- Indizes der exportierten Tabellen
@@ -449,6 +524,12 @@ ALTER TABLE `bestellposition`
 --
 ALTER TABLE `cart`
   ADD PRIMARY KEY (`bestellungID`);
+
+--
+-- Indizes für die Tabelle `gutscheincodes`
+--
+ALTER TABLE `gutscheincodes`
+  ADD PRIMARY KEY (`gutscheinCode`);
 
 --
 -- Indizes für die Tabelle `logs`
@@ -527,19 +608,37 @@ ALTER TABLE `bestellposition`
 -- AUTO_INCREMENT für Tabelle `logs`
 --
 ALTER TABLE `logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT für Tabelle `punktelog`
 --
 ALTER TABLE `punktelog`
-  MODIFY `transaktions_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `transaktions_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT für Tabelle `rechnungskopf`
+--
+ALTER TABLE `rechnungskopf`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT für Tabelle `rechnungsposition`
 --
 ALTER TABLE `rechnungsposition`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT für Tabelle `user`
+--
+ALTER TABLE `user`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
+
+--
+-- AUTO_INCREMENT für Tabelle `warenkorbkopf`
+--
+ALTER TABLE `warenkorbkopf`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

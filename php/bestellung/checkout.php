@@ -5,6 +5,102 @@ if (session_status() === PHP_SESSION_NONE) {
   session_start();
 }
 
+// Promocode-Verarbeitung via AJAX
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['promo_code']) && isset($_POST['ajax'])) {
+  ob_end_clean();
+  header('Content-Type: application/json');
+  
+  try {
+    $promoCode = trim($_POST['promo_code']);
+    
+    if (empty($promoCode)) {
+      echo json_encode(['success' => false, 'message' => 'Bitte geben Sie einen Promocode ein.']);
+      exit();
+    }
+    
+    // Kunden-ID ermitteln
+    $kundenId = null;
+    if (isset($_SESSION['temp_user']['id'])) {
+      $kundenId = (int)$_SESSION['temp_user']['id'];
+    } elseif (isset($_SESSION['user']['id'])) {
+      $kundenId = (int)$_SESSION['user']['id'];
+    } elseif (isset($_SESSION['user_id'])) {
+      $kundenId = (int)$_SESSION['user_id'];
+    }
+    
+    if (!$kundenId) {
+      echo json_encode(['success' => false, 'message' => 'Sie müssen angemeldet sein.']);
+      exit();
+    }
+    
+    // Prüfen ob Artikel existiert
+    $stmt = $con->prepare("SELECT id, name, rabatt FROM artikel WHERE name = ? AND kategorie = 'Code' LIMIT 1");
+    if (!$stmt) {
+      echo json_encode(['success' => false, 'message' => 'Datenbankfehler: ' . $con->error]);
+      exit();
+    }
+    
+    $stmt->bind_param('s', $promoCode);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($result->num_rows > 0) {
+      $artikel = $result->fetch_assoc();
+      $artikelId = (int)$artikel['id'];
+      $rabatt = (int)$artikel['rabatt'];
+      
+      // Warenkorb-ID ermitteln
+      $stmt2 = $con->prepare("SELECT id FROM warenkorbkopf WHERE kunde_id = ? LIMIT 1");
+      $stmt2->bind_param('i', $kundenId);
+      $stmt2->execute();
+      $res2 = $stmt2->get_result();
+      
+      if ($res2->num_rows > 0) {
+        $warenkorbRow = $res2->fetch_assoc();
+        $warenkorbId = (int)$warenkorbRow['id'];
+        
+        // Prüfen ob Promocode bereits im Warenkorb
+        $stmt3 = $con->prepare("SELECT artikel_id FROM warenkorbposition WHERE warenkorb_id = ? AND artikel_id = ?");
+        $stmt3->bind_param('ii', $warenkorbId, $artikelId);
+        $stmt3->execute();
+        $res3 = $stmt3->get_result();
+        
+        if ($res3->num_rows > 0) {
+          echo json_encode(['success' => false, 'message' => 'Promocode bereits verwendet.']);
+        } else {
+          // Promocode zum Warenkorb hinzufügen
+          $stmt4 = $con->prepare("INSERT INTO warenkorbposition (warenkorb_id, artikel_id, menge) VALUES (?, ?, 1)");
+          $stmt4->bind_param('ii', $warenkorbId, $artikelId);
+          if ($stmt4->execute()) {
+            echo json_encode([
+              'success' => true, 
+              'message' => 'Promocode angewendet! ' . $rabatt . '% Rabatt',
+              'reload' => true
+            ]);
+          } else {
+            echo json_encode(['success' => false, 'message' => 'Fehler beim Anwenden: ' . $con->error]);
+          }
+          $stmt4->close();
+        }
+        $stmt3->close();
+      } else {
+        echo json_encode(['success' => false, 'message' => 'Warenkorb nicht gefunden.']);
+      }
+      $stmt2->close();
+    } else {
+      echo json_encode(['success' => false, 'message' => 'Ungültiger Promocode.']);
+    }
+    
+    $stmt->close();
+  } catch (Exception $e) {
+    echo json_encode(['success' => false, 'message' => 'Fehler: ' . $e->getMessage()]);
+  }
+  exit();
+}
+
+$promoMessage = '';
+$promoError = '';
+
 // Versandarten mit Kosten
 $shippingMethods = [
     'lpd' => ['name' => 'LPD', 'cost' => 11.90],
@@ -41,7 +137,7 @@ if (isset($_SESSION['temp_user']['id'])) {
 function loadCartData(mysqli $con, int $kundenId, string $shippingMethod = 'dhl'): array {
   global $shippingMethods;
   
-  $sql = "SELECT wp.*, p.name, p.preis FROM warenkorbposition wp
+  $sql = "SELECT wp.*, p.name, p.preis, p.kategorie, p.rabatt FROM warenkorbposition wp
       LEFT JOIN artikel p ON wp.artikel_id = p.id
       WHERE wp.warenkorb_id = (
         SELECT id FROM warenkorbkopf WHERE kunde_id = ? LIMIT 1
@@ -54,22 +150,29 @@ function loadCartData(mysqli $con, int $kundenId, string $shippingMethod = 'dhl'
   $items = [];
   $maxQuantity = 0;
   $subtotalVorRabatt = 0;
+  $promoCodeItems = []; // Promocode-Artikel separat speichern
   
   // Erste Iteration: Alle Items laden und maximale Menge ermitteln
   while ($row = $res->fetch_assoc()) {
     $row['name'] = $row['name'] ?? 'Unbekanntes Produkt';
     $row['preis'] = $row['preis'] ?? 0.0;
     $row['menge'] = $row['menge'] ?? 0;
+    $row['kategorie'] = $row['kategorie'] ?? '';
     
-    $items[(int)$row['artikel_id']] = $row;
-    $maxQuantity = max($maxQuantity, (int)$row['menge']);
-    $subtotalVorRabatt += $row['preis'] * $row['menge'];
+    // Prüfen ob es ein Promocode-Artikel ist
+    if ($row['kategorie'] === 'Code') {
+      $promoCodeItems[(int)$row['artikel_id']] = $row;
+    } else {
+      $items[(int)$row['artikel_id']] = $row;
+      $maxQuantity = max($maxQuantity, (int)$row['menge']);
+      $subtotalVorRabatt += $row['preis'] * $row['menge'];
+    }
   }
   
   // Rabattsatz basierend auf maximaler Menge ermitteln
   $discountRate = getDiscountRate($maxQuantity);
   
-  // Zweite Iteration: Rabatt auf alle Items anwenden
+  // Zweite Iteration: Mengenrabatt auf alle normalen Items anwenden
   $subtotal = 0;
   $totalDiscount = 0;
   
@@ -84,6 +187,19 @@ function loadCartData(mysqli $con, int $kundenId, string $shippingMethod = 'dhl'
     $totalDiscount += $rabattBetrag;
   }
   
+  // Promocode-Rabatte nacheinander anwenden
+  $promoCodeDiscountAmount = 0;
+  foreach ($promoCodeItems as &$promo) {
+    $rabattProzent = (int)$promo['rabatt'];
+    $rabattBetrag = $subtotal * ($rabattProzent / 100);
+    $promo['rabatt_betrag'] = $rabattBetrag; // Speichere Betrag für Anzeige
+    $subtotal -= $rabattBetrag;
+    $promoCodeDiscountAmount += $rabattBetrag;
+  }
+  unset($promo); // Referenz aufheben
+  
+  $totalDiscount += $promoCodeDiscountAmount;
+  
   // Versandkosten basierend auf Versandart
   $shipping = ($subtotal > 0 && isset($shippingMethods[$shippingMethod])) 
     ? $shippingMethods[$shippingMethod]['cost'] 
@@ -92,8 +208,10 @@ function loadCartData(mysqli $con, int $kundenId, string $shippingMethod = 'dhl'
 
   return [
     'items' => $items,
+    'promoCodeItems' => $promoCodeItems,
     'subtotal' => $subtotal,
     'totalDiscount' => $totalDiscount,
+    'promoCodeDiscountAmount' => $promoCodeDiscountAmount,
     'shipping' => $shipping,
     'total' => $total,
     'count' => count($items),
@@ -101,14 +219,16 @@ function loadCartData(mysqli $con, int $kundenId, string $shippingMethod = 'dhl'
   ];
 }
 
-$cartData = ['items'=>[], 'subtotal'=>0, 'totalDiscount'=>0, 'shipping'=>0, 'total'=>0, 'count'=>0, 'shippingMethod'=>'dhl'];
+$cartData = ['items'=>[], 'promoCodeItems'=>[], 'subtotal'=>0, 'totalDiscount'=>0, 'promoCodeDiscountAmount'=>0, 'shipping'=>0, 'total'=>0, 'count'=>0, 'shippingMethod'=>'dhl'];
 if ($kundenId !== null) {
   $cartData = loadCartData($con, $kundenId, $shippingMethod);
 }
 // use a distinct variable name to avoid collisions with included files
 $cartItems = array_values($cartData['items']);
+$promoCodeItems = array_values($cartData['promoCodeItems']);
 $subtotal = $cartData['subtotal'];
 $totalDiscount = $cartData['totalDiscount'];
+$promoCodeDiscountAmount = $cartData['promoCodeDiscountAmount'];
 $shipping = $cartData['shipping'];
 $total = $cartData['total'];
 $count = $cartData['count'];
@@ -164,9 +284,20 @@ $count = $cartData['count'];
                 <?php endforeach; ?>
                 <?php if ($totalDiscount > 0): ?>
                   <li class="list-group-item d-flex justify-content-between bg-light text-danger">
-                    <span>Gesamtrabatt</span>
-                    <strong>-<?php echo number_format($totalDiscount, 2, ',', '.'); ?> €</strong>
+                    <span>Mengenrabatt</span>
+                    <strong>-<?php echo number_format($totalDiscount - $promoCodeDiscountAmount, 2, ',', '.'); ?> €</strong>
                   </li>
+                <?php endif; ?>
+                <?php if ($promoCodeDiscountAmount > 0): ?>
+                  <?php foreach ($promoCodeItems as $promo): ?>
+                    <li class="list-group-item d-flex justify-content-between bg-success text-white">
+                      <div>
+                        <h6 class="my-0"><?php echo htmlspecialchars($promo['name']); ?></h6>
+                        <small>Promocode-Rabatt: <?php echo (int)$promo['rabatt']; ?>%</small>
+                      </div>
+                      <strong>-<?php echo number_format($promo['rabatt_betrag'], 2, ',', '.'); ?> €</strong>
+                    </li>
+                  <?php endforeach; ?>
                 <?php endif; ?>
                 <li class="list-group-item d-flex justify-content-between bg-light">
                   <div class="text-success">
@@ -182,11 +313,19 @@ $count = $cartData['count'];
               <?php endif; ?>
             </ul>
 
-            <form class="card p-2">
+            <?php if (!empty($promoMessage)): ?>
+              <div class="alert alert-success" role="alert"><?php echo htmlspecialchars($promoMessage); ?></div>
+            <?php endif; ?>
+            <?php if (!empty($promoError)): ?>
+              <div class="alert alert-danger" role="alert"><?php echo htmlspecialchars($promoError); ?></div>
+            <?php endif; ?>
+
+            <form class="card p-2" method="POST" id="promoForm">
               <div class="input-group">
-                <input type="text" class="form-control" placeholder="Promo code">
-                <button type="submit" class="btn btn-secondary">Redeem</button>
+                <input type="text" name="promo_code" class="form-control" placeholder="Promo code" required>
+                <button type="submit" class="btn btn-secondary">Einlösen</button>
               </div>
+              <div id="promoMessage" class="mt-2" style="display: none;"></div>
             </form>
           </div>
           <div class="col-md-7 col-lg-8">
@@ -313,6 +452,58 @@ $count = $cartData['count'];
           });
         });
       })();
+      
+      // Promocode-Formular Handler
+      document.addEventListener('DOMContentLoaded', function() {
+        const promoForm = document.getElementById('promoForm');
+        const promoMessage = document.getElementById('promoMessage');
+        
+        if (promoForm) {
+          promoForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(promoForm);
+            formData.append('ajax', '1');
+            
+            fetch(window.location.pathname, {
+              method: 'POST',
+              body: formData
+            })
+            .then(response => {
+              if (!response.ok) {
+                return response.text().then(text => {
+                  console.error('Server Error:', text);
+                  throw new Error('Server-Fehler (Status: ' + response.status + ')');
+                });
+              }
+              return response.json();
+            })
+            .then(data => {
+              if (data.success) {
+                promoMessage.textContent = data.message;
+                promoMessage.className = 'mt-2 text-success fw-bold';
+                promoMessage.style.display = 'block';
+                
+                // Seite neu laden wenn reload: true
+                if (data.reload) {
+                  setTimeout(function() {
+                    window.location.reload();
+                  }, 1000);
+                }
+              } else {
+                promoMessage.textContent = data.message;
+                promoMessage.className = 'mt-2 text-danger fw-bold';
+                promoMessage.style.display = 'block';
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              promoMessage.textContent = 'Fehler: ' + error.message;
+              promoMessage.className = 'mt-2 text-danger fw-bold';
+              promoMessage.style.display = 'block';
+            });
+          });
+        }
+      });
     </script>
   </body>
 </html>

@@ -14,11 +14,12 @@ $ergebnisse = [];
 
 if (!empty($suchbegriff)) {
     try {
-        // Suche in Name, Beschreibung oder Kategorie
         $sql = "SELECT * FROM artikel 
-                WHERE name LIKE :search 
+                WHERE kategorie != 'Code'
+                AND kategorie IS NOT NULL
+                AND (name LIKE :search 
                 OR beschreibung LIKE :search 
-                OR kategorie LIKE :search";
+                OR kategorie LIKE :search)";
         
         $stmt = $conPDO->prepare($sql);
         $stmt->execute(['search' => '%' . $suchbegriff . '%']);
