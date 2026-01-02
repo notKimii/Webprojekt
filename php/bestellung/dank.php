@@ -1,6 +1,29 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 session_start();
 include "../include/connectcon.php";
+
+// Rechnungs-E-Mail versenden, falls Bestellung-ID übergeben wurde
+if (isset($_GET['bestellung_id'])) {
+    $bestellungId = (int)$_GET['bestellung_id'];
+    
+    // Prüfen ob E-Mail bereits versendet wurde (Session-Check)
+    if (!isset($_SESSION['rechnung_versendet_' . $bestellungId])) {
+        try {
+            // E-Mail nur einmal versenden
+            include 'billingmail.php';
+            
+            // Markieren als versendet
+            $_SESSION['rechnung_versendet_' . $bestellungId] = true;
+        } catch (Exception $e) {
+            // Fehler loggen, aber Seite trotzdem anzeigen
+            error_log('Fehler beim Rechnungsversand: ' . $e->getMessage());
+        }
+    }
+}
 ?>
 
 <!doctype html>
