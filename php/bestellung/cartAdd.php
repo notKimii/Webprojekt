@@ -1,4 +1,11 @@
 <?php
+// Prüfe zuerst ob AJAX-Request - KEINE Includes oder Output vorher bei AJAX
+$isAjax = isset($_POST['ajax']);
+
+if ($isAjax) {
+    header('Content-Type: application/json');
+}
+
 session_start();
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
@@ -9,6 +16,10 @@ include __DIR__ . '/../include/connectcon.php';
 ///Prüfung ob User angemeldet ist
 $kundenId = isset($_SESSION['temp_user']['id']) ? (int)$_SESSION['temp_user']['id'] : null;
 if ($kundenId === null) {
+    if ($isAjax) {
+        echo json_encode(['success' => false, 'error' => 'not_logged_in']);
+        exit;
+    }
     header('Location: /Webprojekt/php/login/loginformular.php');
     exit;
 }
@@ -17,6 +28,10 @@ if ($kundenId === null) {
 $produktId = isset($_POST['produkt_id']) ? (int)$_POST['produkt_id'] : 0;
 $menge     = isset($_POST['anzahl']) ? (int)$_POST['anzahl'] : 0;
 if ($produktId <= 0 || $menge <= 0) {
+    if ($isAjax) {
+        echo json_encode(['success' => false, 'error' => 'invalid_input']);
+        exit;
+    }
     header('Location: /Webprojekt/php/produkt-detail.php?error=invalid_input');
     exit;
 }
@@ -30,6 +45,10 @@ $stmt->execute();
 $stmt->bind_result($prodExistsId);
 if (!$stmt->fetch()) {
     $stmt->close();
+    if ($isAjax) {
+        echo json_encode(['success' => false, 'error' => 'unknown_product']);
+        exit;
+    }
     header('Location: /Webprojekt/php/produkt-detail.php?error=unknown_product');
     exit;
 }
@@ -52,6 +71,10 @@ if ($cartId === null) {
     $stmt->bind_param('i', $kundenId);
     if (!$stmt->execute()) {
         $stmt->close();
+        if ($isAjax) {
+            echo json_encode(['success' => false, 'error' => 'cart_create_failed']);
+            exit;
+        }
         header('Location: /Webprojekt/php/produkt-detail.php?error=cart_create_failed');
         exit;
     }
@@ -64,10 +87,9 @@ $stmt = $con->prepare('INSERT INTO warenkorbposition (warenkorb_id, artikel_id, 
 $stmt->bind_param('iii', $cartId, $produktId, $menge);
 $ok = $stmt->execute();
 $stmt->close();
-$isAjax = isset($_POST['ajax']);
+
 if (!$ok) {
     if ($isAjax) {
-        header('Content-Type: application/json');
         echo json_encode(['success' => false, 'error' => 'position_upsert_failed']);
         exit;
     }
@@ -84,7 +106,6 @@ if ($isAjax) {
     $countStmt->fetch();
     $countStmt->close();
     
-    header('Content-Type: application/json');
     echo json_encode(['success' => true, 'cart_id' => $cartId, 'count' => (int)($cartCount ?? 0)]);
     exit;
 }

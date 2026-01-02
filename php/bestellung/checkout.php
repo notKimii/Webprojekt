@@ -423,7 +423,7 @@ if ($kundenId !== null) {
               <div class="row g-3">
                 <div class="col-sm-6">
                   <label for="firstName" class="form-label">Vorname</label>
-                  <input type="text" class="form-control" id="firstName" name="firstName" placeholder="" value="<?php echo htmlspecialchars($userData['vorname'] ?? ''); ?>" required>
+                  <input type="text" class="form-control" id="firstName" name="firstName" placeholder="" value="<?php echo htmlspecialchars($userData['vorname'] ?? ''); ?>" required readonly>
                   <div class="invalid-feedback">
                     Vorname ist erforderlich.
                   </div>
@@ -431,7 +431,7 @@ if ($kundenId !== null) {
 
                 <div class="col-sm-6">
                   <label for="lastName" class="form-label">Nachname</label>
-                  <input type="text" class="form-control" id="lastName" name="lastName" placeholder="" value="<?php echo htmlspecialchars($userData['nachname'] ?? ''); ?>" required>
+                  <input type="text" class="form-control" id="lastName" name="lastName" placeholder="" value="<?php echo htmlspecialchars($userData['nachname'] ?? ''); ?>" required readonly>
                   <div class="invalid-feedback">
                     Nachname ist erforderlich.
                   </div>
@@ -439,7 +439,7 @@ if ($kundenId !== null) {
 
                 <div class="col-12">
                   <label for="email" class="form-label">E-Mail</label>
-                  <input type="email" class="form-control" id="email" name="email" placeholder="ihre@email.de" value="<?php echo htmlspecialchars($userData['mail'] ?? ''); ?>" required>
+                  <input type="email" class="form-control" id="email" name="email" placeholder="ihre@email.de" value="<?php echo htmlspecialchars($userData['mail'] ?? ''); ?>" required readonly>
                   <div class="invalid-feedback">
                     Bitte geben Sie eine gültige E-Mail-Adresse ein.
                   </div>
@@ -447,7 +447,7 @@ if ($kundenId !== null) {
 
                 <div class="col-12">
                   <label for="address" class="form-label">Adresse</label>
-                  <input type="text" class="form-control" id="address" name="address" placeholder="Musterstraße 1" value="<?php echo htmlspecialchars($userData['adresse'] ?? ''); ?>" required>
+                  <input type="text" class="form-control" id="address" name="address" placeholder="Musterstraße 1" value="<?php echo htmlspecialchars($userData['adresse'] ?? ''); ?>" required readonly>
                   <div class="invalid-feedback">
                     Bitte geben Sie Ihre Adresse ein.
                   </div>
@@ -460,7 +460,7 @@ if ($kundenId !== null) {
 
                 <div class="col-md-4">
                   <label for="zip" class="form-label">PLZ</label>
-                  <input type="text" class="form-control" id="zip" name="zip" placeholder="" value="<?php echo htmlspecialchars($userData['plz'] ?? ''); ?>" required>
+                  <input type="text" class="form-control" id="zip" name="zip" placeholder="" value="<?php echo htmlspecialchars($userData['plz'] ?? ''); ?>" required readonly>
                   <div class="invalid-feedback">
                     PLZ ist erforderlich.
                   </div>
@@ -468,7 +468,7 @@ if ($kundenId !== null) {
 
                 <div class="col-md-8">
                   <label for="city" class="form-label">Ort</label>
-                  <input type="text" class="form-control" id="city" name="city" placeholder="" value="<?php echo htmlspecialchars($userData['ort'] ?? ''); ?>" required>
+                  <input type="text" class="form-control" id="city" name="city" placeholder="" value="<?php echo htmlspecialchars($userData['ort'] ?? ''); ?>" required readonly>
                   <div class="invalid-feedback">
                     Ort ist erforderlich.
                   </div>
