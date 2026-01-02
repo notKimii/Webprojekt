@@ -1088,10 +1088,6 @@ document.addEventListener('DOMContentLoaded', function() {
             closeMenu();
         }
     });
-
-
-
-    updateCartCount();
 });
 
 // --- DEBUG LIVE SUCHE START ---

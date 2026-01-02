@@ -277,7 +277,7 @@ $total = $cartData['total'];
                                                 <div class="row align-items-center mb-4" data-artikel-id="<?php echo $id; ?>">
                                                     <div class="col-lg-3 col-md-12 mb-3 mb-lg-0">
                                                         <div class="bg-image hover-overlay hover-zoom ripple rounded" data-mdb-ripple-color="light">
-                                                            <img src="<?php echo htmlspecialchars($img); ?>" class="w-100" alt="<?php echo htmlspecialchars($position['name']); ?>" onerror="this.src='/Webprojekt/images/pictures/placeholder.jpg'" />
+                                                            <img src="<?php echo htmlspecialchars($img); ?>" class="w-100" alt="<?php echo htmlspecialchars($position['name']); ?>" onerror="this.src='/Webprojekt/images/pictures/placeholder.svg'" />
                                                         </div>
                                                     </div>
 

@@ -98,6 +98,74 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['promo_code']) && isse
   exit();
 }
 
+// Bestellverarbeitung - Formular wurde abgeschickt
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['firstName']) && !isset($_POST['ajax'])) {
+  
+  // Kunden-ID ermitteln
+  $kundenId = null;
+  if (isset($_SESSION['temp_user']['id'])) {
+    $kundenId = (int)$_SESSION['temp_user']['id'];
+  } elseif (isset($_SESSION['user']['id'])) {
+    $kundenId = (int)$_SESSION['user']['id'];
+  } elseif (isset($_SESSION['user_id'])) {
+    $kundenId = (int)$_SESSION['user_id'];
+  }
+  
+  if ($kundenId) {
+    try {
+      // Warenkorb-ID ermitteln
+      $stmt = $con->prepare("SELECT id FROM warenkorbkopf WHERE kunde_id = ? LIMIT 1");
+      $stmt->bind_param('i', $kundenId);
+      $stmt->execute();
+      $result = $stmt->get_result();
+      
+      if ($result->num_rows > 0) {
+        $warenkorbRow = $result->fetch_assoc();
+        $warenkorbId = (int)$warenkorbRow['id'];
+        
+        // Warenkorbdaten laden für Gesamtbetrag
+        $cartData = loadCartData($con, $kundenId);
+        $gesamtbetrag = $cartData['total'];
+        
+        // 1. Bestellkopf erstellen
+        $stmt2 = $con->prepare("INSERT INTO bestellkopf (user_id, bestelldatum, gesamtbetrag, status) VALUES (?, NOW(), ?, 'bezahlt')");
+        $stmt2->bind_param('id', $kundenId, $gesamtbetrag);
+        $stmt2->execute();
+        $bestellungId = $con->insert_id;
+        $stmt2->close();
+        
+        // 2. Warenkorbpositionen in Bestellpositionen kopieren (ohne Code-Artikel)
+        $stmt3 = $con->prepare("
+          INSERT INTO bestellposition (bestellung_id, artikel_id, menge, einzelpreis)
+          SELECT ?, wp.artikel_id, wp.menge, a.preis
+          FROM warenkorbposition wp
+          JOIN artikel a ON wp.artikel_id = a.id
+          WHERE wp.warenkorb_id = ? AND a.kategorie != 'Code'
+        ");
+        $stmt3->bind_param('ii', $bestellungId, $warenkorbId);
+        $stmt3->execute();
+        $stmt3->close();
+        
+        // 3. Warenkorb leeren
+        $stmt4 = $con->prepare("DELETE FROM warenkorbposition WHERE warenkorb_id = ?");
+        $stmt4->bind_param('i', $warenkorbId);
+        $stmt4->execute();
+        $stmt4->close();
+        
+        // 4. Zur Dankesseite weiterleiten
+        header('Location: dank.php?bestellung_id=' . $bestellungId);
+        exit();
+      }
+      $stmt->close();
+    } catch (Exception $e) {
+      // Fehlerbehandlung
+      error_log('Bestellfehler: ' . $e->getMessage());
+      header('Location: checkout.php?error=1');
+      exit();
+    }
+  }
+}
+
 $promoMessage = '';
 $promoError = '';
 
@@ -233,6 +301,27 @@ $shipping = $cartData['shipping'];
 $total = $cartData['total'];
 $count = $cartData['count'];
 
+// Kundendaten aus Datenbank laden
+$userData = [
+  'vorname' => '',
+  'nachname' => '',
+  'mail' => '',
+  'adresse' => '',
+  'plz' => '',
+  'ort' => ''
+];
+
+if ($kundenId !== null) {
+  $stmt = $con->prepare("SELECT vorname, nachname, mail, adresse, plz, ort FROM user WHERE id = ? LIMIT 1");
+  $stmt->bind_param('i', $kundenId);
+  $stmt->execute();
+  $result = $stmt->get_result();
+  if ($result->num_rows > 0) {
+    $userData = $result->fetch_assoc();
+  }
+  $stmt->close();
+}
+
 ?>
 
 <!doctype html>
@@ -263,7 +352,7 @@ $count = $cartData['count'];
         <div class="row g-5">
           <div class="col-md-5 col-lg-4 order-md-last">
             <h4 class="d-flex justify-content-between align-items-center mb-3">
-              <span class="text-primary">Your cart</span>
+              <span class="text-primary">Ihr Warenkorb</span>
               <span class="badge bg-primary rounded-pill"><?php echo $count; ?></span>
             </h4>
             <ul class="list-group mb-3">
@@ -322,91 +411,66 @@ $count = $cartData['count'];
 
             <form class="card p-2" method="POST" id="promoForm">
               <div class="input-group">
-                <input type="text" name="promo_code" class="form-control" placeholder="Promo code" required>
+                <input type="text" name="promo_code" class="form-control" placeholder="Gutscheincode" required>
                 <button type="submit" class="btn btn-secondary">Einlösen</button>
               </div>
               <div id="promoMessage" class="mt-2" style="display: none;"></div>
             </form>
           </div>
           <div class="col-md-7 col-lg-8">
-            <h4 class="mb-3">Billing address</h4>
-            <form class="needs-validation" novalidate>
+            <h4 class="mb-3">Rechnungsadresse</h4>
+            <form class="needs-validation" method="POST" novalidate>
               <div class="row g-3">
                 <div class="col-sm-6">
-                  <label for="firstName" class="form-label">First name</label>
-                  <input type="text" class="form-control" id="firstName" placeholder="" value="" required>
+                  <label for="firstName" class="form-label">Vorname</label>
+                  <input type="text" class="form-control" id="firstName" name="firstName" placeholder="" value="<?php echo htmlspecialchars($userData['vorname'] ?? ''); ?>" required>
                   <div class="invalid-feedback">
-                    Valid first name is required.
+                    Vorname ist erforderlich.
                   </div>
                 </div>
 
                 <div class="col-sm-6">
-                  <label for="lastName" class="form-label">Last name</label>
-                  <input type="text" class="form-control" id="lastName" placeholder="" value="" required>
+                  <label for="lastName" class="form-label">Nachname</label>
+                  <input type="text" class="form-control" id="lastName" name="lastName" placeholder="" value="<?php echo htmlspecialchars($userData['nachname'] ?? ''); ?>" required>
                   <div class="invalid-feedback">
-                    Valid last name is required.
+                    Nachname ist erforderlich.
                   </div>
                 </div>
 
                 <div class="col-12">
-                  <label for="username" class="form-label">Username</label>
-                  <div class="input-group has-validation">
-                    <span class="input-group-text">@</span>
-                    <input type="text" class="form-control" id="username" placeholder="Username" required>
+                  <label for="email" class="form-label">E-Mail</label>
+                  <input type="email" class="form-control" id="email" name="email" placeholder="ihre@email.de" value="<?php echo htmlspecialchars($userData['mail'] ?? ''); ?>" required>
                   <div class="invalid-feedback">
-                      Your username is required.
-                    </div>
+                    Bitte geben Sie eine gültige E-Mail-Adresse ein.
                   </div>
                 </div>
 
                 <div class="col-12">
-                  <label for="email" class="form-label">Email <span class="text-muted">(Optional)</span></label>
-                  <input type="email" class="form-control" id="email" placeholder="you@example.com">
+                  <label for="address" class="form-label">Adresse</label>
+                  <input type="text" class="form-control" id="address" name="address" placeholder="Musterstraße 1" value="<?php echo htmlspecialchars($userData['adresse'] ?? ''); ?>" required>
                   <div class="invalid-feedback">
-                    Please enter a valid email address for shipping updates.
+                    Bitte geben Sie Ihre Adresse ein.
                   </div>
                 </div>
 
                 <div class="col-12">
-                  <label for="address" class="form-label">Address</label>
-                  <input type="text" class="form-control" id="address" placeholder="1234 Main St" required>
-                  <div class="invalid-feedback">
-                    Please enter your shipping address.
-                  </div>
-                </div>
-
-                <div class="col-12">
-                  <label for="address2" class="form-label">Address 2 <span class="text-muted">(Optional)</span></label>
-                  <input type="text" class="form-control" id="address2" placeholder="Apartment or suite">
-                </div>
-
-                <div class="col-md-5">
-                  <label for="country" class="form-label">Country</label>
-                  <select class="form-select" id="country" required>
-                    <option value="">Choose...</option>
-                    <option>United States</option>
-                  </select>
-                  <div class="invalid-feedback">
-                    Please select a valid country.
-                  </div>
+                  <label for="address2" class="form-label">Adresszusatz <span class="text-muted">(Optional)</span></label>
+                  <input type="text" class="form-control" id="address2" name="address2" placeholder="Wohnung, Stockwerk, etc.">
                 </div>
 
                 <div class="col-md-4">
-                  <label for="state" class="form-label">State</label>
-                  <select class="form-select" id="state" required>
-                    <option value="">Choose...</option>
-                    <option>California</option>
-                  </select>
+                  <label for="zip" class="form-label">PLZ</label>
+                  <input type="text" class="form-control" id="zip" name="zip" placeholder="" value="<?php echo htmlspecialchars($userData['plz'] ?? ''); ?>" required>
                   <div class="invalid-feedback">
-                    Please provide a valid state.
+                    PLZ ist erforderlich.
                   </div>
                 </div>
 
-                <div class="col-md-3">
-                  <label for="zip" class="form-label">Zip</label>
-                  <input type="text" class="form-control" id="zip" placeholder="" required>
+                <div class="col-md-8">
+                  <label for="city" class="form-label">Ort</label>
+                  <input type="text" class="form-control" id="city" name="city" placeholder="" value="<?php echo htmlspecialchars($userData['ort'] ?? ''); ?>" required>
                   <div class="invalid-feedback">
-                    Zip code required.
+                    Ort ist erforderlich.
                   </div>
                 </div>
               </div>
@@ -425,7 +489,7 @@ $count = $cartData['count'];
 
               <hr class="my-4">
 
-              <button class="w-100 btn btn-primary btn-lg" type="submit">Continue to checkout</button>
+              <button class="w-100 btn btn-primary btn-lg" type="submit">Bestellung abschließen</button>
             </form>
           </div>
         </div>
@@ -434,7 +498,6 @@ $count = $cartData['count'];
   </div>
   <?php include "../include/footimport.php"; ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="form-validation.js"></script>
     <script>
       // Bootstrap form validation
       (function () {
