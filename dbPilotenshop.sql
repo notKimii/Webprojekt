@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Erstellungszeit: 30. Dez 2025 um 22:16
+-- Erstellungszeit: 02. Jan 2026 um 21:57
 -- Server-Version: 10.4.28-MariaDB
 -- PHP-Version: 8.2.4
 
@@ -104,6 +104,37 @@ CREATE TABLE `bestellkopf` (
   `status` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Daten für Tabelle `bestellkopf`
+--
+
+INSERT INTO `bestellkopf` (`id`, `user_id`, `bestelldatum`, `gesamtbetrag`, `status`) VALUES
+(1, 66, '2025-12-31 15:47:19', 249.00, 'bezahlt'),
+(2, 66, '2026-01-02 20:49:27', 967.18, 'bezahlt'),
+(3, 66, '2026-01-02 21:15:55', 229.00, 'bezahlt'),
+(4, 66, '2026-01-02 21:24:38', 36.00, 'bezahlt'),
+(5, 66, '2026-01-02 21:25:40', 849.00, 'bezahlt'),
+(6, 66, '2026-01-02 21:27:40', 159.00, 'bezahlt'),
+(7, 66, '2026-01-02 21:29:57', 25.00, 'bezahlt'),
+(8, 66, '2026-01-02 21:34:14', 30.00, 'bezahlt'),
+(9, 66, '2026-01-02 21:39:01', 22.20, 'bezahlt'),
+(10, 66, '2026-01-02 21:44:24', 1299.00, 'bezahlt'),
+(11, 66, '2026-01-02 21:44:28', 0.00, 'bezahlt'),
+(12, 66, '2026-01-02 21:45:23', 25.00, 'bezahlt');
+
+--
+-- Trigger `bestellkopf`
+--
+DELIMITER $$
+CREATE TRIGGER `Bezahlt - Insert` AFTER INSERT ON `bestellkopf` FOR EACH ROW BEGIN
+    IF NEW.status = 'bezahlt' THEN
+        INSERT INTO rechnungskopf (bestellID, rechnungsdatum, betrag)
+        VALUES (New.id, NEW.bestelldatum, NEW.gesamtbetrag );
+    END IF;
+END
+$$
+DELIMITER ;
+
 -- --------------------------------------------------------
 
 --
@@ -117,6 +148,51 @@ CREATE TABLE `bestellposition` (
   `menge` int(11) DEFAULT NULL,
   `einzelpreis` decimal(10,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Daten für Tabelle `bestellposition`
+--
+
+INSERT INTO `bestellposition` (`id`, `bestellung_id`, `artikel_id`, `menge`, `einzelpreis`) VALUES
+(1, 1, 1013, 1, 219.00),
+(2, 1, 1032, 1, 30.00),
+(4, 2, 1007, 1, 849.00),
+(5, 2, 1021, 2, 229.00),
+(7, 3, 1021, 1, 229.00),
+(8, 4, 1009, 1, 36.00),
+(9, 5, 1007, 1, 849.00),
+(10, 6, 1042, 1, 159.00),
+(11, 7, 1008, 1, 25.00),
+(12, 8, 1032, 1, 30.00),
+(13, 9, 1032, 1, 30.00),
+(14, 10, 1001, 1, 1299.00),
+(15, 12, 1008, 1, 25.00);
+
+--
+-- Trigger `bestellposition`
+--
+DELIMITER $$
+CREATE TRIGGER `rechnungsposition` AFTER INSERT ON `bestellposition` FOR EACH ROW BEGIN
+    DECLARE rechnung_id INT DEFAULT NULL;
+
+    SELECT id INTO rechnung_id 
+    FROM rechnungskopf 
+    WHERE bestellID = NEW.bestellung_id
+    LIMIT 1;
+    
+
+    IF rechnung_id IS NOT NULL THEN
+        
+
+        INSERT INTO rechnungsposition (rechnungsID, artikel_id, artikel_name, menge, preis, mwst_satz)
+        SELECT rechnung_id, NEW.artikel_id, a.name, NEW.menge, NEW.einzelpreis, 19
+        FROM artikel a
+        WHERE a.id = NEW.artikel_id;
+        
+    END IF;
+END
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -281,7 +357,9 @@ INSERT INTO `logs` (`id`, `user_id`, `login_time`, `screen_resolution`, `operati
 (31, 65, '2025-12-28 05:22:21', '1920x1080', 'Win32'),
 (32, 65, '2025-12-28 05:28:26', '1920x1080', 'Win32'),
 (34, 65, '2025-12-28 05:42:20', '1920x1080', 'Win32'),
-(35, 66, '2025-12-30 18:23:03', '1440x932', 'MacIntel');
+(35, 66, '2025-12-30 18:23:03', '1440x932', 'MacIntel'),
+(36, 66, '2025-12-31 12:27:10', '1440x932', 'MacIntel'),
+(37, 66, '2026-01-02 21:55:25', '1440x932', 'MacIntel');
 
 --
 -- Trigger `logs`
@@ -324,7 +402,7 @@ INSERT INTO `punkte` (`user_id`, `punktestand`) VALUES
 (60, 100),
 (64, 114),
 (65, 110),
-(66, 102);
+(66, 106);
 
 --
 -- Trigger `punkte`
@@ -365,7 +443,9 @@ CREATE TABLE `punktelog` (
 INSERT INTO `punktelog` (`transaktions_id`, `user_id`, `datum`, `art`, `punkte_aenderung`, `neuer_punktestand`, `bemerkung`) VALUES
 (1, 65, '2025-12-28 05:42:20', 'Automatisch', 2, 110, 'Änderung am Punktestand'),
 (2, 66, '2025-12-30 18:15:19', NULL, 0, 100, NULL),
-(3, 66, '2025-12-30 18:23:03', 'Automatisch', 2, 102, 'Änderung am Punktestand');
+(3, 66, '2025-12-30 18:23:03', 'Automatisch', 2, 102, 'Änderung am Punktestand'),
+(4, 66, '2025-12-31 12:27:10', 'Automatisch', 2, 104, 'Änderung am Punktestand'),
+(5, 66, '2026-01-02 21:55:25', 'Automatisch', 2, 106, 'Änderung am Punktestand');
 
 -- --------------------------------------------------------
 
@@ -375,10 +455,29 @@ INSERT INTO `punktelog` (`transaktions_id`, `user_id`, `datum`, `art`, `punkte_a
 
 CREATE TABLE `rechnungskopf` (
   `id` int(11) NOT NULL,
-  `bestellung_id` int(11) DEFAULT NULL,
+  `bestellID` int(11) NOT NULL,
   `rechnungsdatum` datetime DEFAULT current_timestamp(),
-  `betrag` decimal(10,2) DEFAULT NULL
+  `betrag` decimal(10,2) DEFAULT NULL,
+  `versandart` int(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Daten für Tabelle `rechnungskopf`
+--
+
+INSERT INTO `rechnungskopf` (`id`, `bestellID`, `rechnungsdatum`, `betrag`, `versandart`) VALUES
+(1, 1, '2025-12-31 15:47:19', 249.00, 0),
+(2, 2, '2026-01-02 20:49:27', 967.18, 0),
+(14, 3, '2026-01-02 21:15:55', 229.00, 0),
+(15, 4, '2026-01-02 21:24:38', 36.00, 0),
+(16, 5, '2026-01-02 21:25:40', 849.00, 0),
+(17, 6, '2026-01-02 21:27:40', 159.00, 0),
+(18, 7, '2026-01-02 21:29:57', 25.00, 0),
+(19, 8, '2026-01-02 21:34:14', 30.00, 1),
+(20, 9, '2026-01-02 21:39:01', 22.20, 1),
+(21, 10, '2026-01-02 21:44:24', 1299.00, 1),
+(22, 11, '2026-01-02 21:44:28', 0.00, 1),
+(23, 12, '2026-01-02 21:45:23', 25.00, 1);
 
 -- --------------------------------------------------------
 
@@ -387,14 +486,32 @@ CREATE TABLE `rechnungskopf` (
 --
 
 CREATE TABLE `rechnungsposition` (
-  `id` int(11) NOT NULL,
-  `rechnung_id` int(11) NOT NULL,
+  `rechnungsID` int(11) NOT NULL,
   `artikel_id` int(11) NOT NULL,
   `artikel_name` varchar(255) NOT NULL,
   `menge` int(11) NOT NULL DEFAULT 1,
   `preis` decimal(10,2) NOT NULL COMMENT 'Einzelpreis zum Zeitpunkt der Rechnung',
   `mwst_satz` decimal(5,2) NOT NULL DEFAULT 19.00
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Daten für Tabelle `rechnungsposition`
+--
+
+INSERT INTO `rechnungsposition` (`rechnungsID`, `artikel_id`, `artikel_name`, `menge`, `preis`, `mwst_satz`) VALUES
+(1, 1013, 'Randolph Engineering Aviator (55mm, Gold)', 1, 219.00, 19.00),
+(1, 1032, 'Flugzeug Radkeile, Gummi (Paar)', 1, 30.00, 19.00),
+(2, 1007, 'Garmin aera 660 Portable Aviation GPS', 1, 849.00, 19.00),
+(2, 1021, 'Brightline Bags B7 Flight \"Echo\" Konfiguration', 2, 229.00, 19.00),
+(14, 1021, 'Brightline Bags B7 Flight \"Echo\" Konfiguration', 1, 229.00, 19.00),
+(15, 1009, 'Jeppesen CR-3 Circular Flight Computer', 1, 36.00, 19.00),
+(16, 1007, 'Garmin aera 660 Portable Aviation GPS', 1, 849.00, 19.00),
+(17, 1042, 'Forensics Detectors CO Detector for Aircraft', 1, 159.00, 19.00),
+(18, 1008, 'ICAO Karte Deutschland (Set)', 1, 25.00, 19.00),
+(19, 1032, 'Flugzeug Radkeile, Gummi (Paar)', 1, 30.00, 19.00),
+(20, 1032, 'Flugzeug Radkeile, Gummi (Paar)', 1, 30.00, 19.00),
+(21, 1001, 'Bose A30 Aviation Headset', 1, 1299.00, 19.00),
+(23, 1008, 'ICAO Karte Deutschland (Set)', 1, 25.00, 19.00);
 
 -- --------------------------------------------------------
 
@@ -490,9 +607,7 @@ CREATE TABLE `warenkorbposition` (
 
 INSERT INTO `warenkorbposition` (`warenkorb_id`, `artikel_id`, `menge`) VALUES
 (1, 1001, 2),
-(2, 3, 1),
-(2, 1026, 5),
-(2, 1038, 10);
+(2, 1026, 1);
 
 --
 -- Indizes der exportierten Tabellen
@@ -554,14 +669,15 @@ ALTER TABLE `punktelog`
 --
 ALTER TABLE `rechnungskopf`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `bestellung_id` (`bestellung_id`);
+  ADD UNIQUE KEY `bestellID` (`bestellID`),
+  ADD KEY `bestellung_id` (`bestellID`);
 
 --
 -- Indizes für die Tabelle `rechnungsposition`
 --
 ALTER TABLE `rechnungsposition`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `rechnung_id` (`rechnung_id`),
+  ADD PRIMARY KEY (`rechnungsID`,`artikel_id`),
+  ADD KEY `rechnung_id` (`rechnungsID`),
   ADD KEY `artikel_id` (`artikel_id`);
 
 --
@@ -596,37 +712,31 @@ ALTER TABLE `artikel`
 -- AUTO_INCREMENT für Tabelle `bestellkopf`
 --
 ALTER TABLE `bestellkopf`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT für Tabelle `bestellposition`
 --
 ALTER TABLE `bestellposition`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT für Tabelle `logs`
 --
 ALTER TABLE `logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- AUTO_INCREMENT für Tabelle `punktelog`
 --
 ALTER TABLE `punktelog`
-  MODIFY `transaktions_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `transaktions_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT für Tabelle `rechnungskopf`
 --
 ALTER TABLE `rechnungskopf`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT für Tabelle `rechnungsposition`
---
-ALTER TABLE `rechnungsposition`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT für Tabelle `user`
