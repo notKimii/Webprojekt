@@ -5,14 +5,14 @@ session_start();
 include $_SERVER['DOCUMENT_ROOT'] . '/Webprojekt/php/include/connect.php';
 
 // Überprüfen, ob Session-Daten da sind (verhindert Fehler, falls Session abgelaufen ist)
-if (!isset($_SESSION['temp_user']['email'])) {
+if (!isset($_SESSION['user']['email'])) {
     header("Location: ../login/loginformular.php");
     exit;
 }
 
 $passwordold = hash('sha512', $_POST["passwordold"]);
 $password = $_POST["password"];
-$email = $_SESSION['temp_user']['email'];
+$email = $_SESSION['user']['email'];
 
 // Eingaben prüfen
 if (strlen($password) < 9 || !preg_match('/[A-Z]/', $password) || !preg_match('/[a-z]/', $password) || !preg_match('/\d/', $password)) {

@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-if (isset($_SESSION['temp_user'])) {
+if (isset($_SESSION['user'])) {
     include 'include/connect.php';
 
     $stmt = $conPDO->prepare("SELECT COUNT(*) FROM user WHERE online=1");

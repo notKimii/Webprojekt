@@ -51,7 +51,7 @@ try {
     if ($user && $passwordHash === $user['passwort']) {
         
         // Session setzen
-        $_SESSION['temp_user'] = [
+        $_SESSION['user'] = [
             'id'            => $user['id'],
             'vorname'       => $user['vorname'],
             'nachname'      => $user['nachname'],
@@ -92,8 +92,8 @@ try {
         $checkResult = $gAuth->verifyCode($user['google_secret'], $code, 2);
         
         if ($checkResult) {
-            // Login erfolgreich -> Session finalisieren (temp_user zu user machen?)
-            $_SESSION['user_id'] = $user['id']; // Beispiel
+            // Login erfolgreich
+            // Session wurde bereits oben gesetzt, keine zusätzliche user_id nötig
             
             // Weiterleitung zum Dashboard
             header("Location: ../../index.php");

@@ -19,9 +19,9 @@
                 <div class="container">
                     <div class="hero-content">
                         <?php
-                        if (isset($_SESSION['temp_user'])) {
-                            $name = $_SESSION['temp_user']['vorname'];
-                            $nachname = $_SESSION['temp_user']['nachname'];
+                        if (isset($_SESSION['user'])) {
+                            $name = $_SESSION['user']['vorname'];
+                            $nachname = $_SESSION['user']['nachname'];
                             echo "<div class='greeting'>
                                     <span class='greeting-text'>Willkommen zurück, $name $nachname!</span>
                                   </div>";

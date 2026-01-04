@@ -3,9 +3,9 @@ session_start();
 header('Content-Type: application/json');
 
 $cartCount = 0;
-if (isset($_SESSION['temp_user'])) {
+if (isset($_SESSION['user'])) {
     include __DIR__ . '/connectcon.php';
-    $userID = (int)$_SESSION['temp_user']['id'];
+    $userID = (int)$_SESSION['user']['id'];
     $sql = "SELECT COUNT(wp.artikel_id) AS cnt
             FROM warenkorbkopf wk
             LEFT JOIN warenkorbposition wp ON wp.warenkorb_id = wk.id

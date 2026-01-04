@@ -3,7 +3,7 @@ session_start();
 
   $gefunden=false;
 
-  if (isset($_SESSION['temp_user']))
+  if (isset($_SESSION['user']))
   {
       $gefunden=true;
   }

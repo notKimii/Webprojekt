@@ -2,13 +2,13 @@
 session_start();
 
 // Überprüfen ob User eingeloggt ist
-if (!isset($_SESSION['temp_user'])) {
+if (!isset($_SESSION['user'])) {
     header('Location: /Webprojekt/php/login/loginformular.php');
     exit();
 }
 
-$userID = $_SESSION['temp_user']['id'];
-$userName = $_SESSION['temp_user']['name'] ?? 'User';
+$userID = $_SESSION['user']['id'];
+$userName = $_SESSION['user']['name'] ?? 'User';
 
 // Datenbankverbindung
 $con = new mysqli('localhost', 'root', '', 'dbpilotenshop');

@@ -14,7 +14,7 @@ ini_set('display_errors', 1);
 include __DIR__ . '/../include/connectcon.php';
 
 ///Prüfung ob User angemeldet ist
-$kundenId = isset($_SESSION['temp_user']['id']) ? (int)$_SESSION['temp_user']['id'] : null;
+$kundenId = isset($_SESSION['user']['id']) ? (int)$_SESSION['user']['id'] : null;
 if ($kundenId === null) {
     if ($isAjax) {
         echo json_encode(['success' => false, 'error' => 'not_logged_in']);

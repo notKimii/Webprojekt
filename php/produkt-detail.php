@@ -531,7 +531,7 @@ if (is_dir($absoluterPfad)) {
             </div>
 
             <div id="reviewForm" class="review-form-container">
-                <?php if (isset($_SESSION['temp_user']['id'])): ?>
+                <?php if (isset($_SESSION['user']['id'])): ?>
                     <h3>Ihre Bewertung abgeben</h3>
                     <form action="/Webprojekt/php/bewertung/submit_review.php" method="POST">
                         <input type="hidden" name="produkt_id" value="<?php echo $produktId; ?>">

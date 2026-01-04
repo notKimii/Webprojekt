@@ -56,7 +56,7 @@
         include 'include/connect.php';
 
         include 'include/loginpruef.php';
-        $mail = $_SESSION["temp_user"]['email'];
+        $mail = $_SESSION["user"]['email'];
 
         //Secret abfragen
         $stmt = $conPDO->prepare("SELECT google_secret FROM user WHERE mail = ?");

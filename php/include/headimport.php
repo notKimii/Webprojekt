@@ -718,7 +718,7 @@ include __DIR__ . '/connectcon.php';
                 <!-- Desktop Actions -->
                 <div class="desktop-actions">
                     <div class="header-action-item">
-                        <?php if (isset($_SESSION['temp_user'])): ?>
+                        <?php if (isset($_SESSION['user'])): ?>
                             <a href="/Webprojekt/php/Kundenkonto.php">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -746,8 +746,8 @@ include __DIR__ . '/connectcon.php';
                             <span>Warenkorb</span>
                             <span class="cart-count"><?php
                                 $cartCount = 0;
-                                if (isset($_SESSION['temp_user'])) {
-                                    $userID_cart = (int)$_SESSION['temp_user']['id'];
+                                if (isset($_SESSION['user'])) {
+                                    $userID_cart = (int)$_SESSION['user']['id'];
                                     if (isset($con) && !$con->connect_error) {
                                         $sql = "SELECT COUNT(wp.artikel_id) AS cnt
                                                 FROM warenkorbkopf wk
@@ -777,9 +777,9 @@ include __DIR__ . '/connectcon.php';
                             <span>Punkte</span>
                             <span class="points-badge">
                                 <?php
-                                if (isset($_SESSION['temp_user'])) {
+                                if (isset($_SESSION['user'])) {
                                     if (isset($con) && !$con->connect_error) {
-                                        $userID = $_SESSION['temp_user']['id'];
+                                        $userID = $_SESSION['user']['id'];
                                         $stmt = $con->prepare("SELECT punktestand FROM punkte WHERE user_id = ?");
                                         if ($stmt) {
                                             $stmt->bind_param("i", $userID);
@@ -812,7 +812,7 @@ include __DIR__ . '/connectcon.php';
                             <span class="online-users">
                                 <span class="online-indicator"></span>
                                 <?php
-                                if (isset($_SESSION['temp_user'])) {
+                                if (isset($_SESSION['user'])) {
                                     if (isset($con) && !$con->connect_error) {
                                         $result = $con->query("SELECT COUNT(*) AS anzahl FROM user WHERE online=1");
                                         if ($result) {
@@ -887,7 +887,7 @@ include __DIR__ . '/connectcon.php';
 
             <!-- Mobile User Section -->
             <div class="mobile-user-section">
-                <?php if (isset($_SESSION['temp_user'])): ?>
+                <?php if (isset($_SESSION['user'])): ?>
                     <a href="/mein-konto.php" class="mobile-user-item">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -922,8 +922,8 @@ include __DIR__ . '/connectcon.php';
                     </div>
                     <span class="badge"><?php
                         $cartCount_mobile = 0;
-                        if (isset($_SESSION['temp_user'])) {
-                            $userID_cart = (int)$_SESSION['temp_user']['id'];
+                        if (isset($_SESSION['user'])) {
+                            $userID_cart = (int)$_SESSION['user']['id'];
                             if (isset($con) && !$con->connect_error) {
                                 $sql = "SELECT COUNT(wp.artikel_id) AS cnt
                                         FROM warenkorbkopf wk
@@ -954,9 +954,9 @@ include __DIR__ . '/connectcon.php';
                     </div>
                     <span class="points-badge-mobile">
                         <?php
-                        if (isset($_SESSION['temp_user'])) {
+                        if (isset($_SESSION['user'])) {
                             if (isset($con) && !$con->connect_error) {
-                                $userID = $_SESSION['temp_user']['id'];
+                                $userID = $_SESSION['user']['id'];
                                 $stmt = $con->prepare("SELECT punktestand FROM punkte WHERE user_id = ?");
                                 if ($stmt) {
                                     $stmt->bind_param("i", $userID);
@@ -991,7 +991,7 @@ include __DIR__ . '/connectcon.php';
                     <span class="online-badge">
                         <span class="online-indicator"></span>
                         <?php
-                        if (isset($_SESSION['temp_user'])) {
+                        if (isset($_SESSION['user'])) {
                             if (isset($con) && !$con->connect_error) {
                                 $result = $con->query("SELECT COUNT(*) AS anzahl FROM user WHERE online=1");
                                 if ($result) {

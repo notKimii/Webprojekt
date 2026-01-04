@@ -6,12 +6,12 @@ include "../include/connect.php"; // Pfad zur connect.php anpassen!
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_review'])) {
     
     // 1. Login Check
-    if (!isset($_SESSION['temp_user']['id'])) {
+    if (!isset($_SESSION['user']['id'])) {
         header("Location: /Webprojekt/php/login/loginformular.php");
         exit;
     }
 
-    $userId = $_SESSION['temp_user']['id'];
+    $userId = $_SESSION['user']['id'];
     $produktId = intval($_POST['produkt_id']);
     $rating = intval($_POST['rating']);
     $kommentar = trim($_POST['kommentar']);
