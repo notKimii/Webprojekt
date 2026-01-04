@@ -24,17 +24,28 @@
                             $nachname = $_SESSION['user']['nachname'];
                             $user_id = $_SESSION['user']['id'];
                             
-                            // Letzte Anmeldung aus logs-Tabelle holen (OFFSET 1 = vorherige Anmeldung)
-                            $stmt = $pdo->prepare("SELECT login_time FROM logs WHERE user_id = ? ORDER BY login_time DESC LIMIT 1 OFFSET 1");
-                            $stmt->execute([$user_id]);
-                            $lastLogin = $stmt->fetch();
-                            
-                            $loginText = $lastLogin ? date('d.m.Y, H:i', strtotime($lastLogin['login_time'])) . ' Uhr' : 'Erste Anmeldung';
+                            // Datenbankverbindung für letzte Anmeldung
+                            // Passe die Zugangsdaten an deine Konfiguration an
+                            try {
+                                $db = new PDO('mysql:host=localhost;dbname=dbpilotenshop;charset=utf8mb4', 'root', '');
+                                $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                                
+                                // Letzte Anmeldung aus logs-Tabelle holen (OFFSET 1 = vorherige Anmeldung)
+                                $stmt = $db->prepare("SELECT login_time FROM logs WHERE user_id = ? ORDER BY login_time DESC LIMIT 1 OFFSET 1");
+                                $stmt->execute([$user_id]);
+                                $lastLogin = $stmt->fetch();
+                                
+                                $loginText = $lastLogin ? date('d.m.Y, H:i', strtotime($lastLogin['login_time'])) . ' Uhr' : 'Erste Anmeldung';
+                            } catch (PDOException $e) {
+                                $loginText = '';
+                            }
                             
                             echo "<div class='greeting'>
-                                    <span class='greeting-text'>Willkommen zurück, $name $nachname!</span>
-                                    <span class='last-login'>Letzte Anmeldung: $loginText</span>
-                                  </div>";
+                                    <span class='greeting-text'>Willkommen zurück, $name $nachname!</span>";
+                            if (!empty($loginText)) {
+                                echo "<span class='last-login'>Letzte Anmeldung: $loginText</span>";
+                            }
+                            echo "</div>";
                         } else {
                             echo "<div class='greeting'>
                                     <span class='greeting-text'>Premium Aviation Equipment</span>
