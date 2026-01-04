@@ -123,45 +123,144 @@
         <section class="new-arrivals">
             <div class="container">
                 <h2>Neuheiten</h2>
-                <div class="product-grid">
-                    <div class="product-item">
-                        <a href="./php/produkt-detail.php?id=1014">
-                            <img src="./images/pictures/productids/1014/14.1.png" alt="Garmin D2 Mach 1 Aviator Smartwatch">
-                            <h3>Garmin D2 Mach 1 Aviator Smartwatch</h3>
-                            <p class="price">1.199,00 €</p>
-                        </a>
-                        <button class="add-to-cart-button">In den Warenkorb</button>
+                <div class="carousel-container">
+                    <button class="carousel-btn carousel-btn-prev" aria-label="Vorheriges Produkt">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                    </button>
+                    <div class="carousel-track-container">
+                        <div class="carousel-track">
+                            <div class="carousel-slide">
+                                <div class="product-item">
+                                    <a href="./php/produkt-detail.php?id=1014">
+                                        <img src="./images/pictures/productids/1014/14.1.png" alt="Garmin D2 Mach 1 Aviator Smartwatch">
+                                        <h3>Garmin D2 Mach 1 Aviator Smartwatch</h3>
+                                        <p class="price">1.199,00 €</p>
+                                    </a>
+                                    <button class="add-to-cart-button">In den Warenkorb</button>
+                                </div>
+                            </div>
+                            <div class="carousel-slide">
+                                <div class="product-item">
+                                    <a href="./php/produkt-detail.php?id=1035">
+                                        <img src="./images/pictures/productids/1035/35.1.png" alt="Aero Cosmetics Wash Wax ALL (Konzentrat, 1L)">
+                                        <h3>Aero Cosmetics Wash Wax ALL (Konzentrat, 1L)</h3>
+                                        <p class="price">45,00 €</p>
+                                    </a>
+                                    <button class="add-to-cart-button">In den Warenkorb</button>
+                                </div>
+                            </div>
+                            <div class="carousel-slide">
+                                <div class="product-item">
+                                    <a href="./php/produkt-detail.php?id=1040">
+                                        <img src="./images/pictures/productids/1040/40.1.png" alt="H3R Aviation Halon 1211 Feuerlöscher (A344T)">
+                                        <h3>H3R Aviation Halon 1211 Feuerlöscher (A344T)</h3>
+                                        <p class="price">289,00 €</p>
+                                    </a>
+                                    <button class="add-to-cart-button">In den Warenkorb</button>
+                                </div>
+                            </div>
+                            <div class="carousel-slide">
+                                <div class="product-item">
+                                    <a href="./php/produkt-detail.php?id=1007">
+                                        <img src="./images/pictures/productids/1007/7.1.JPG" alt="Garmin aera 660 Portable Aviation GPS">
+                                        <h3>Garmin aera 660 Portable Aviation GPS</h3>
+                                        <p class="price">849,00 €</p>
+                                    </a>
+                                    <button class="add-to-cart-button">In den Warenkorb</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="product-item">
-                        <a href="./php/produkt-detail.php?id=1035">
-                            <img src="./images/pictures/productids/1035/35.1.png" alt="Aero Cosmetics Wash Wax ALL (Konzentrat, 1L)">
-                            <h3>Aero Cosmetics Wash Wax ALL (Konzentrat, 1L)</h3>
-                            <p class="price">45,00 €</p>
-                        </a>
-                        <button class="add-to-cart-button">In den Warenkorb</button>
-                    </div>
-                    <div class="product-item">
-                        <a href="./php/produkt-detail.php?id=1040">
-                            <img src="./images/pictures/productids/1040/40.1.png" alt="H3R Aviation Halon 1211 Feuerlöscher (A344T)">
-                            <h3>H3R Aviation Halon 1211 Feuerlöscher (A344T)</h3>
-                            <p class="price">289,00 €</p>
-                        </a>
-                        <button class="add-to-cart-button">In den Warenkorb</button>
-                    </div>
-                    <div class="product-item">
-                        <a href="./php/produkt-detail.php?id=1007">
-                            <img src="./images/pictures/productids/1007/7.1.JPG" alt="Garmin aera 660 Portable Aviation GPS">
-                            <h3>Garmin aera 660 Portable Aviation GPS</h3>
-                            <p class="price">849,00 €</p>
-                        </a>
-                        <button class="add-to-cart-button">In den Warenkorb</button>
-                    </div>
+                    <button class="carousel-btn carousel-btn-next" aria-label="Nächstes Produkt">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    </button>
                 </div>
+                <div class="carousel-dots"></div>
                 <div class="view-all-link">
                     <a href="/kategorie/neuheiten" class="button-secondary">Zu den Neuheiten</a>
                 </div>
             </div>
         </section>
+
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const track = document.querySelector('.carousel-track');
+            const slides = Array.from(document.querySelectorAll('.carousel-slide'));
+            const prevBtn = document.querySelector('.carousel-btn-prev');
+            const nextBtn = document.querySelector('.carousel-btn-next');
+            const dotsContainer = document.querySelector('.carousel-dots');
+            
+            let currentIndex = 0;
+            let slidesToShow = getSlidesToShow();
+            
+            function getSlidesToShow() {
+                if (window.innerWidth <= 480) return 1;
+                if (window.innerWidth <= 768) return 2;
+                if (window.innerWidth <= 1024) return 3;
+                return 4;
+            }
+            
+            function updateCarousel() {
+                slidesToShow = getSlidesToShow();
+                const slideWidth = 100 / slidesToShow;
+                slides.forEach(slide => {
+                    slide.style.flex = `0 0 ${slideWidth}%`;
+                });
+                
+                const maxIndex = Math.max(0, slides.length - slidesToShow);
+                if (currentIndex > maxIndex) currentIndex = maxIndex;
+                
+                const offset = -currentIndex * (100 / slidesToShow);
+                track.style.transform = `translateX(${offset}%)`;
+                
+                updateDots();
+                updateButtons();
+            }
+            
+            function updateDots() {
+                const totalDots = Math.ceil(slides.length / slidesToShow);
+                const activeDot = Math.floor(currentIndex / slidesToShow);
+                
+                dotsContainer.innerHTML = '';
+                for (let i = 0; i < totalDots; i++) {
+                    const dot = document.createElement('button');
+                    dot.classList.add('carousel-dot');
+                    if (i === activeDot) dot.classList.add('active');
+                    dot.addEventListener('click', () => {
+                        currentIndex = i * slidesToShow;
+                        updateCarousel();
+                    });
+                    dotsContainer.appendChild(dot);
+                }
+            }
+            
+            function updateButtons() {
+                const maxIndex = Math.max(0, slides.length - slidesToShow);
+                prevBtn.style.opacity = currentIndex === 0 ? '0.5' : '1';
+                prevBtn.style.pointerEvents = currentIndex === 0 ? 'none' : 'auto';
+                nextBtn.style.opacity = currentIndex >= maxIndex ? '0.5' : '1';
+                nextBtn.style.pointerEvents = currentIndex >= maxIndex ? 'none' : 'auto';
+            }
+            
+            prevBtn.addEventListener('click', () => {
+                if (currentIndex > 0) {
+                    currentIndex--;
+                    updateCarousel();
+                }
+            });
+            
+            nextBtn.addEventListener('click', () => {
+                const maxIndex = Math.max(0, slides.length - slidesToShow);
+                if (currentIndex < maxIndex) {
+                    currentIndex++;
+                    updateCarousel();
+                }
+            });
+            
+            window.addEventListener('resize', updateCarousel);
+            updateCarousel();
+        });
+        </script>
 
         <section class="bestsellers">
             <div class="container">
