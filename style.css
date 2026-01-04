@@ -287,14 +287,15 @@ section {
     gap: 1.5rem;
 }
 
-/* Greeting Badge - Kompakter */
+/* Greeting Badge - KORRIGIERT für Name + Last Login untereinander */
 .greeting {
     display: inline-flex;
+    flex-direction: column;
     align-items: center;
-    gap: 8px;
+    gap: 4px;
     background: rgba(59, 130, 246, 0.1);
     border: 1px solid rgba(59, 130, 246, 0.3);
-    padding: 8px 20px;
+    padding: 12px 24px;
     border-radius: 50px;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
@@ -302,8 +303,7 @@ section {
 }
 
 .greeting::before {
-    content: '✈️';
-    font-size: 1rem;
+    display: none;
 }
 
 .greeting-text {
@@ -312,6 +312,23 @@ section {
     font-weight: 600;
     letter-spacing: 0.05em;
     text-transform: uppercase;
+}
+
+.greeting-text::before {
+    content: '✈️ ';
+}
+
+.greeting .last-login {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.6);
+    background: none;
+    padding: 0;
+    margin: 0;
+    border-radius: 0;
+    letter-spacing: 0.02em;
+    text-transform: none;
 }
 
 /* Main Headline - Einheitliche Größe */
@@ -634,11 +651,15 @@ section {
     }
     
     .greeting {
-        padding: 6px 16px;
+        padding: 8px 18px;
     }
     
     .greeting-text {
         font-size: 0.75rem;
+    }
+    
+    .greeting .last-login {
+        font-size: 0.65rem;
     }
     
     .hero-content h1 {
@@ -1446,15 +1467,3 @@ footer::before {
 .mt-2 { margin-top: calc(var(--spacing-unit) * 2); }
 .mb-1 { margin-bottom: var(--spacing-unit); }
 .mb-2 { margin-bottom: calc(var(--spacing-unit) * 2); }
-
-
-.greeting .last-login {
-    display: inline-block;
-    font-size: 0.7rem;
-    font-weight: 500;
-    color: #ffffff;
-    background: rgba(255, 255, 255, 0.15);
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
-    margin-top: 0.5rem;
-}
