@@ -142,9 +142,9 @@
                             <div class="carousel-slide">
                                 <div class="product-item">
                                     <a href="./php/produkt-detail.php?id=1035">
-                                        <img src="./images/pictures/productids/1035/35.1.png" alt="Aero Cosmetics Wash Wax ALL (Konzentrat, 1L)">
-                                        <h3>Aero Cosmetics Wash Wax ALL (Konzentrat, 1L)</h3>
-                                        <p class="price">45,00 €</p>
+                                        <img src="./images/pictures/productids/1001/1.1.JPG" alt="Bose A30 Aviation Headset">
+                                        <h3>ABose A30 Aviation Headset</h3>
+                                        <p class="price">1.299,00 €</p>
                                     </a>
                                     <button class="add-to-cart-button">In den Warenkorb</button>
                                 </div>
@@ -162,9 +162,39 @@
                             <div class="carousel-slide">
                                 <div class="product-item">
                                     <a href="./php/produkt-detail.php?id=1007">
-                                        <img src="./images/pictures/productids/1007/7.1.JPG" alt="Garmin aera 660 Portable Aviation GPS">
-                                        <h3>Garmin aera 660 Portable Aviation GPS</h3>
-                                        <p class="price">849,00 €</p>
+                                        <img src="./images/pictures/productids/1006/6.1.JPG" alt="Icom IC-A25NE (8.33/25 kHz)">
+                                        <h3>Icom IC-A25NE (8.33/25 kHz)</h3>
+                                        <p class="price">489,00 €</p>
+                                    </a>
+                                    <button class="add-to-cart-button">In den Warenkorb</button>
+                                </div>
+                            </div>
+                            <div class="carousel-slide">
+                                <div class="product-item">
+                                    <a href="./php/produkt-detail.php?id=1035">
+                                        <img src="./images/pictures/productids/1021/21.1.png" alt="Brightline Bags B7 Flight "Echo" Konfiguration">
+                                        <h3>Brightline Bags B7 Flight "Echo" Konfiguration</h3>
+                                        <p class="price">229,00 €</p>
+                                    </a>
+                                    <button class="add-to-cart-button">In den Warenkorb</button>
+                                </div>
+                            </div>
+                            <div class="carousel-slide">
+                                <div class="product-item">
+                                    <a href="./php/produkt-detail.php?id=1035">
+                                        <img src="./images/pictures/productids/1031/31.1.png" alt=""Remove Before Flight" Pitot Cover Universal">
+                                        <h3>"Remove Before Flight" Pitot Cover Universal</h3>
+                                        <p class="price">10,00 €</p>
+                                    </a>
+                                    <button class="add-to-cart-button">In den Warenkorb</button>
+                                </div>
+                            </div>
+                            <div class="carousel-slide">
+                                <div class="product-item">
+                                    <a href="./php/produkt-detail.php?id=1035">
+                                        <img src="./images/pictures/productids/1035/35.1.png" alt="Aero Cosmetics Wash Wax ALL (Konzentrat, 1L)">
+                                        <h3>Aero Cosmetics Wash Wax ALL (Konzentrat, 1L)</h3>
+                                        <p class="price">45,00 €</p>
                                     </a>
                                     <button class="add-to-cart-button">In den Warenkorb</button>
                                 </div>
