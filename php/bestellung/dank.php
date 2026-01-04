@@ -138,7 +138,7 @@ if (isset($_GET['bestellung_id'])) {
                 
                 <!-- Action Buttons -->
                 <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-5">
-                    <a href="/Webprojekt/php/produkte.php" class="btn btn-primary btn-lg">
+                    <a href="/Webprojekt/index.php" class="btn btn-primary btn-lg">
                         Weiter einkaufen
                     </a>
                     <a href="/Webprojekt/php/kundenkonto.php" class="btn btn-outline-secondary btn-lg">
