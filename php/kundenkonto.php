@@ -7,7 +7,7 @@ include $_SERVER['DOCUMENT_ROOT'] . '/Webprojekt/php/include/connect.php';
 
 
 // Benutzer-ID aus Session abrufen
-$userID = $_SESSION['temp_user']['id'];
+$userID = $_SESSION['user']['id'];
 
 // Benutzerdaten abrufen
 $sqlUser = "SELECT * FROM user WHERE id = ?";
@@ -43,6 +43,11 @@ foreach ($bestellungen as $bestellung) {
 $sqlOnline = "UPDATE user SET online = 1 WHERE id = ?";
 $stmtOnline = $conPDO->prepare($sqlOnline);
 $stmtOnline->execute([$userID]);
+
+// Nachrichten aus Session abrufen
+$successMessage = $_SESSION['profile_success'] ?? null;
+$errors = $_SESSION['profile_errors'] ?? [];
+unset($_SESSION['profile_success'], $_SESSION['profile_errors']);
 ?>
 
 <!DOCTYPE html>
@@ -553,6 +558,78 @@ $stmtOnline->execute([$userID]);
         .account-footer a:hover {
             color: white;
         }
+
+        /* Notification Messages */
+        .notification {
+            padding: calc(var(--spacing-unit) * 1.5);
+            border-radius: var(--border-radius);
+            margin-bottom: calc(var(--spacing-unit) * 2);
+            display: flex;
+            align-items: start;
+            gap: 12px;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .notification-success {
+            background: #d1fae5;
+            border: 2px solid #059669;
+            color: #065f46;
+        }
+
+        .notification-error {
+            background: #fee2e2;
+            border: 2px solid #dc2626;
+            color: #991b1b;
+        }
+
+        .notification-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .notification-list {
+            margin: 8px 0 0 0;
+            padding-left: 20px;
+        }
+
+        .notification-list li {
+            margin-bottom: 4px;
+        }
+
+        .notification-close {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0;
+            color: inherit;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+        }
+
+        .notification-close:hover {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -564,6 +641,38 @@ $stmtOnline->execute([$userID]);
                 <h1>👋 Willkommen, <?php echo htmlspecialchars($userData['vorname']); ?>!</h1>
                 <p>Verwalte dein Konto, sieh deine Bestellungen und sammle Treuepunkte.</p>
             </div>
+
+            <!-- Success Message -->
+            <?php if ($successMessage): ?>
+                <div class="notification notification-success" id="successNotification">
+                    <span class="notification-icon">✅</span>
+                    <div class="notification-content">
+                        <div class="notification-title">Erfolg!</div>
+                        <div><?php echo htmlspecialchars($successMessage); ?></div>
+                    </div>
+                    <button class="notification-close" onclick="closeNotification('successNotification')">&times;</button>
+                </div>
+            <?php endif; ?>
+
+            <!-- Error Messages -->
+            <?php if (!empty($errors)): ?>
+                <div class="notification notification-error" id="errorNotification">
+                    <span class="notification-icon">⚠️</span>
+                    <div class="notification-content">
+                        <div class="notification-title">Fehler beim Speichern</div>
+                        <?php if (count($errors) === 1): ?>
+                            <div><?php echo htmlspecialchars($errors[0]); ?></div>
+                        <?php else: ?>
+                            <ul class="notification-list">
+                                <?php foreach ($errors as $error): ?>
+                                    <li><?php echo htmlspecialchars($error); ?></li>
+                                <?php endforeach; ?>
+                            </ul>
+                        <?php endif; ?>
+                    </div>
+                    <button class="notification-close" onclick="closeNotification('errorNotification')">&times;</button>
+                </div>
+            <?php endif; ?>
 
             <!-- Profil und Punkte Grid -->
             <div class="account-grid">
@@ -762,6 +871,31 @@ $stmtOnline->execute([$userID]);
                 editForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         }
+
+        function closeNotification(id) {
+            const notification = document.getElementById(id);
+            if (notification) {
+                notification.style.animation = 'slideUp 0.3s ease-out';
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }
+        }
+
+        // Auto-hide success notifications nach 5 Sekunden
+        const successNotification = document.getElementById('successNotification');
+        if (successNotification) {
+            setTimeout(() => {
+                closeNotification('successNotification');
+            }, 5000);
+        }
+
+        // Formular automatisch öffnen wenn Fehler vorhanden sind
+        <?php if (!empty($errors)): ?>
+            document.addEventListener('DOMContentLoaded', function() {
+                toggleEditForm();
+            });
+        <?php endif; ?>
     </script>
 </body>
 </html>
