@@ -852,7 +852,7 @@ include __DIR__ . '/connectcon.php';
                     <li><a href="/Webprojekt/php/kategorien/lernmaterialkategorie.php">Lernmaterial</a></li>
                     <li><a href="/webprojekt/php/kategorien/zubehoerkategorie.php">Flugzeugzubehör</a></li>
                     <li><a href="/webprojekt/php/kategorien/sicherheitkategorie.php">Sicherheitsausrüstung</a></li>
-                    <li><a href="/ueber-uns">Über uns</a></li>
+                    <li><a href="/webprojekt/php/kategorien/ueberuns.php">Über uns</a></li>
                 </ul>
             </div>
         </nav>
