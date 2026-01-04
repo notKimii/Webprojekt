@@ -1,5 +1,5 @@
 <?php
-// Session sicher starten (falls headimport es nicht tut)
+// Session sicher starten
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -7,15 +7,17 @@ if (session_status() === PHP_SESSION_NONE) {
 // Datenbankverbindung
 include $_SERVER['DOCUMENT_ROOT'] . '/Webprojekt/php/include/connect.php'; 
 
-// Suchbegriff aus der URL holen (das 'q' kommt aus dem name="q" im Header)
+// Suchbegriff holen
 $suchbegriff = isset($_GET['q']) ? trim($_GET['q']) : '';
 
 $ergebnisse = [];
 
 if (!empty($suchbegriff)) {
     try {
+        // SQL angepasst: 'AND id > 99' filtert alle 1- und 2-stelligen IDs raus
         $sql = "SELECT * FROM artikel 
-                WHERE kategorie != 'Code'
+                WHERE id > 99
+                AND kategorie != 'Code'
                 AND kategorie IS NOT NULL
                 AND (name LIKE :search 
                 OR beschreibung LIKE :search 
@@ -26,7 +28,7 @@ if (!empty($suchbegriff)) {
         $ergebnisse = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
     } catch (PDOException $e) {
-        // Fehlerbehandlung (optional loggen)
+        // Optional: Fehler loggen
     }
 }
 ?>
@@ -41,12 +43,11 @@ if (!empty($suchbegriff)) {
     <?php include $_SERVER['DOCUMENT_ROOT'] . '/Webprojekt/php/include/headimport.php'; ?>
 
     <style>
-        /* Spezielles CSS nur für die Suchseite */
         .search-container {
             max-width: 1400px;
             margin: 40px auto;
             padding: 0 20px;
-            min-height: 60vh; /* Damit der Footer nicht hochrutscht */
+            min-height: 60vh;
         }
         
         .search-title {
@@ -143,7 +144,6 @@ if (!empty($suchbegriff)) {
                         <div class="product-name"><?php echo htmlspecialchars($artikel['name']); ?></div>
                         <div class="product-desc">
                             <?php 
-                            // Beschreibung auf 100 Zeichen kürzen
                             $desc = $artikel['beschreibung'];
                             if (strlen($desc) > 100) {
                                 echo htmlspecialchars(substr($desc, 0, 100)) . '...';

@@ -41,13 +41,6 @@
                         <a href="https://instagram.com" target="_blank" aria-label="Instagram"><img src="/Webprojekt/images/pictures/socialmedia/instagram.png" alt=""</a>
                         <a href="https://pinterest.com" target="_blank" aria-label="Pinterest"><img src="/Webprojekt/images/pictures/socialmedia/Linkedin.png" alt=""></a>
                     </div>
-                    <h3 class="payment-title">Sicher bezahlen mit</h3>
-                    <div class="payment-methods-icons">
-                        <img src="https://via.placeholder.com/50x30/FFFFFF/000000?text=PayPal" alt="PayPal">
-                        <img src="https://via.placeholder.com/50x30/FFFFFF/000000?text=Visa" alt="Visa">
-                        <img src="https://via.placeholder.com/50x30/FFFFFF/000000?text=MC" alt="Mastercard">
-                        <img src="https://via.placeholder.com/50x30/FFFFFF/000000?text=Klarna" alt="Klarna">
-                    </div>
                 </div>
             </div>
 
