@@ -5,6 +5,92 @@ if (session_status() === PHP_SESSION_NONE) {
   session_start();
 }
 
+// Punkte einlösen via AJAX
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['redeem_points']) && isset($_POST['ajax'])) {
+  ob_end_clean();
+  header('Content-Type: application/json');
+  
+  try {
+    // Kunden-ID ermitteln
+    $kundenId = isset($_SESSION['user']['id']) ? (int)$_SESSION['user']['id'] : null;
+    
+    if (!$kundenId) {
+      echo json_encode(['success' => false, 'message' => 'Sie müssen angemeldet sein.']);
+      exit();
+    }
+    
+    // Aktuelle Punkte des Users abrufen
+    $stmt = $con->prepare("SELECT punktestand FROM punkte WHERE user_id = ? LIMIT 1");
+    $stmt->bind_param('i', $kundenId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($result->num_rows > 0) {
+      $userRow = $result->fetch_assoc();
+      $verfuegbarePunkte = (int)$userRow['punktestand'];
+      
+      if ($verfuegbarePunkte < 50) {
+        echo json_encode(['success' => false, 'message' => 'Sie benötigen mindestens 50 Punkte.']);
+        exit();
+      }
+      
+      // Berechne Menge: Für je 50 Punkte gibt es 0.1 Euro Rabatt
+      $menge = floor($verfuegbarePunkte / 50);
+      $verwendetePunkte = $menge * 50;
+      $rabattBetrag = $menge * 0.1;
+      
+      // Warenkorb-ID ermitteln
+      $stmt2 = $con->prepare("SELECT id FROM warenkorbkopf WHERE kunde_id = ? LIMIT 1");
+      $stmt2->bind_param('i', $kundenId);
+      $stmt2->execute();
+      $res2 = $stmt2->get_result();
+      
+      if ($res2->num_rows > 0) {
+        $warenkorbRow = $res2->fetch_assoc();
+        $warenkorbId = (int)$warenkorbRow['id'];
+        
+        // Prüfen ob Punkte-Gutschein bereits im Warenkorb
+        $gutscheinArtikelId = 1; // Artikel ID für Punkte-Gutschein
+        $stmt3 = $con->prepare("SELECT artikel_id FROM warenkorbposition WHERE warenkorb_id = ? AND artikel_id = ?");
+        $stmt3->bind_param('ii', $warenkorbId, $gutscheinArtikelId);
+        $stmt3->execute();
+        $res3 = $stmt3->get_result();
+        
+        if ($res3->num_rows > 0) {
+          echo json_encode(['success' => false, 'message' => 'Punkte-Gutschein bereits eingelöst.']);
+        } else {
+          // Gutschein zum Warenkorb hinzufügen
+          $stmt4 = $con->prepare("INSERT INTO warenkorbposition (warenkorb_id, artikel_id, menge) VALUES (?, ?, ?)");
+          $stmt4->bind_param('iii', $warenkorbId, $gutscheinArtikelId, $menge);
+          
+          if ($stmt4->execute()) {
+            // Punkte werden erst beim Bestellabschluss abgezogen
+            
+            echo json_encode([
+              'success' => true,
+              'message' => $verwendetePunkte . ' Punkte eingelöst! ' . number_format($rabattBetrag, 2, ',', '.') . ' € Rabatt',
+              'reload' => true
+            ]);
+          } else {
+            echo json_encode(['success' => false, 'message' => 'Fehler beim Einlösen: ' . $con->error]);
+          }
+          $stmt4->close();
+        }
+        $stmt3->close();
+      } else {
+        echo json_encode(['success' => false, 'message' => 'Warenkorb nicht gefunden.']);
+      }
+      $stmt2->close();
+    } else {
+      echo json_encode(['success' => false, 'message' => 'Benutzerdaten nicht gefunden.']);
+    }
+    $stmt->close();
+  } catch (Exception $e) {
+    echo json_encode(['success' => false, 'message' => 'Fehler: ' . $e->getMessage()]);
+  }
+  exit();
+}
+
 // Promocode-Verarbeitung via AJAX
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['promo_code']) && isset($_POST['ajax'])) {
   ob_end_clean();
@@ -19,14 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['promo_code']) && isse
     }
     
     // Kunden-ID ermitteln
-    $kundenId = null;
-    if (isset($_SESSION['temp_user']['id'])) {
-      $kundenId = (int)$_SESSION['temp_user']['id'];
-    } elseif (isset($_SESSION['user']['id'])) {
-      $kundenId = (int)$_SESSION['user']['id'];
-    } elseif (isset($_SESSION['user_id'])) {
-      $kundenId = (int)$_SESSION['user_id'];
-    }
+    $kundenId = isset($_SESSION['user']['id']) ? (int)$_SESSION['user']['id'] : null;
     
     if (!$kundenId) {
       echo json_encode(['success' => false, 'message' => 'Sie müssen angemeldet sein.']);
@@ -102,14 +181,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['promo_code']) && isse
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['firstName']) && !isset($_POST['ajax'])) {
   
   // Kunden-ID ermitteln
-  $kundenId = null;
-  if (isset($_SESSION['temp_user']['id'])) {
-    $kundenId = (int)$_SESSION['temp_user']['id'];
-  } elseif (isset($_SESSION['user']['id'])) {
-    $kundenId = (int)$_SESSION['user']['id'];
-  } elseif (isset($_SESSION['user_id'])) {
-    $kundenId = (int)$_SESSION['user_id'];
-  }
+  $kundenId = isset($_SESSION['user']['id']) ? (int)$_SESSION['user']['id'] : null;
   
   if ($kundenId) {
     try {
@@ -140,11 +212,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['firstName']) && !isse
           SELECT ?, wp.artikel_id, wp.menge, a.preis
           FROM warenkorbposition wp
           JOIN artikel a ON wp.artikel_id = a.id
-          WHERE wp.warenkorb_id = ? AND a.kategorie != 'Code'
+          WHERE wp.warenkorb_id = ? AND a.kategorie != 'Code' AND a.kategorie != 'Punkte'
         ");
         $stmt3->bind_param('ii', $bestellungId, $warenkorbId);
         $stmt3->execute();
         $stmt3->close();
+        
+        // 2b. Punkte abziehen für Punkte-Artikel im Warenkorb
+        $stmtPunkte = $con->prepare("
+          SELECT SUM(wp.menge * 50) as verwendete_punkte
+          FROM warenkorbposition wp
+          JOIN artikel a ON wp.artikel_id = a.id
+          WHERE wp.warenkorb_id = ? AND LOWER(a.kategorie) = 'punkte'
+        ");
+        $stmtPunkte->bind_param('i', $warenkorbId);
+        $stmtPunkte->execute();
+        $resPunkte = $stmtPunkte->get_result();
+        if ($resPunkte->num_rows > 0) {
+          $rowPunkte = $resPunkte->fetch_assoc();
+          $verwendetePunkte = (int)$rowPunkte['verwendete_punkte'];
+          if ($verwendetePunkte > 0) {
+            $stmtUpdatePunkte = $con->prepare("UPDATE punkte SET punktestand = punktestand - ? WHERE user_id = ?");
+            $stmtUpdatePunkte->bind_param('ii', $verwendetePunkte, $kundenId);
+            $stmtUpdatePunkte->execute();
+            $stmtUpdatePunkte->close();
+          }
+        }
+        $stmtPunkte->close();
         
         // 3. Warenkorb leeren
         $stmt4 = $con->prepare("DELETE FROM warenkorbposition WHERE warenkorb_id = ?");
@@ -193,14 +287,7 @@ if (!isset($shippingMethods[$shippingMethod])) {
 }
 
 // determine customer id from session
-$kundenId = null;
-if (isset($_SESSION['temp_user']['id'])) {
-  $kundenId = (int)$_SESSION['temp_user']['id'];
-} elseif (isset($_SESSION['user']['id'])) {
-  $kundenId = (int)$_SESSION['user']['id'];
-} elseif (isset($_SESSION['user_id'])) {
-  $kundenId = (int)$_SESSION['user_id'];
-}
+$kundenId = isset($_SESSION['user']['id']) ? (int)$_SESSION['user']['id'] : null;
 
 function loadCartData(mysqli $con, int $kundenId, string $shippingMethod = 'dhl'): array {
   global $shippingMethods;
@@ -227,8 +314,8 @@ function loadCartData(mysqli $con, int $kundenId, string $shippingMethod = 'dhl'
     $row['menge'] = $row['menge'] ?? 0;
     $row['kategorie'] = $row['kategorie'] ?? '';
     
-    // Prüfen ob es ein Promocode-Artikel ist
-    if ($row['kategorie'] === 'Code') {
+    // Prüfen ob es ein Promocode-Artikel oder Punkte-Artikel ist
+    if ($row['kategorie'] === 'Code' || $row['kategorie'] === 'Punkte') {
       $promoCodeItems[(int)$row['artikel_id']] = $row;
     } else {
       $items[(int)$row['artikel_id']] = $row;
@@ -258,8 +345,14 @@ function loadCartData(mysqli $con, int $kundenId, string $shippingMethod = 'dhl'
   // Promocode-Rabatte nacheinander anwenden
   $promoCodeDiscountAmount = 0;
   foreach ($promoCodeItems as &$promo) {
-    $rabattProzent = (int)$promo['rabatt'];
-    $rabattBetrag = $subtotal * ($rabattProzent / 100);
+    if ($promo['kategorie'] === 'Code') {
+      // Prozentuale Rabatte für Promocodes
+      $rabattProzent = (int)$promo['rabatt'];
+      $rabattBetrag = $subtotal * ($rabattProzent / 100);
+    } else {
+      // Fester Betrag für Punkte-Artikel (Preis * Menge)
+      $rabattBetrag = $promo['preis'] * $promo['menge'];
+    }
     $promo['rabatt_betrag'] = $rabattBetrag; // Speichere Betrag für Anzeige
     $subtotal -= $rabattBetrag;
     $promoCodeDiscountAmount += $rabattBetrag;
@@ -322,6 +415,22 @@ if ($kundenId !== null) {
   $stmt->close();
 }
 
+// Punkte aus separater Tabelle laden
+$verfuegbarePunkte = 0;
+if ($kundenId !== null) {
+  $stmt = $con->prepare("SELECT punktestand FROM punkte WHERE user_id = ? LIMIT 1");
+  $stmt->bind_param('i', $kundenId);
+  $stmt->execute();
+  $result = $stmt->get_result();
+  if ($result->num_rows > 0) {
+    $row = $result->fetch_assoc();
+    $verfuegbarePunkte = (int)$row['punktestand'];
+  }
+  $stmt->close();
+}
+$moeglicheGutscheinMenge = floor($verfuegbarePunkte / 50);
+$moeglicheRabattBetrag = $moeglicheGutscheinMenge * 0.1;
+
 ?>
 
 <!doctype html>
@@ -382,7 +491,11 @@ if ($kundenId !== null) {
                     <li class="list-group-item d-flex justify-content-between bg-success text-white">
                       <div>
                         <h6 class="my-0"><?php echo htmlspecialchars($promo['name']); ?></h6>
-                        <small>Promocode-Rabatt: <?php echo (int)$promo['rabatt']; ?>%</small>
+                        <?php if ($promo['kategorie'] === 'Code'): ?>
+                          <small>Promocode-Rabatt: <?php echo (int)$promo['rabatt']; ?>%</small>
+                        <?php else: ?>
+                          <small>Punkte-Rabatt: <?php echo (int)$promo['menge']; ?> x 0,10 €</small>
+                        <?php endif; ?>
                       </div>
                       <strong>-<?php echo number_format($promo['rabatt_betrag'], 2, ',', '.'); ?> €</strong>
                     </li>
@@ -416,6 +529,29 @@ if ($kundenId !== null) {
               </div>
               <div id="promoMessage" class="mt-2" style="display: none;"></div>
             </form>
+
+            <?php if ($verfuegbarePunkte >= 50): ?>
+              <div class="card p-3 mt-3 bg-warning bg-opacity-10">
+                <h6 class="mb-2">Punkte einlösen</h6>
+                <p class="mb-2 small">
+                  Sie haben <strong><?php echo $verfuegbarePunkte; ?> Punkte</strong><br>
+                  Einlösbar: <strong><?php echo number_format($moeglicheRabattBetrag, 2, ',', '.'); ?> €</strong> Rabatt
+                  <small class="text-muted">(<?php echo $moeglicheGutscheinMenge * 50; ?> Punkte)</small>
+                </p>
+                <form method="POST" id="pointsForm">
+                  <button type="submit" class="btn btn-warning w-100">Alle Punkte einlösen</button>
+                </form>
+                <div id="pointsMessage" class="mt-2" style="display: none;"></div>
+              </div>
+            <?php elseif ($verfuegbarePunkte > 0): ?>
+              <div class="card p-3 mt-3 bg-light">
+                <h6 class="mb-1">Ihre Punkte</h6>
+                <p class="mb-0 small text-muted">
+                  Sie haben <strong><?php echo $verfuegbarePunkte; ?> Punkte</strong><br>
+                  <small>Ab 50 Punkten können Sie diese einlösen (je 50 Punkte = 0,10 € Rabatt)</small>
+                </p>
+              </div>
+            <?php endif; ?>
           </div>
           <div class="col-md-7 col-lg-8">
             <h4 class="mb-3">Rechnungsadresse</h4>
@@ -563,6 +699,57 @@ if ($kundenId !== null) {
               promoMessage.textContent = 'Fehler: ' + error.message;
               promoMessage.className = 'mt-2 text-danger fw-bold';
               promoMessage.style.display = 'block';
+            });
+          });
+        }
+        
+        // Punkte-Formular Handler
+        const pointsForm = document.getElementById('pointsForm');
+        const pointsMessage = document.getElementById('pointsMessage');
+        
+        if (pointsForm) {
+          pointsForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData();
+            formData.append('redeem_points', '1');
+            formData.append('ajax', '1');
+            
+            fetch(window.location.pathname, {
+              method: 'POST',
+              body: formData
+            })
+            .then(response => {
+              if (!response.ok) {
+                return response.text().then(text => {
+                  console.error('Server Error:', text);
+                  throw new Error('Server-Fehler (Status: ' + response.status + ')');
+                });
+              }
+              return response.json();
+            })
+            .then(data => {
+              if (data.success) {
+                pointsMessage.textContent = data.message;
+                pointsMessage.className = 'mt-2 text-success fw-bold';
+                pointsMessage.style.display = 'block';
+                
+                // Seite neu laden wenn reload: true
+                if (data.reload) {
+                  setTimeout(function() {
+                    window.location.reload();
+                  }, 1000);
+                }
+              } else {
+                pointsMessage.textContent = data.message;
+                pointsMessage.className = 'mt-2 text-danger fw-bold';
+                pointsMessage.style.display = 'block';
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              pointsMessage.textContent = 'Fehler: ' + error.message;
+              pointsMessage.className = 'mt-2 text-danger fw-bold';
+              pointsMessage.style.display = 'block';
             });
           });
         }

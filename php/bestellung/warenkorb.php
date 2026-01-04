@@ -111,14 +111,7 @@ function loadCartData(mysqli $con, int $kundenId, string $shippingMethod = 'dhl'
 }
 
 // Session prüfen
-$kundenId = null;
-if (isset($_SESSION['temp_user']['id'])) {
-    $kundenId = (int)$_SESSION['temp_user']['id'];
-} elseif (isset($_SESSION['user']['id'])) {
-    $kundenId = (int)$_SESSION['user']['id'];
-} elseif (isset($_SESSION['user_id'])) {
-    $kundenId = (int)$_SESSION['user_id'];
-}
+$kundenId = isset($_SESSION['user']['id']) ? (int)$_SESSION['user']['id'] : null;
 $isAjax = isset($_POST['ajax']);
 
 // Kein Login
