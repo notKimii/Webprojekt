@@ -22,8 +22,18 @@
                         if (isset($_SESSION['user'])) {
                             $name = $_SESSION['user']['vorname'];
                             $nachname = $_SESSION['user']['nachname'];
+                            $user_id = $_SESSION['user']['id'];
+                            
+                            // Letzte Anmeldung aus logs-Tabelle holen (OFFSET 1 = vorherige Anmeldung)
+                            $stmt = $pdo->prepare("SELECT login_time FROM logs WHERE user_id = ? ORDER BY login_time DESC LIMIT 1 OFFSET 1");
+                            $stmt->execute([$user_id]);
+                            $lastLogin = $stmt->fetch();
+                            
+                            $loginText = $lastLogin ? date('d.m.Y, H:i', strtotime($lastLogin['login_time'])) . ' Uhr' : 'Erste Anmeldung';
+                            
                             echo "<div class='greeting'>
                                     <span class='greeting-text'>Willkommen zurück, $name $nachname!</span>
+                                    <span class='last-login'>Letzte Anmeldung: $loginText</span>
                                   </div>";
                         } else {
                             echo "<div class='greeting'>
