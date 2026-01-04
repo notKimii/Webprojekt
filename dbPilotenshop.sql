@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Erstellungszeit: 02. Jan 2026 um 21:57
+-- Erstellungszeit: 04. Jan 2026 um 16:17
 -- Server-Version: 10.4.28-MariaDB
 -- PHP-Version: 8.2.4
 
@@ -31,8 +31,8 @@ CREATE TABLE `artikel` (
   `id` int(11) NOT NULL,
   `name` varchar(200) NOT NULL,
   `beschreibung` varchar(400) NOT NULL,
+  `preis` decimal(10,2) NOT NULL,
   `groesse` varchar(1) NOT NULL,
-  `preis` int(10) NOT NULL,
   `lagerbestand` int(11) DEFAULT NULL,
   `kategorie` varchar(30) DEFAULT NULL,
   `bewertung` tinyint(1) DEFAULT NULL,
@@ -44,51 +44,52 @@ CREATE TABLE `artikel` (
 -- Daten für Tabelle `artikel`
 --
 
-INSERT INTO `artikel` (`id`, `name`, `beschreibung`, `groesse`, `preis`, `lagerbestand`, `kategorie`, `bewertung`, `anzahl_bewertungen`, `rabatt`) VALUES
-(2, 'NeuJahr2026', 'Gutschein: NeuJahr2026', '', 0, 0, 'Code', NULL, 0, 26),
-(3, 'GutenRutsch', 'Gutschein: GutenRutsch', 'O', 0, 0, 'Code', NULL, 0, 10),
-(1001, 'Bose A30 Aviation Headset', 'Premium ANR-Headset mit hohem Tragekomfort und exzellenter Lärmreduzierung.', 'O', 1299, 25, 'Headsets', 5, 7, NULL),
-(1002, 'Lightspeed Zulu 3 ANR Headset', 'Beliebtes ANR-Headset, bekannt für Komfort, Haltbarkeit und klare Audioqualität.', 'O', 950, 30, 'Headsets', 4, 6, NULL),
-(1003, 'David Clark H10-13.4 Aviation Headset', 'Klassisches, robustes PNR-Headset, ein Standard in der Allgemeinen Luftfahrt.', 'O', 389, 50, 'Headsets', 4, 4, NULL),
-(1004, 'Yaesu FTA-550L Pro-X', 'Luftfahrt-Handfunkgerät mit NAV/COM und GPS-Empfänger.', 'O', 299, 15, 'Headsets', NULL, 0, NULL),
-(1005, 'Sennheiser S1 Digital Aviation Headset', 'ANR-Headset mit adaptiver Lärmkompensation und individuell einstellbarem Anpressdruck.', 'O', 1050, 18, 'Headsets', NULL, 0, NULL),
-(1006, 'Icom IC-A25NE (8.33/25 kHz)', 'Leistungsstarkes Handfunkgerät mit Navigation (VOR, GPS) und Bluetooth.', 'O', 489, 22, 'Headsets', 4, 1, NULL),
-(1007, 'Garmin aera 660 Portable Aviation GPS', 'Tragbares GPS mit Touchscreen, 3D Vision und umfangreichen Navigationsfunktionen.', 'O', 849, 20, 'Navigation', NULL, 0, NULL),
-(1008, 'ICAO Karte Deutschland (Set)', 'Offizielles Kartenset der Deutschen Flugsicherung für VFR-Flüge in Deutschland.', 'O', 25, 150, 'Navigation', NULL, 0, NULL),
-(1009, 'Jeppesen CR-3 Circular Flight Computer', 'Klassischer mechanischer Flugrechner für Flugplanungsberechnungen.', 'O', 36, 70, 'Navigation', 1, 1, NULL),
-(1010, 'ASA KB-3 Tri-Fold Kneeboard', 'Dreifach faltbares Kniebrett mit Klemmbrett, Stifthaltern und Kartentaschen.', 'O', 50, 40, 'Navigation', NULL, 0, NULL),
-(1011, 'Garmin GDL 50 Portable ADS-B Receiver', 'Tragbarer Empfänger für ADS-B Wetter- und Verkehrsdaten, Anzeige auf kompatiblen Geräten.', 'O', 799, 15, 'Navigation', NULL, 0, NULL),
-(1012, 'SkyDemon Lizenz (1 Jahr)', 'Umfassende Flugplanungs- und Navigationssoftware für VFR-Piloten in Europa.', 'O', 149, 0, 'Navigation', NULL, 0, NULL),
-(1013, 'Randolph Engineering Aviator (55mm, Gold)', 'Klassische Piloten-Sonnenbrille, nach US Militärspezifikationen gefertigt.', 'O', 219, 35, 'Pilotenkleidung & Accessoires', NULL, 0, NULL),
-(1014, 'Garmin D2 Mach 1 Aviator Smartwatch', 'Premium GPS-Smartwatch für Piloten mit umfassenden Flug-, Wetter- und Fitnessfunktionen.', 'O', 1199, 10, 'Pilotenkleidung & Accessoires', NULL, 0, NULL),
-(1015, '\"Alpha\" Pilotenhemd, weiß, Kurzarm', 'Pilotenhemd aus pflegeleichtem Baumwollmischung, mit Schulterklappen.', 'O', 40, 100, 'Pilotenkleidung & Accessoires', NULL, 0, NULL),
-(1016, 'Design4Pilots \"Pilot Case Daily\"', 'Kompakter und robuster Pilotentrolley für den täglichen Gebrauch oder kurze Reisen.', 'O', 189, 12, 'Pilotenkleidung & Accessoires', NULL, 0, NULL),
-(1017, 'Ray-Ban Aviator Classic RB3025', 'Die originale Pilotenbrille, ein zeitloser Klassiker mit hervorragendem UV-Schutz.', 'O', 150, 60, 'Pilotenkleidung & Accessoires', NULL, 0, NULL),
-(1018, 'Alpha Industries MA-1 Fliegerjacke', 'Kultige Nylon-Fliegerjacke mit orangem Innenfutter und robuster Verarbeitung.', 'O', 179, 45, 'Pilotenkleidung & Accessoires', NULL, 0, NULL),
-(1019, 'Jeppesen Captain Flight Bag', 'Geräumige Flugtasche mit vielen Fächern für Headsets, Karten und Zubehör.', 'O', 129, 28, 'Flugtaschen & Koffer', NULL, 0, NULL),
-(1020, 'Design4Pilots \"Pilot Weekend\" Tasche', 'Kompakte und stilvolle Tasche für Kurztrips oder als Alltagstasche für Piloten.', 'O', 99, 22, 'Flugtaschen & Koffer', NULL, 0, NULL),
-(1021, 'Brightline Bags B7 Flight \"Echo\" Konfiguration', 'Hochgradig anpassbare, modulare Flugtasche.', 'O', 229, 19, 'Flugtaschen & Koffer', NULL, 0, NULL),
-(1022, 'ASA AirClassics Flight Bag', 'Strapazierfähige und kompakte Tasche für die wichtigsten Pilotenutensilien.', 'O', 80, 33, 'Flugtaschen & Koffer', NULL, 0, NULL),
-(1023, 'Lightspeed \"The Cann\" Flight Bag', 'Elegante Leder-Flugtasche, benannt nach dem berühmten Autor Ernest K. Gann.', 'O', 199, 14, 'Flugtaschen & Koffer', NULL, 0, NULL),
-(1024, 'Aerocoast Pro EFB + Cooler II', 'Speziell für Airline-Piloten entwickelte Tasche mit EFB-Fach und integriertem Kühler.', 'O', 165, 17, 'Flugtaschen & Koffer', NULL, 0, NULL),
-(1025, 'PPL-A Lehrbuch Set (z.B. Oxford Aviation)', 'Umfassendes Lehrbuchset für die EASA PPL(A) Theorie.', 'O', 249, 40, 'Flugbücher & Lernmaterial', NULL, 0, NULL),
-(1026, 'ASA Standard Pilot Logbook (SP-30)', 'Standardisiertes Logbuch zur Erfassung von Flugzeiten und Erfahrungen.', 'O', 13, 200, 'Flugbücher & Lernmaterial', NULL, 0, NULL),
-(1027, '\"Stick and Rudder\" von Wolfgang Langewiesche', 'Ein Klassiker über die Kunst des Fliegens, tiefgründig und zeitlos.', 'O', 23, 35, 'Flugbücher & Lernmaterial', NULL, 0, NULL),
-(1028, 'Aviationexam PPL Fragensammlung (1 Jahr Zugang)', 'Online-Zugang zu einer umfangreichen Datenbank mit EASA PPL Prüfungsfragen.', 'O', 89, 0, 'Flugbücher & Lernmaterial', NULL, 0, NULL),
-(1029, 'Jeppesen ATPL Training Set (E-Books)', 'Kompletter Satz an E-Books für die ATPL(A) Theorie gemäß EASA-Richtlinien.', 'O', 699, 0, 'Flugbücher & Lernmaterial', NULL, 0, NULL),
-(1030, '\"Pilots Weather\" by Brian Cosgrove', 'Detailliertes Buch über Meteorologie speziell für Piloten.', 'O', 35, 25, 'Flugbücher & Lernmaterial', NULL, 0, NULL),
-(1031, '\"Remove Before Flight\" Pitot Cover Universal', 'Schützt das Pitot-Rohr vor Verstopfung durch Insekten oder Schmutz am Boden.', 'O', 10, 300, 'Flugzeugzubehör (GA)', NULL, 0, NULL),
-(1032, 'Flugzeug Radkeile, Gummi (Paar)', 'Robuste Gummikeile zur Sicherung von Leichtflugzeugen am Boden.', 'O', 30, 90, 'Flugzeugzubehör (GA)', NULL, 0, NULL),
-(1033, 'GATS Jar Fuel Tester', 'Transparenter Treibstofftester zur Prüfung auf Wasser und Sedimente im Kraftstoff.', 'O', 19, 120, 'Flugzeugzubehör (GA)', NULL, 0, NULL),
-(1034, 'Aircraft Tie-Down Kit (3x Spanngurte, Seile)', 'Set zur sicheren Verankerung von Flugzeugen im Freien.', 'O', 59, 40, 'Flugzeugzubehör (GA)', NULL, 0, NULL),
-(1035, 'Aero Cosmetics Wash Wax ALL (Konzentrat, 1L)', 'Wasserloses Reinigungs- und Wachsystsem für Flugzeuge, umweltfreundlich.', 'O', 45, 55, 'Flugzeugzubehör (GA)', NULL, 0, NULL),
-(1036, 'Tempest AA472 Oil Filter Cutter', 'Werkzeug zum sauberen Öffnen von Ölfiltern zur Inspektion auf Metallpartikel.', 'O', 89, 12, 'Flugzeugzubehör (GA)', NULL, 0, NULL),
-(1037, 'Crewsaver Crewfit 165N Schwimmweste', 'Automatische Rettungsweste über Wasser, leicht und komfortabel.', 'O', 99, 20, 'Sicherheitsaustrüstung', NULL, 0, NULL),
-(1038, 'ACR ResQLink 400 PLB', 'Kompakte und robuste persönliche Ortungsbake (PLB) für Notfälle.', 'O', 329, 8, 'Sicherheitsaustrüstung', NULL, 0, NULL),
-(1039, 'Lufthansa Erste-Hilfe-Set DIN 13157 erweitert', 'Umfassendes Erste-Hilfe-Set, erweitert mit flugspezifischen Inhalten oder Empfehlungen.', 'O', 45, 38, 'Sicherheitsaustrüstung', NULL, 0, NULL),
-(1040, 'H3R Aviation Halon 1211 Feuerlöscher (A344T)', 'Kompakter Halon 1211 Feuerlöscher, für den Einsatz im Cockpit zugelassen.', 'O', 289, 10, 'Sicherheitsaustrüstung', NULL, 0, NULL),
-(1041, 'SOL Escape Bivvy Bag Orange', 'Isolierender Notfall-Biwacksack, reflektiert 70% der Körperwärme.', 'O', 36, 36, 'Sicherheitsaustrüstung', NULL, 0, NULL),
-(1042, 'Forensics Detectors CO Detector for Aircraft', 'Tragbarer Kohlenmonoxid-Detektor speziell für Flugzeuge, mit Alarm.', 'O', 159, 7, 'Sicherheitsaustrüstung', NULL, 0, NULL);
+INSERT INTO `artikel` (`id`, `name`, `beschreibung`, `preis`, `groesse`, `lagerbestand`, `kategorie`, `bewertung`, `anzahl_bewertungen`, `rabatt`) VALUES
+(1, 'Punkte', 'CockpitCorner Punkte', 0.10, '', 0, 'Punkte', 0, 0, 0),
+(2, 'NeuJahr2026', 'Gutschein: NeuJahr2026', 0.00, '', 0, 'Code', NULL, 0, 26),
+(3, 'GutenRutsch', 'Gutschein: GutenRutsch', 0.00, 'O', 0, 'Code', NULL, 0, 10),
+(1001, 'Bose A30 Aviation Headset', 'Premium ANR-Headset mit hohem Tragekomfort und exzellenter Lärmreduzierung.', 1299.00, 'O', 25, 'Headsets', 5, 7, NULL),
+(1002, 'Lightspeed Zulu 3 ANR Headset', 'Beliebtes ANR-Headset, bekannt für Komfort, Haltbarkeit und klare Audioqualität.', 950.00, 'O', 30, 'Headsets', 4, 6, NULL),
+(1003, 'David Clark H10-13.4 Aviation Headset', 'Klassisches, robustes PNR-Headset, ein Standard in der Allgemeinen Luftfahrt.', 389.00, 'O', 50, 'Headsets', 4, 4, NULL),
+(1004, 'Yaesu FTA-550L Pro-X', 'Luftfahrt-Handfunkgerät mit NAV/COM und GPS-Empfänger.', 299.00, 'O', 15, 'Headsets', NULL, 0, NULL),
+(1005, 'Sennheiser S1 Digital Aviation Headset', 'ANR-Headset mit adaptiver Lärmkompensation und individuell einstellbarem Anpressdruck.', 1050.00, 'O', 18, 'Headsets', NULL, 0, NULL),
+(1006, 'Icom IC-A25NE (8.33/25 kHz)', 'Leistungsstarkes Handfunkgerät mit Navigation (VOR, GPS) und Bluetooth.', 489.00, 'O', 22, 'Headsets', 4, 1, NULL),
+(1007, 'Garmin aera 660 Portable Aviation GPS', 'Tragbares GPS mit Touchscreen, 3D Vision und umfangreichen Navigationsfunktionen.', 849.00, 'O', 20, 'Navigation', NULL, 0, NULL),
+(1008, 'ICAO Karte Deutschland (Set)', 'Offizielles Kartenset der Deutschen Flugsicherung für VFR-Flüge in Deutschland.', 25.00, 'O', 150, 'Navigation', NULL, 0, NULL),
+(1009, 'Jeppesen CR-3 Circular Flight Computer', 'Klassischer mechanischer Flugrechner für Flugplanungsberechnungen.', 36.00, 'O', 70, 'Navigation', 1, 1, NULL),
+(1010, 'ASA KB-3 Tri-Fold Kneeboard', 'Dreifach faltbares Kniebrett mit Klemmbrett, Stifthaltern und Kartentaschen.', 50.00, 'O', 40, 'Navigation', NULL, 0, NULL),
+(1011, 'Garmin GDL 50 Portable ADS-B Receiver', 'Tragbarer Empfänger für ADS-B Wetter- und Verkehrsdaten, Anzeige auf kompatiblen Geräten.', 799.00, 'O', 15, 'Navigation', NULL, 0, NULL),
+(1012, 'SkyDemon Lizenz (1 Jahr)', 'Umfassende Flugplanungs- und Navigationssoftware für VFR-Piloten in Europa.', 149.00, 'O', 0, 'Navigation', NULL, 0, NULL),
+(1013, 'Randolph Engineering Aviator (55mm, Gold)', 'Klassische Piloten-Sonnenbrille, nach US Militärspezifikationen gefertigt.', 219.00, 'O', 35, 'Pilotenkleidung & Accessoires', NULL, 0, NULL),
+(1014, 'Garmin D2 Mach 1 Aviator Smartwatch', 'Premium GPS-Smartwatch für Piloten mit umfassenden Flug-, Wetter- und Fitnessfunktionen.', 1199.00, 'O', 10, 'Pilotenkleidung & Accessoires', NULL, 0, NULL),
+(1015, '\"Alpha\" Pilotenhemd, weiß, Kurzarm', 'Pilotenhemd aus pflegeleichtem Baumwollmischung, mit Schulterklappen.', 40.00, 'O', 100, 'Pilotenkleidung & Accessoires', NULL, 0, NULL),
+(1016, 'Design4Pilots \"Pilot Case Daily\"', 'Kompakter und robuster Pilotentrolley für den täglichen Gebrauch oder kurze Reisen.', 189.00, 'O', 12, 'Pilotenkleidung & Accessoires', NULL, 0, NULL),
+(1017, 'Ray-Ban Aviator Classic RB3025', 'Die originale Pilotenbrille, ein zeitloser Klassiker mit hervorragendem UV-Schutz.', 150.00, 'O', 60, 'Pilotenkleidung & Accessoires', NULL, 0, NULL),
+(1018, 'Alpha Industries MA-1 Fliegerjacke', 'Kultige Nylon-Fliegerjacke mit orangem Innenfutter und robuster Verarbeitung.', 179.00, 'O', 45, 'Pilotenkleidung & Accessoires', NULL, 0, NULL),
+(1019, 'Jeppesen Captain Flight Bag', 'Geräumige Flugtasche mit vielen Fächern für Headsets, Karten und Zubehör.', 129.00, 'O', 28, 'Flugtaschen & Koffer', NULL, 0, NULL),
+(1020, 'Design4Pilots \"Pilot Weekend\" Tasche', 'Kompakte und stilvolle Tasche für Kurztrips oder als Alltagstasche für Piloten.', 99.00, 'O', 22, 'Flugtaschen & Koffer', NULL, 0, NULL),
+(1021, 'Brightline Bags B7 Flight \"Echo\" Konfiguration', 'Hochgradig anpassbare, modulare Flugtasche.', 229.00, 'O', 19, 'Flugtaschen & Koffer', NULL, 0, NULL),
+(1022, 'ASA AirClassics Flight Bag', 'Strapazierfähige und kompakte Tasche für die wichtigsten Pilotenutensilien.', 80.00, 'O', 33, 'Flugtaschen & Koffer', NULL, 0, NULL),
+(1023, 'Lightspeed \"The Cann\" Flight Bag', 'Elegante Leder-Flugtasche, benannt nach dem berühmten Autor Ernest K. Gann.', 199.00, 'O', 14, 'Flugtaschen & Koffer', NULL, 0, NULL),
+(1024, 'Aerocoast Pro EFB + Cooler II', 'Speziell für Airline-Piloten entwickelte Tasche mit EFB-Fach und integriertem Kühler.', 165.00, 'O', 17, 'Flugtaschen & Koffer', NULL, 0, NULL),
+(1025, 'PPL-A Lehrbuch Set (z.B. Oxford Aviation)', 'Umfassendes Lehrbuchset für die EASA PPL(A) Theorie.', 249.00, 'O', 40, 'Flugbücher & Lernmaterial', NULL, 0, NULL),
+(1026, 'ASA Standard Pilot Logbook (SP-30)', 'Standardisiertes Logbuch zur Erfassung von Flugzeiten und Erfahrungen.', 13.00, 'O', 200, 'Flugbücher & Lernmaterial', NULL, 0, NULL),
+(1027, '\"Stick and Rudder\" von Wolfgang Langewiesche', 'Ein Klassiker über die Kunst des Fliegens, tiefgründig und zeitlos.', 23.00, 'O', 35, 'Flugbücher & Lernmaterial', NULL, 0, NULL),
+(1028, 'Aviationexam PPL Fragensammlung (1 Jahr Zugang)', 'Online-Zugang zu einer umfangreichen Datenbank mit EASA PPL Prüfungsfragen.', 89.00, 'O', 0, 'Flugbücher & Lernmaterial', NULL, 0, NULL),
+(1029, 'Jeppesen ATPL Training Set (E-Books)', 'Kompletter Satz an E-Books für die ATPL(A) Theorie gemäß EASA-Richtlinien.', 699.00, 'O', 0, 'Flugbücher & Lernmaterial', NULL, 0, NULL),
+(1030, '\"Pilots Weather\" by Brian Cosgrove', 'Detailliertes Buch über Meteorologie speziell für Piloten.', 35.00, 'O', 25, 'Flugbücher & Lernmaterial', NULL, 0, NULL),
+(1031, '\"Remove Before Flight\" Pitot Cover Universal', 'Schützt das Pitot-Rohr vor Verstopfung durch Insekten oder Schmutz am Boden.', 10.00, 'O', 300, 'Flugzeugzubehör (GA)', NULL, 0, NULL),
+(1032, 'Flugzeug Radkeile, Gummi (Paar)', 'Robuste Gummikeile zur Sicherung von Leichtflugzeugen am Boden.', 30.00, 'O', 90, 'Flugzeugzubehör (GA)', NULL, 0, NULL),
+(1033, 'GATS Jar Fuel Tester', 'Transparenter Treibstofftester zur Prüfung auf Wasser und Sedimente im Kraftstoff.', 19.00, 'O', 120, 'Flugzeugzubehör (GA)', NULL, 0, NULL),
+(1034, 'Aircraft Tie-Down Kit (3x Spanngurte, Seile)', 'Set zur sicheren Verankerung von Flugzeugen im Freien.', 59.00, 'O', 40, 'Flugzeugzubehör (GA)', NULL, 0, NULL),
+(1035, 'Aero Cosmetics Wash Wax ALL (Konzentrat, 1L)', 'Wasserloses Reinigungs- und Wachsystsem für Flugzeuge, umweltfreundlich.', 45.00, 'O', 55, 'Flugzeugzubehör (GA)', NULL, 0, NULL),
+(1036, 'Tempest AA472 Oil Filter Cutter', 'Werkzeug zum sauberen Öffnen von Ölfiltern zur Inspektion auf Metallpartikel.', 89.00, 'O', 12, 'Flugzeugzubehör (GA)', NULL, 0, NULL),
+(1037, 'Crewsaver Crewfit 165N Schwimmweste', 'Automatische Rettungsweste über Wasser, leicht und komfortabel.', 99.00, 'O', 20, 'Sicherheitsaustrüstung', NULL, 0, NULL),
+(1038, 'ACR ResQLink 400 PLB', 'Kompakte und robuste persönliche Ortungsbake (PLB) für Notfälle.', 329.00, 'O', 8, 'Sicherheitsaustrüstung', NULL, 0, NULL),
+(1039, 'Lufthansa Erste-Hilfe-Set DIN 13157 erweitert', 'Umfassendes Erste-Hilfe-Set, erweitert mit flugspezifischen Inhalten oder Empfehlungen.', 45.00, 'O', 38, 'Sicherheitsaustrüstung', NULL, 0, NULL),
+(1040, 'H3R Aviation Halon 1211 Feuerlöscher (A344T)', 'Kompakter Halon 1211 Feuerlöscher, für den Einsatz im Cockpit zugelassen.', 289.00, 'O', 10, 'Sicherheitsaustrüstung', NULL, 0, NULL),
+(1041, 'SOL Escape Bivvy Bag Orange', 'Isolierender Notfall-Biwacksack, reflektiert 70% der Körperwärme.', 36.00, 'O', 36, 'Sicherheitsaustrüstung', NULL, 0, NULL),
+(1042, 'Forensics Detectors CO Detector for Aircraft', 'Tragbarer Kohlenmonoxid-Detektor speziell für Flugzeuge, mit Alarm.', 159.00, 'O', 7, 'Sicherheitsaustrüstung', NULL, 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -120,7 +121,9 @@ INSERT INTO `bestellkopf` (`id`, `user_id`, `bestelldatum`, `gesamtbetrag`, `sta
 (9, 66, '2026-01-02 21:39:01', 22.20, 'bezahlt'),
 (10, 66, '2026-01-02 21:44:24', 1299.00, 'bezahlt'),
 (11, 66, '2026-01-02 21:44:28', 0.00, 'bezahlt'),
-(12, 66, '2026-01-02 21:45:23', 25.00, 'bezahlt');
+(12, 66, '2026-01-02 21:45:23', 25.00, 'bezahlt'),
+(13, 66, '2026-01-04 16:07:37', 9.40, 'bezahlt'),
+(14, 66, '2026-01-04 16:07:40', 0.00, 'bezahlt');
 
 --
 -- Trigger `bestellkopf`
@@ -166,7 +169,8 @@ INSERT INTO `bestellposition` (`id`, `bestellung_id`, `artikel_id`, `menge`, `ei
 (12, 8, 1032, 1, 30.00),
 (13, 9, 1032, 1, 30.00),
 (14, 10, 1001, 1, 1299.00),
-(15, 12, 1008, 1, 25.00);
+(15, 12, 1008, 1, 25.00),
+(16, 13, 1026, 1, 13.00);
 
 --
 -- Trigger `bestellposition`
@@ -297,10 +301,6 @@ INSERT INTO `gutscheincodes` (`gutscheinCode`, `erstelltAm`, `aktiv`, `wert`, `a
 DELIMITER $$
 CREATE TRIGGER `GutscheinCodes als Artikel` AFTER INSERT ON `gutscheincodes` FOR EACH ROW BEGIN
     DECLARE next_id INT DEFAULT NULL;
-
-    IF NOT EXISTS (SELECT 1 FROM artikel WHERE id = 1) THEN
-        SET next_id = 1;
-    ELSE
         SELECT MIN(a1.id + 1) INTO next_id
         FROM artikel a1
         WHERE a1.id < 1000
@@ -308,9 +308,7 @@ CREATE TRIGGER `GutscheinCodes als Artikel` AFTER INSERT ON `gutscheincodes` FOR
             SELECT 1 FROM artikel a2 
             WHERE a2.id = a1.id + 1 AND a2.id < 1000
         );
-    END IF;
-    
-    -- Prüfen ob ID gefunden und unter 1000
+   
     IF next_id IS NULL OR next_id >= 1000 THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Keine freie ID unter 1000 verfügbar für Gutscheincode';
@@ -359,7 +357,9 @@ INSERT INTO `logs` (`id`, `user_id`, `login_time`, `screen_resolution`, `operati
 (34, 65, '2025-12-28 05:42:20', '1920x1080', 'Win32'),
 (35, 66, '2025-12-30 18:23:03', '1440x932', 'MacIntel'),
 (36, 66, '2025-12-31 12:27:10', '1440x932', 'MacIntel'),
-(37, 66, '2026-01-02 21:55:25', '1440x932', 'MacIntel');
+(37, 66, '2026-01-02 21:55:25', '1440x932', 'MacIntel'),
+(38, 66, '2026-01-04 11:47:13', '1440x932', 'MacIntel'),
+(39, 66, '2026-01-04 12:31:34', '1440x932', 'MacIntel');
 
 --
 -- Trigger `logs`
@@ -402,7 +402,7 @@ INSERT INTO `punkte` (`user_id`, `punktestand`) VALUES
 (60, 100),
 (64, 114),
 (65, 110),
-(66, 106);
+(66, 5);
 
 --
 -- Trigger `punkte`
@@ -445,7 +445,12 @@ INSERT INTO `punktelog` (`transaktions_id`, `user_id`, `datum`, `art`, `punkte_a
 (2, 66, '2025-12-30 18:15:19', NULL, 0, 100, NULL),
 (3, 66, '2025-12-30 18:23:03', 'Automatisch', 2, 102, 'Änderung am Punktestand'),
 (4, 66, '2025-12-31 12:27:10', 'Automatisch', 2, 104, 'Änderung am Punktestand'),
-(5, 66, '2026-01-02 21:55:25', 'Automatisch', 2, 106, 'Änderung am Punktestand');
+(5, 66, '2026-01-02 21:55:25', 'Automatisch', 2, 106, 'Änderung am Punktestand'),
+(6, 66, '2026-01-04 11:47:13', 'Automatisch', 2, 108, 'Änderung am Punktestand'),
+(7, 66, '2026-01-04 12:31:34', 'Automatisch', 2, 110, 'Änderung am Punktestand'),
+(8, 66, '2026-01-04 12:40:19', 'Automatisch', -100, 10, 'Änderung am Punktestand'),
+(9, 66, '2026-01-04 12:57:15', 'Automatisch', 145, 155, 'Änderung am Punktestand'),
+(10, 66, '2026-01-04 16:07:37', 'Automatisch', -150, 5, 'Änderung am Punktestand');
 
 -- --------------------------------------------------------
 
@@ -477,7 +482,9 @@ INSERT INTO `rechnungskopf` (`id`, `bestellID`, `rechnungsdatum`, `betrag`, `ver
 (20, 9, '2026-01-02 21:39:01', 22.20, 1),
 (21, 10, '2026-01-02 21:44:24', 1299.00, 1),
 (22, 11, '2026-01-02 21:44:28', 0.00, 1),
-(23, 12, '2026-01-02 21:45:23', 25.00, 1);
+(23, 12, '2026-01-02 21:45:23', 25.00, 1),
+(24, 13, '2026-01-04 16:07:37', 9.40, 1),
+(25, 14, '2026-01-04 16:07:40', 0.00, 1);
 
 -- --------------------------------------------------------
 
@@ -511,7 +518,8 @@ INSERT INTO `rechnungsposition` (`rechnungsID`, `artikel_id`, `artikel_name`, `m
 (19, 1032, 'Flugzeug Radkeile, Gummi (Paar)', 1, 30.00, 19.00),
 (20, 1032, 'Flugzeug Radkeile, Gummi (Paar)', 1, 30.00, 19.00),
 (21, 1001, 'Bose A30 Aviation Headset', 1, 1299.00, 19.00),
-(23, 1008, 'ICAO Karte Deutschland (Set)', 1, 25.00, 19.00);
+(23, 1008, 'ICAO Karte Deutschland (Set)', 1, 25.00, 19.00),
+(24, 1026, 'ASA Standard Pilot Logbook (SP-30)', 1, 13.00, 19.00);
 
 -- --------------------------------------------------------
 
@@ -551,7 +559,7 @@ INSERT INTO `user` (`id`, `vorname`, `nachname`, `mail`, `adresse`, `plz`, `ort`
 (60, 'Laura', 'Hoffmann', 'laura.h@student.de', 'Uniplatz 1', 69117, 'Heidelberg', '8c405ae1daf2575440a037284f934421', NULL, b'0'),
 (64, 'Fabian', 'tittl', 'Andre.Reiff@Student.Reutlingen-University.DE', 'Moltkestraße 32', 72805, 'Lichtenstein', '47d658a097d490e0d26650c77ff4bf755fa8a3d86acc5df95b3844f4b3c9cb80b20ac1fe7e5b67564d4c15798a1b9b4c5bcfd2f7b5a6eeeb585381c95221fc1c', 'WOHLEZEIY7EBKYHJ', b'1'),
 (65, 'Andre', 'Reiff', 'andre.reiff@online.de', 'Moltkestraße 32', 72805, 'Lichtenstein', '47d658a097d490e0d26650c77ff4bf755fa8a3d86acc5df95b3844f4b3c9cb80b20ac1fe7e5b67564d4c15798a1b9b4c5bcfd2f7b5a6eeeb585381c95221fc1c', 'CTO6DGUKUT44GWV5', b'1'),
-(66, 'Kimi', 'Kimi', 'esrr1979@hotmail.com', 'Straße der Einheit 43', 80983, 'Niederschwalben', '588d191ff5118b793a93bfe317ed53f77490923747c07eeb9924a7c1168f0cddc4289803d47abb44f1b57f14fc47cab399c61351dbdd932db9feddb6aedfa0ce', 'V7XSGPSBLERGODIY', b'1');
+(66, 'Kimi', 'Kimi', 'esrr1979@hotmail.com', 'Straße der Einheit 45', 80983, 'Niederschwalben', '588d191ff5118b793a93bfe317ed53f77490923747c07eeb9924a7c1168f0cddc4289803d47abb44f1b57f14fc47cab399c61351dbdd932db9feddb6aedfa0ce', 'V7XSGPSBLERGODIY', b'1');
 
 --
 -- Trigger `user`
@@ -606,8 +614,7 @@ CREATE TABLE `warenkorbposition` (
 --
 
 INSERT INTO `warenkorbposition` (`warenkorb_id`, `artikel_id`, `menge`) VALUES
-(1, 1001, 2),
-(2, 1026, 1);
+(1, 1001, 2);
 
 --
 -- Indizes der exportierten Tabellen
@@ -712,31 +719,31 @@ ALTER TABLE `artikel`
 -- AUTO_INCREMENT für Tabelle `bestellkopf`
 --
 ALTER TABLE `bestellkopf`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT für Tabelle `bestellposition`
 --
 ALTER TABLE `bestellposition`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT für Tabelle `logs`
 --
 ALTER TABLE `logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT für Tabelle `punktelog`
 --
 ALTER TABLE `punktelog`
-  MODIFY `transaktions_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `transaktions_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT für Tabelle `rechnungskopf`
 --
 ALTER TABLE `rechnungskopf`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT für Tabelle `user`
