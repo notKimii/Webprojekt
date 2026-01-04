@@ -1446,3 +1446,12 @@ footer::before {
 .mt-2 { margin-top: calc(var(--spacing-unit) * 2); }
 .mb-1 { margin-bottom: var(--spacing-unit); }
 .mb-2 { margin-bottom: calc(var(--spacing-unit) * 2); }
+
+
+.greeting .last-login {
+    display: block;
+    font-size: 0.85rem;
+    opacity: 0.8;
+    margin-top: 0.25rem;
+    color: #ffffff;
+}
