@@ -69,7 +69,7 @@
 
         // QR-Code anzeigen
         echo "<div class='qr-img'>";
-        echo "<img src='https://api.qrserver.com/v1/create-qr-code/?data=" . urlencode("otpauth://totp/CockpitCorner:$username?secret=$secret") . "&size=200x200&ecc=M' alt='QR Code'>";
+        echo "<img src='https://api.qrserver.com/v1/create-qr-code/?data=" . urlencode("otpauth://totp/CockpitCorner:$mail?secret=$secret") . "&size=200x200&ecc=M' alt='QR Code'>";
         echo "</div>";
         ?>
 
