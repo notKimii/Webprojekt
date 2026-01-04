@@ -449,11 +449,22 @@ unset($_SESSION['profile_success'], $_SESSION['profile_errors']);
 
         .order-item-row {
             display: grid;
-            grid-template-columns: 1fr auto auto;
+            grid-template-columns: 60px 1fr auto auto; 
             gap: calc(var(--spacing-unit));
             padding: calc(var(--spacing-unit) * 0.75) 0;
             border-bottom: 1px solid var(--light-color);
             align-items: center;
+        }
+
+        
+        .product-thumb {
+            width: 50px;
+            height: 50px;
+            object-fit: contain; 
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-color);
+            background-color: white;
+            padding: 2px;
         }
 
         .order-item-row:last-child {
@@ -815,16 +826,35 @@ unset($_SESSION['profile_success'], $_SESSION['profile_errors']);
                                     <div class="order-items">
                                         <?php foreach ($bestellPositionen[$bestellung['id']] as $position): ?>
                                             <div class="order-item-row">
-                                                <div class="order-item-name">
-                                                    <?php echo htmlspecialchars($position['name']); ?>
-                                                </div>
-                                                <div class="order-item-qty">
-                                                    Menge: <strong><?php echo $position['menge']; ?></strong>
-                                                </div>
-                                                <div class="order-item-price">
-                                                    <?php echo number_format($position['menge'] * $position['einzelpreis'], 2, ',', '.'); ?> €
-                                                </div>
-                                            </div>
+                                        <div class="order-item-image">
+                                        <?php 
+                                            $artikelID = $position['artikel_id'];
+                                            
+                                            $suchMuster = '../images/pictures/productids/' . $artikelID . '/*';
+                                            
+                                            $gefundeneBilder = glob($suchMuster);
+                                            
+                                            if ($gefundeneBilder && count($gefundeneBilder) > 0) {
+                                                $bildPfad = $gefundeneBilder[0];
+                                                
+                                                echo '<img src="' . htmlspecialchars($bildPfad) . '" alt="' . htmlspecialchars($position['name']) . '" class="product-thumb">';
+                                            } else {
+                                                echo '<div class="product-thumb" style="display:flex;align-items:center;justify-content:center;background:#f1f5f9;color:#94a3b8;font-size:20px;">📷</div>';
+                                            }
+                                        ?>
+                                    </div>
+                                        <div class="order-item-name">
+                                            <?php echo htmlspecialchars($position['name']); ?>
+                                        </div>
+                                        
+                                        <div class="order-item-qty">
+                                            Menge: <strong><?php echo $position['menge']; ?></strong>
+                                        </div>
+                                        
+                                        <div class="order-item-price">
+                                            <?php echo number_format($position['menge'] * $position['einzelpreis'], 2, ',', '.'); ?> €
+                                        </div>
+                                    </div>
                                         <?php endforeach; ?>
                                     </div>
                                 <?php endif; ?>
