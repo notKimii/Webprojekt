@@ -39,29 +39,53 @@ $versandart = isset($versandarten[$versandartId]) ? $versandarten[$versandartId]
 $versandkosten = $versandart['kosten'];
 $versandname = $versandart['name'];
 
-// Rechnungspositionen laden
+// Rechnungspositionen laden mit Kategorie
 $stmt2 = $con->prepare("
-    SELECT * FROM rechnungsposition 
-    WHERE rechnungsID = ?
-    ORDER BY artikel_id
+    SELECT rp.*, a.kategorie 
+    FROM rechnungsposition rp
+    LEFT JOIN artikel a ON rp.artikel_id = a.id
+    WHERE rp.rechnungsID = ?
+    ORDER BY rp.artikel_id
 ");
 $stmt2->bind_param('i', $rechnungId);
 $stmt2->execute();
-$positionen = $stmt2->get_result()->fetch_all(MYSQLI_ASSOC);
+$allPositionen = $stmt2->get_result()->fetch_all(MYSQLI_ASSOC);
 $stmt2->close();
+
+// Trennen: Normale Artikel vs. Rabatt-Artikel
+$positionen = [];
+$rabattPositionen = [];
+
+foreach ($allPositionen as $pos) {
+    $pos['gesamt'] = $pos['menge'] * $pos['preis'];
+    $kategorie = $pos['kategorie'] ?? '';
+    
+    if ($kategorie === 'Code' || $kategorie === 'Punkte') {
+        $rabattPositionen[] = $pos;
+    } else {
+        $positionen[] = $pos;
+    }
+}
 
 // Beträge berechnen
 // WICHTIG: Artikelpreise enthalten bereits MwSt (brutto)
 $bruttoArtikel = 0;
-foreach ($positionen as &$pos) {
-    $pos['gesamt'] = $pos['menge'] * $pos['preis']; // Brutto-Gesamtpreis
+foreach ($positionen as $pos) {
     $bruttoArtikel += $pos['gesamt'];
 }
-unset($pos); // Referenz aufheben! Wichtig für die nächste foreach-Schleife
 
-// Artikel: Brutto -> Netto
-$nettoArtikel = $bruttoArtikel / 1.19;
-$mwstArtikel = $bruttoArtikel - $nettoArtikel;
+// Rabatte berechnen (sind bereits negativ und enthalten MwSt)
+$gesamtRabatt = 0;
+foreach ($rabattPositionen as $rabatt) {
+    $gesamtRabatt += $rabatt['gesamt']; // Rabatte sind bereits negativ
+}
+
+// Brutto-Summe aller Artikel inkl. Rabatte
+$bruttoArtikelMitRabatt = $bruttoArtikel + $gesamtRabatt;
+
+// Artikel: Brutto -> Netto (inkl. Rabatte)
+$nettoArtikel = $bruttoArtikelMitRabatt / 1.19;
+$mwstArtikel = $bruttoArtikelMitRabatt - $nettoArtikel;
 
 // Versandkosten enthalten bereits MwSt (brutto)
 $versandNettoAnteil = $versandkosten / 1.19;
@@ -70,7 +94,7 @@ $versandMwstAnteil = $versandkosten - $versandNettoAnteil;
 // Gesamt
 $gesamtNetto = $nettoArtikel + $versandNettoAnteil;
 $gesamtMwst = $mwstArtikel + $versandMwstAnteil;
-$gesamtBrutto = $bruttoArtikel + $versandkosten;
+$gesamtBrutto = $bruttoArtikelMitRabatt + $versandkosten;
 
 // Für Anzeige
 $subtotalNetto = $nettoArtikel;
@@ -181,6 +205,10 @@ $brutto = $gesamtBrutto;
             font-size: 10pt;
             background: #f0f0f0;
         }
+        .discount-row td {
+            color: #856404;
+            font-weight: bold;
+        }
         .footer {
             clear: both;
             margin-top: 40px;
@@ -271,6 +299,21 @@ $brutto = $gesamtBrutto;
                 <td class="number"><?php echo number_format($pos['gesamt'], 2, ',', '.'); ?> €</td>
             </tr>
             <?php endforeach; ?>
+            
+            <?php if (!empty($rabattPositionen)): ?>
+            <?php foreach ($rabattPositionen as $rabatt): ?>
+            <tr class="discount-row">
+                <td></td>
+                <td>-</td>
+                <td><strong>Promo: <?php echo htmlspecialchars($rabatt['artikel_name']); ?></strong></td>
+                <td class="number"><?php echo $rabatt['menge']; ?></td>
+                <td class="number">-</td>
+                <td class="number">-</td>
+                <td class="number"><?php echo number_format($rabatt['gesamt'], 2, ',', '.'); ?> €</td>
+            </tr>
+            <?php endforeach; ?>
+            <?php endif; ?>
+            
             <tr>
                 <td colspan="6" style="text-align: right; font-weight: bold;">Versand (<?php echo htmlspecialchars($versandname); ?>):</td>
                 <td class="number"><?php echo number_format($versandkosten, 2, ',', '.'); ?> € (brutto)</td>

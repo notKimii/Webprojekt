@@ -195,18 +195,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['firstName']) && !isse
         $warenkorbRow = $result->fetch_assoc();
         $warenkorbId = (int)$warenkorbRow['id'];
         
-        // Warenkorbdaten laden für Gesamtbetrag
-        $cartData = loadCartData($con, $kundenId);
+        // Warenkorbdaten laden für Gesamtbetrag und Versandart aus POST holen
+        $versandMethode = isset($_POST['shipping_method']) ? $_POST['shipping_method'] : 'dhl';
+        $cartData = loadCartData($con, $kundenId, $versandMethode);
         $gesamtbetrag = $cartData['total'];
         
-        // 1. Bestellkopf erstellen
-        $stmt2 = $con->prepare("INSERT INTO bestellkopf (user_id, bestelldatum, gesamtbetrag, status) VALUES (?, NOW(), ?, 'bezahlt')");
-        $stmt2->bind_param('id', $kundenId, $gesamtbetrag);
+        // Versandart ID ermitteln (1=LPD, 2=DHL, 3=DHL Express)
+        $versandartMapping = ['lpd' => 1, 'dhl' => 2, 'dhl-express' => 3];
+        $versandartId = isset($versandartMapping[$versandMethode]) ? $versandartMapping[$versandMethode] : 2;
+        
+        // Spalte versandart zu bestellkopf hinzufügen falls nicht vorhanden
+        $con->query("ALTER TABLE bestellkopf ADD COLUMN IF NOT EXISTS versandart INT(1) DEFAULT 2");
+        
+        // 1. Bestellkopf erstellen mit Versandart
+        $stmt2 = $con->prepare("INSERT INTO bestellkopf (user_id, bestelldatum, gesamtbetrag, status, versandart) VALUES (?, NOW(), ?, 'bezahlt', ?)");
+        $stmt2->bind_param('idi', $kundenId, $gesamtbetrag, $versandartId);
         $stmt2->execute();
         $bestellungId = $con->insert_id;
         $stmt2->close();
         
-        // 2. Warenkorbpositionen in Bestellpositionen kopieren (ohne Code-Artikel)
+        // 2. Warenkorbpositionen in Bestellpositionen kopieren
+        // 2a. Normale Artikel (ohne Code/Punkte)
         $stmt3 = $con->prepare("
           INSERT INTO bestellposition (bestellung_id, artikel_id, menge, einzelpreis)
           SELECT ?, wp.artikel_id, wp.menge, a.preis
@@ -218,7 +227,78 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['firstName']) && !isse
         $stmt3->execute();
         $stmt3->close();
         
-        // 2b. Punkte abziehen für Punkte-Artikel im Warenkorb
+        // 2b. Rabatt-Artikel (Code & Punkte) mit berechnetem negativen Preis
+        // Zuerst Subtotal der normalen Artikel berechnen
+        $stmtSubtotal = $con->prepare("
+          SELECT SUM(wp.menge * a.preis) as subtotal
+          FROM warenkorbposition wp
+          JOIN artikel a ON wp.artikel_id = a.id
+          WHERE wp.warenkorb_id = ? AND a.kategorie != 'Code' AND a.kategorie != 'Punkte'
+        ");
+        $stmtSubtotal->bind_param('i', $warenkorbId);
+        $stmtSubtotal->execute();
+        $resSubtotal = $stmtSubtotal->get_result();
+        $subtotalArtikel = 0;
+        if ($resSubtotal->num_rows > 0) {
+          $rowSubtotal = $resSubtotal->fetch_assoc();
+          $subtotalArtikel = (float)$rowSubtotal['subtotal'];
+        }
+        $stmtSubtotal->close();
+        
+        // Promocodes: Rabatt in Prozent -> Negativer Betrag berechnen
+        $stmtPromo = $con->prepare("
+          SELECT wp.artikel_id, wp.menge, a.name, a.rabatt, a.preis
+          FROM warenkorbposition wp
+          JOIN artikel a ON wp.artikel_id = a.id
+          WHERE wp.warenkorb_id = ? AND a.kategorie = 'Code'
+        ");
+        $stmtPromo->bind_param('i', $warenkorbId);
+        $stmtPromo->execute();
+        $resPromo = $stmtPromo->get_result();
+        
+        while ($rowPromo = $resPromo->fetch_assoc()) {
+          $rabattProzent = (int)$rowPromo['rabatt'];
+          $rabattBetrag = $subtotalArtikel * ($rabattProzent / 100);
+          $negativerPreis = -$rabattBetrag; // Negativer Einzelpreis
+          
+          $stmtInsertPromo = $con->prepare("
+            INSERT INTO bestellposition (bestellung_id, artikel_id, menge, einzelpreis)
+            VALUES (?, ?, 1, ?)
+          ");
+          $stmtInsertPromo->bind_param('iid', $bestellungId, $rowPromo['artikel_id'], $negativerPreis);
+          $stmtInsertPromo->execute();
+          $stmtInsertPromo->close();
+          
+          // Subtotal für nächsten Promocode aktualisieren
+          $subtotalArtikel -= $rabattBetrag;
+        }
+        $stmtPromo->close();
+        
+        // Punkte-Artikel: Preis ist bereits negativ (0.10 € pro Punkt)
+        $stmtPunkteArtikel = $con->prepare("
+          SELECT wp.artikel_id, wp.menge, a.preis
+          FROM warenkorbposition wp
+          JOIN artikel a ON wp.artikel_id = a.id
+          WHERE wp.warenkorb_id = ? AND a.kategorie = 'Punkte'
+        ");
+        $stmtPunkteArtikel->bind_param('i', $warenkorbId);
+        $stmtPunkteArtikel->execute();
+        $resPunkteArtikel = $stmtPunkteArtikel->get_result();
+        
+        while ($rowPunkteArtikel = $resPunkteArtikel->fetch_assoc()) {
+          $negativerPreis = -((float)$rowPunkteArtikel['preis']); // Negativ machen
+          
+          $stmtInsertPunkte = $con->prepare("
+            INSERT INTO bestellposition (bestellung_id, artikel_id, menge, einzelpreis)
+            VALUES (?, ?, ?, ?)
+          ");
+          $stmtInsertPunkte->bind_param('iiid', $bestellungId, $rowPunkteArtikel['artikel_id'], $rowPunkteArtikel['menge'], $negativerPreis);
+          $stmtInsertPunkte->execute();
+          $stmtInsertPunkte->close();
+        }
+        $stmtPunkteArtikel->close();
+        
+        // 2c. Punkte abziehen für Punkte-Artikel im Warenkorb
         $stmtPunkte = $con->prepare("
           SELECT SUM(wp.menge * 50) as verwendete_punkte
           FROM warenkorbposition wp
@@ -625,6 +705,7 @@ $moeglicheRabattBetrag = $moeglicheGutscheinMenge * 0.1;
 
               <hr class="my-4">
 
+              <input type="hidden" name="shipping_method" value="<?php echo htmlspecialchars($shippingMethod); ?>">
               <button class="w-100 btn btn-primary btn-lg" type="submit">Bestellung abschließen</button>
             </form>
           </div>
