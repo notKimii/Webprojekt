@@ -10,7 +10,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Cockpit Corner Passwort</title>
 
-    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
         integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 
@@ -32,7 +31,6 @@
         button{
             border-radius: 5px !important;
         }
-        
     </style>
 </head>
 
@@ -46,50 +44,51 @@
             </button>
         </div>
     <?php endif; ?>
+
     <header class="w-100 text-center bg-light py-2">
         <nav>
             <a href="/Webprojekt/index.php"><img src="../favicon.ico" alt="Logo" style="width: 100px;"></a>
         </nav>
     </header>
-    <?php
-    if (isset($_GET['error']) && $_GET['error'] == 1) {
-        echo "<p class='text-center' style='color: red'>Das Passwort muss mindestens 9 Zeichen lang sein und mindestens einen Großbuchstaben, einen Kleinbuchstaben und eine Zahl enthalten.</p>";
-    }
-    ?>
+
+    <div class="container mt-3">
+        <?php
+        if (isset($_GET['error'])) {
+            if ($_GET['error'] == 1) {
+                echo "<div class='alert alert-danger text-center'>Das Passwort muss mindestens 9 Zeichen lang sein und mindestens einen Großbuchstaben, einen Kleinbuchstaben und eine Zahl enthalten.</div>";
+            } elseif ($_GET['error'] == 'wrong_old_pw') {
+                echo "<div class='alert alert-danger text-center'>Das eingegebene <strong>alte Passwort</strong> ist leider nicht korrekt.</div>";
+            }
+        }
+        ?>
+    </div>
+
     <main class="flex-fill d-flex justify-content-center align-items-center">
         <div class="register-box">
             <form action="passwortsubmit.php" method="POST" class="needs-validation" novalidate>
-                <!-- CSRF -->
                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
 
                 <h2 class="text-center mb-4">Passwort ändern</h2>
 
                 <div class="form-group">
                     <label for="passwordold">Altes Passwort</label>
-                    <input type="passwordold" class="form-control" id="passwordold" name="passwordold" minlength="9" required>
-                    <div class="valid-feedback">Korrekt</div>
-                    <div class="invalid-feedback">Bitte gib ein Passwort mit mindestens 9 Zeichen ein.</div>
+                    <input type="password" class="form-control" id="passwordold" name="passwordold" required>
+                    <div class="invalid-feedback">Bitte gib dein aktuelles Passwort ein.</div>
                 </div>
 
-                <!-- Passwort -->
                 <div class="form-group">
-                    <label for="password">Passwort</label>
+                    <label for="password">Neues Passwort</label>
                     <input type="password" class="form-control" id="password" name="password" minlength="9" required>
-                    <div class="valid-feedback">Korrekt</div>
-                    <div class="invalid-feedback">Bitte gib ein Passwort mit mindestens 9 Zeichen ein.</div>
+                    <div class="invalid-feedback">Mindestens 9 Zeichen erforderlich.</div>
                 </div>
 
-                <!-- Passwort bestätigen -->
                 <div class="form-group">
-                    <label for="password_confirm">Passwort wiederholen</label>
+                    <label for="password_confirm">Neues Passwort wiederholen</label>
                     <input type="password" class="form-control" id="password_confirm" name="password_confirm" minlength="9" required>
-                    <div class="valid-feedback">Korrekt</div>
-                    <div class="invalid-feedback">Bitte wiederhole dein Passwort korrekt.</div>
+                    <div class="invalid-feedback">Bitte wiederhole dein neues Passwort korrekt.</div>
                 </div>
 
-
-                <!-- Submit Button -->
-                <button type="submit" class="btn btn-primary btn-block" style="background-color: #007aff; color: white; border: 2px solid #007aff; border-radius: 0;">Passwort speichern</button>
+                <button type="submit" class="btn btn-primary btn-block" style="background-color: #007aff; border: none;">Passwort speichern</button>
             </form>
         </div>
     </main>
@@ -99,18 +98,16 @@
     </footer>
 
     <script>
-        // Passwort-Abgleich
+        // Passwort-Abgleich Clientseitig
         document.querySelector('form').addEventListener('submit', function(e) {
             const pw = document.getElementById('password').value;
             const pwConfirm = document.getElementById('password_confirm').value;
             if (pw !== pwConfirm) {
                 e.preventDefault();
-                e.stopPropagation();
-                alert("Die Passwörter stimmen nicht überein.");
+                alert("Die neuen Passwörter stimmen nicht überein.");
                 document.getElementById('password_confirm').focus();
             }
         });
     </script>
 </body>
-
 </html>
