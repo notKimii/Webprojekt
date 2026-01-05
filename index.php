@@ -91,7 +91,7 @@
                 <div class="category-grid">
                     <div class="category-item">
                         <a href="/Webprojekt/php/kategorien/headsetskategorie.php">
-                            <img src="/Webprojekt/images/pictures/indexpics/headset.png" alt="Bose">
+                            <img src="/Webprojekt/images/pictures/productids/1002/2.1.JPG" alt="Bose">
                             <h3>Headsets</h3>
                         </a>
                     </div>
@@ -102,15 +102,15 @@
                         </a>
                     </div>
                     <div class="category-item">
-                        <a href="/Webprojekt/php/kategorien/flugtaschenkategorie.php">
-                            <img src="./images/pictures/indexpics/Flugtasche.png" alt="Accessoires">
+                        <a href="/Webprojekt/php/kategorien/kleidungkategorie.php">
+                            <img src="/Webprojekt/images/pictures/productids/1019/19.1.png" alt="Accessoires">
                             <h3>Flugtaschen</h3>
                         </a>
                     </div>
                     <div class="category-item">
-                        <a href="/Webprojekt/php/kategorien/flugtaschenkategorie.php">
-                            <img src="./images/pictures/indexpics/Clipboard.png" alt="Wohnen">
-                            <h3>Kneeboards & Clipboards</h3>
+                        <a href="/Webprojekt/php/kategorien/zubehoerkategorie.php">
+                            <img src="/Webprojekt/images/pictures/productids/1031/31.1.png" alt="Wohnen">
+                            <h3>Flugzeugzubehör</h3>
                         </a>
                     </div>
                 </div>
