@@ -460,9 +460,6 @@ if (is_dir($absoluterPfad)) {
                 <div class="shipping-detail"><i class="fas fa-undo-alt"></i><span>30 Tage Rückgaberecht</span></div>
             </div>
 
-            <div class="additional-actions">
-                <a href="#" class="wishlist-link"><i class="far fa-heart"></i> Zur Wunschliste hinzufügen</a>
-            </div>
         </div>
     </div>
 
