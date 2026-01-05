@@ -103,9 +103,6 @@ unset($_SESSION['login_error']); // Fehlermeldung nach dem Auslesen löschen
       border: 1px solid #ccc;
       font-size: 16px;
     }
-    .checkbox {
-      margin-bottom: 15px;
-    }
     .btn {
       width: 100%;
       padding: 12px;
@@ -144,7 +141,6 @@ unset($_SESSION['login_error']); // Fehlermeldung nach dem Auslesen löschen
       color: #007aff;
     }
     
-    /* Fehlermeldung Styling */
     .server-error {
       color: #dc3545;
       text-align: center;
@@ -218,12 +214,6 @@ unset($_SESSION['login_error']); // Fehlermeldung nach dem Auslesen löschen
             <div class="error-message" id="password-error">Mindestens 9 Zeichen, Groß- und Kleinbuchstaben + Zahl erforderlich.</div>
           </div>
           
-          <div class="input-group">
-            <label for="2fa_code">2FA Code</label>
-            <input type="text" id="2fa_code" name="2fa_code" maxlength="6" placeholder="6-stelliger Code" required>
-            <div class="error-message" id="2fa-error">Bitte geben Sie Ihren 6-stelligen 2FA-Code ein.</div>
-          </div>
-          
           <input type="submit" name="login" class="btn" value="Login">
           
           <div class="bottom-link">
@@ -234,7 +224,6 @@ unset($_SESSION['login_error']); // Fehlermeldung nach dem Auslesen löschen
           <a href="/Webprojekt/php/registrierung/registrierung.php" class="btn btn-outline">Jetzt registrieren</a>
         </div>
         
-        <!-- Versteckte Felder für Logging -->
         <input type="hidden" id="screen_resolution" name="screen_resolution">
         <input type="hidden" id="operating_system" name="operating_system">
       </form>
@@ -255,11 +244,7 @@ unset($_SESSION['login_error']); // Fehlermeldung nach dem Auslesen löschen
       
       var passwordInput = document.getElementById('password');
       var passwordError = document.getElementById('password-error');
-      
-      var tfaInput = document.getElementById('2fa_code');
-      var tfaError = document.getElementById('2fa-error');
 
-      // Validierungsfunktionen
       function validateEmail(value) {
         var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return value.length >= 5 && emailRegex.test(value);
@@ -270,12 +255,6 @@ unset($_SESSION['login_error']); // Fehlermeldung nach dem Auslesen löschen
         return passwordRegex.test(value);
       }
 
-      function validate2FA(value) {
-        var tfaRegex = /^\d{6}$/;
-        return tfaRegex.test(value);
-      }
-
-      // Fehler anzeigen/verstecken
       function showError(input, errorDiv) {
         input.classList.add('input-error');
         errorDiv.style.display = 'block';
@@ -286,7 +265,6 @@ unset($_SESSION['login_error']); // Fehlermeldung nach dem Auslesen löschen
         errorDiv.style.display = 'none';
       }
 
-      // Formular-Submit
       form.addEventListener('submit', function(e) {
         var isValid = true;
 
@@ -304,13 +282,6 @@ unset($_SESSION['login_error']); // Fehlermeldung nach dem Auslesen löschen
           hideError(passwordInput, passwordError);
         }
 
-        if (!validate2FA(tfaInput.value)) {
-          showError(tfaInput, tfaError);
-          isValid = false;
-        } else {
-          hideError(tfaInput, tfaError);
-        }
-
         if (!isValid) {
           e.preventDefault();
           formError.style.display = 'block';
@@ -324,7 +295,6 @@ unset($_SESSION['login_error']); // Fehlermeldung nach dem Auslesen löschen
         }
       });
 
-      // Live-Validierung bei Eingabe
       emailInput.addEventListener('input', function() {
         if (validateEmail(this.value)) {
           hideError(this, emailError);
@@ -339,16 +309,6 @@ unset($_SESSION['login_error']); // Fehlermeldung nach dem Auslesen löschen
         }
       });
 
-      tfaInput.addEventListener('input', function() {
-        this.value = this.value.replace(/[^0-9]/g, '');
-        
-        if (validate2FA(this.value)) {
-          hideError(this, tfaError);
-          checkAllValid();
-        }
-      });
-
-      // Validierung wenn Feld verlassen wird
       emailInput.addEventListener('blur', function() {
         if (this.value !== '' && !validateEmail(this.value)) {
           showError(this, emailError);
@@ -361,23 +321,15 @@ unset($_SESSION['login_error']); // Fehlermeldung nach dem Auslesen löschen
         }
       });
 
-      tfaInput.addEventListener('blur', function() {
-        if (this.value !== '' && !validate2FA(this.value)) {
-          showError(this, tfaError);
-        }
-      });
-
       function checkAllValid() {
         var allValid = validateEmail(emailInput.value) && 
-                       validatePassword(passwordInput.value) && 
-                       validate2FA(tfaInput.value);
+                       validatePassword(passwordInput.value);
         
         if (allValid) {
           formError.style.display = 'none';
         }
       }
 
-      // Bildschirmauflösung und Betriebssystem erfassen
       document.getElementById('screen_resolution').value = window.screen.width + 'x' + window.screen.height;
       document.getElementById('operating_system').value = navigator.platform;
     });
