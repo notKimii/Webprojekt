@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost
--- Erstellungszeit: 04. Jan 2026 um 16:17
--- Server-Version: 10.4.28-MariaDB
--- PHP-Version: 8.2.4
+-- Host: 127.0.0.1
+-- Erstellungszeit: 05. Jan 2026 um 04:07
+-- Server-Version: 10.4.32-MariaDB
+-- PHP-Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -123,7 +123,12 @@ INSERT INTO `bestellkopf` (`id`, `user_id`, `bestelldatum`, `gesamtbetrag`, `sta
 (11, 66, '2026-01-02 21:44:28', 0.00, 'bezahlt'),
 (12, 66, '2026-01-02 21:45:23', 25.00, 'bezahlt'),
 (13, 66, '2026-01-04 16:07:37', 9.40, 'bezahlt'),
-(14, 66, '2026-01-04 16:07:40', 0.00, 'bezahlt');
+(14, 66, '2026-01-04 16:07:40', 0.00, 'bezahlt'),
+(15, 68, '2026-01-04 17:30:20', 2745.25, 'bezahlt'),
+(16, 67, '2026-01-04 17:33:10', 62.75, 'bezahlt'),
+(17, 69, '2026-01-04 18:46:35', 1199.00, 'bezahlt'),
+(18, 69, '2026-01-04 23:10:16', 25.00, 'bezahlt'),
+(19, 69, '2026-01-04 23:33:37', 1153.00, 'bezahlt');
 
 --
 -- Trigger `bestellkopf`
@@ -135,6 +140,12 @@ CREATE TRIGGER `Bezahlt - Insert` AFTER INSERT ON `bestellkopf` FOR EACH ROW BEG
         VALUES (New.id, NEW.bestelldatum, NEW.gesamtbetrag );
     END IF;
 END
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `punkte_hinzufuegen_nach_bestellung` AFTER INSERT ON `bestellkopf` FOR EACH ROW UPDATE punkte
+SET punktestand = punktestand + 50
+WHERE user_id = NEW.user_id
 $$
 DELIMITER ;
 
@@ -170,7 +181,17 @@ INSERT INTO `bestellposition` (`id`, `bestellung_id`, `artikel_id`, `menge`, `ei
 (13, 9, 1032, 1, 30.00),
 (14, 10, 1001, 1, 1299.00),
 (15, 12, 1008, 1, 25.00),
-(16, 13, 1026, 1, 13.00);
+(16, 13, 1026, 1, 13.00),
+(17, 15, 1014, 3, 1199.00),
+(18, 15, 1027, 1, 23.00),
+(19, 15, 1039, 2, 45.00),
+(20, 16, 1009, 2, 36.00),
+(21, 16, 1026, 1, 13.00),
+(22, 17, 1014, 1, 1199.00),
+(23, 18, 1008, 1, 25.00),
+(24, 19, 1002, 1, 950.00),
+(25, 19, 1008, 1, 25.00),
+(26, 19, 1036, 2, 89.00);
 
 --
 -- Trigger `bestellposition`
@@ -359,14 +380,28 @@ INSERT INTO `logs` (`id`, `user_id`, `login_time`, `screen_resolution`, `operati
 (36, 66, '2025-12-31 12:27:10', '1440x932', 'MacIntel'),
 (37, 66, '2026-01-02 21:55:25', '1440x932', 'MacIntel'),
 (38, 66, '2026-01-04 11:47:13', '1440x932', 'MacIntel'),
-(39, 66, '2026-01-04 12:31:34', '1440x932', 'MacIntel');
+(39, 66, '2026-01-04 12:31:34', '1440x932', 'MacIntel'),
+(40, 65, '2026-01-04 16:51:38', '1920x1080', 'Win32'),
+(41, 67, '2026-01-04 16:58:14', '1920x1080', 'Win32'),
+(42, 68, '2026-01-04 17:05:59', '1920x1080', 'Win32'),
+(43, 67, '2026-01-04 17:31:11', '1920x1080', 'Win32'),
+(44, 69, '2026-01-04 17:44:21', '1920x1080', 'Win32'),
+(45, 69, '2026-01-04 18:36:14', '1920x1080', 'Win32'),
+(46, 70, '2026-01-05 00:05:00', '1920x1080', 'Win32'),
+(47, 70, '2026-01-05 00:16:51', '1920x1080', 'Win32'),
+(48, 70, '2026-01-05 00:22:23', '1920x1080', 'Win32'),
+(49, 70, '2026-01-05 00:31:02', '1920x1080', 'Win32'),
+(50, 70, '2026-01-05 01:34:07', '1920x1080', 'Win32'),
+(51, 71, '2026-01-05 01:39:26', '1920x1080', 'Win32'),
+(52, 80, '2026-01-05 04:04:00', '1920x1080', 'Win32'),
+(53, 81, '2026-01-05 04:06:05', '1920x1080', 'Win32');
 
 --
 -- Trigger `logs`
 --
 DELIMITER $$
 CREATE TRIGGER `punkte_update` AFTER INSERT ON `logs` FOR EACH ROW UPDATE punkte
-SET punktestand = punktestand + 2
+SET punktestand = punktestand + 5
 WHERE user_id = NEW.user_id
 $$
 DELIMITER ;
@@ -379,7 +414,7 @@ DELIMITER ;
 
 CREATE TABLE `punkte` (
   `user_id` int(11) NOT NULL,
-  `punktestand` int(11) NOT NULL DEFAULT 100
+  `punktestand` int(11) NOT NULL DEFAULT 250
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -401,8 +436,23 @@ INSERT INTO `punkte` (`user_id`, `punktestand`) VALUES
 (59, 100),
 (60, 100),
 (64, 114),
-(65, 110),
-(66, 5);
+(65, 115),
+(66, 5),
+(67, 10),
+(68, 5),
+(69, 210),
+(70, 125),
+(71, 255),
+(72, 250),
+(73, 250),
+(74, 250),
+(75, 250),
+(76, 250),
+(77, 250),
+(78, 250),
+(79, 250),
+(80, 255),
+(81, 255);
 
 --
 -- Trigger `punkte`
@@ -450,7 +500,40 @@ INSERT INTO `punktelog` (`transaktions_id`, `user_id`, `datum`, `art`, `punkte_a
 (7, 66, '2026-01-04 12:31:34', 'Automatisch', 2, 110, 'Änderung am Punktestand'),
 (8, 66, '2026-01-04 12:40:19', 'Automatisch', -100, 10, 'Änderung am Punktestand'),
 (9, 66, '2026-01-04 12:57:15', 'Automatisch', 145, 155, 'Änderung am Punktestand'),
-(10, 66, '2026-01-04 16:07:37', 'Automatisch', -150, 5, 'Änderung am Punktestand');
+(10, 66, '2026-01-04 16:07:37', 'Automatisch', -150, 5, 'Änderung am Punktestand'),
+(11, 65, '2026-01-04 16:51:38', 'Automatisch', 5, 115, 'Änderung am Punktestand'),
+(12, 67, '2026-01-04 16:55:03', NULL, 0, 250, NULL),
+(13, 67, '2026-01-04 16:58:14', 'Automatisch', 5, 105, 'Änderung am Punktestand'),
+(14, 68, '2026-01-04 17:05:12', NULL, 0, 250, NULL),
+(15, 68, '2026-01-04 17:05:59', 'Automatisch', 5, 105, 'Änderung am Punktestand'),
+(16, 68, '2026-01-04 17:30:20', 'Automatisch', -100, 5, 'Änderung am Punktestand'),
+(17, 67, '2026-01-04 17:31:11', 'Automatisch', 5, 110, 'Änderung am Punktestand'),
+(18, 67, '2026-01-04 17:33:10', 'Automatisch', -100, 10, 'Änderung am Punktestand'),
+(19, 69, '2026-01-04 17:42:52', NULL, 0, 250, NULL),
+(20, 69, '2026-01-04 17:44:21', 'Automatisch', 5, 105, 'Änderung am Punktestand'),
+(21, 69, '2026-01-04 18:36:14', 'Automatisch', 5, 110, 'Änderung am Punktestand'),
+(22, 69, '2026-01-04 23:10:16', 'Automatisch', 50, 160, 'Änderung am Punktestand'),
+(23, 69, '2026-01-04 23:33:37', 'Automatisch', 50, 210, 'Änderung am Punktestand'),
+(24, 70, '2026-01-05 00:03:58', NULL, 0, 250, NULL),
+(25, 70, '2026-01-05 00:05:00', 'Automatisch', 5, 105, 'Änderung am Punktestand'),
+(26, 70, '2026-01-05 00:16:51', 'Automatisch', 5, 110, 'Änderung am Punktestand'),
+(27, 70, '2026-01-05 00:22:23', 'Automatisch', 5, 115, 'Änderung am Punktestand'),
+(28, 70, '2026-01-05 00:31:02', 'Automatisch', 5, 120, 'Änderung am Punktestand'),
+(29, 70, '2026-01-05 01:34:07', 'Automatisch', 5, 125, 'Änderung am Punktestand'),
+(30, 71, '2026-01-05 01:38:42', NULL, 0, 250, NULL),
+(31, 71, '2026-01-05 01:39:26', 'Automatisch', 5, 255, 'Änderung am Punktestand'),
+(32, 72, '2026-01-05 03:33:38', NULL, 0, 250, NULL),
+(33, 73, '2026-01-05 03:37:16', NULL, 0, 250, NULL),
+(34, 74, '2026-01-05 03:40:06', NULL, 0, 250, NULL),
+(35, 75, '2026-01-05 03:41:34', NULL, 0, 250, NULL),
+(36, 76, '2026-01-05 03:45:14', NULL, 0, 250, NULL),
+(37, 77, '2026-01-05 03:51:11', NULL, 0, 250, NULL),
+(38, 78, '2026-01-05 03:56:50', NULL, 0, 250, NULL),
+(39, 79, '2026-01-05 03:59:50', NULL, 0, 250, NULL),
+(40, 80, '2026-01-05 04:03:30', NULL, 0, 250, NULL),
+(41, 80, '2026-01-05 04:04:00', 'Automatisch', 5, 255, 'Änderung am Punktestand'),
+(42, 81, '2026-01-05 04:05:29', NULL, 0, 250, NULL),
+(43, 81, '2026-01-05 04:06:05', 'Automatisch', 5, 255, 'Änderung am Punktestand');
 
 -- --------------------------------------------------------
 
@@ -484,7 +567,12 @@ INSERT INTO `rechnungskopf` (`id`, `bestellID`, `rechnungsdatum`, `betrag`, `ver
 (22, 11, '2026-01-02 21:44:28', 0.00, 1),
 (23, 12, '2026-01-02 21:45:23', 25.00, 1),
 (24, 13, '2026-01-04 16:07:37', 9.40, 1),
-(25, 14, '2026-01-04 16:07:40', 0.00, 1);
+(25, 14, '2026-01-04 16:07:40', 0.00, 1),
+(26, 15, '2026-01-04 17:30:20', 2745.25, 1),
+(27, 16, '2026-01-04 17:33:10', 62.75, 1),
+(28, 17, '2026-01-04 18:46:35', 1199.00, 1),
+(29, 18, '2026-01-04 23:10:16', 25.00, 1),
+(30, 19, '2026-01-04 23:33:37', 1153.00, 1);
 
 -- --------------------------------------------------------
 
@@ -519,7 +607,17 @@ INSERT INTO `rechnungsposition` (`rechnungsID`, `artikel_id`, `artikel_name`, `m
 (20, 1032, 'Flugzeug Radkeile, Gummi (Paar)', 1, 30.00, 19.00),
 (21, 1001, 'Bose A30 Aviation Headset', 1, 1299.00, 19.00),
 (23, 1008, 'ICAO Karte Deutschland (Set)', 1, 25.00, 19.00),
-(24, 1026, 'ASA Standard Pilot Logbook (SP-30)', 1, 13.00, 19.00);
+(24, 1026, 'ASA Standard Pilot Logbook (SP-30)', 1, 13.00, 19.00),
+(26, 1014, 'Garmin D2 Mach 1 Aviator Smartwatch', 3, 1199.00, 19.00),
+(26, 1027, '\"Stick and Rudder\" von Wolfgang Langewiesche', 1, 23.00, 19.00),
+(26, 1039, 'Lufthansa Erste-Hilfe-Set DIN 13157 erweitert', 2, 45.00, 19.00),
+(27, 1009, 'Jeppesen CR-3 Circular Flight Computer', 2, 36.00, 19.00),
+(27, 1026, 'ASA Standard Pilot Logbook (SP-30)', 1, 13.00, 19.00),
+(28, 1014, 'Garmin D2 Mach 1 Aviator Smartwatch', 1, 1199.00, 19.00),
+(29, 1008, 'ICAO Karte Deutschland (Set)', 1, 25.00, 19.00),
+(30, 1002, 'Lightspeed Zulu 3 ANR Headset', 1, 950.00, 19.00),
+(30, 1008, 'ICAO Karte Deutschland (Set)', 1, 25.00, 19.00),
+(30, 1036, 'Tempest AA472 Oil Filter Cutter', 2, 89.00, 19.00);
 
 -- --------------------------------------------------------
 
@@ -553,20 +651,21 @@ INSERT INTO `user` (`id`, `vorname`, `nachname`, `mail`, `adresse`, `plz`, `ort`
 (54, 'Lisa', 'Müller', 'lisa.mueller@web.de', 'Bahnhofsweg 4', 20095, 'Hamburg', '8c405ae1daf2575440a037284f934421', NULL, b'0'),
 (55, 'Johannes', 'Schmidt', 'j.schmidt@gmx.net', 'Schulstraße 12', 80331, 'München', '8c405ae1daf2575440a037284f934421', NULL, b'1'),
 (56, 'Sarah', 'Weber', 'sarah.w@outlook.com', 'Gartenweg 7', 50667, 'Köln', '8c405ae1daf2575440a037284f934421', NULL, b'0'),
-(57, 'Michael', 'Klein', 'm.klein@test.de', 'Hauptstraße 88', 60311, 'Frankfurt', '8c405ae1daf2575440a037284f934421', NULL, b'0'),
-(58, 'Anna', 'Wagner', 'anna.wagner@pilot.com', 'Flughafenring 2', 70173, 'Stuttgart', '8c405ae1daf2575440a037284f934421', NULL, b'1'),
+(57, 'Michael', 'Klein', 'm.klein@test.de', 'Hauptstraße 88', 60311, 'Frankfurt', '8c405ae1daf2575440a037284f934421', NULL, b'1'),
+(58, 'Anna', 'Wagner', 'anna.wagner@pilot.com', 'Flughafenring 2', 70173, 'Stuttgart', '8c405ae1daf2575440a037284f934421', NULL, b'0'),
 (59, 'Tom', 'Becker', 'tom.becker@aviation.org', 'Lindenallee 45', 4109, 'Leipzig', '8c405ae1daf2575440a037284f934421', NULL, b'0'),
 (60, 'Laura', 'Hoffmann', 'laura.h@student.de', 'Uniplatz 1', 69117, 'Heidelberg', '8c405ae1daf2575440a037284f934421', NULL, b'0'),
-(64, 'Fabian', 'tittl', 'Andre.Reiff@Student.Reutlingen-University.DE', 'Moltkestraße 32', 72805, 'Lichtenstein', '47d658a097d490e0d26650c77ff4bf755fa8a3d86acc5df95b3844f4b3c9cb80b20ac1fe7e5b67564d4c15798a1b9b4c5bcfd2f7b5a6eeeb585381c95221fc1c', 'WOHLEZEIY7EBKYHJ', b'1'),
-(65, 'Andre', 'Reiff', 'andre.reiff@online.de', 'Moltkestraße 32', 72805, 'Lichtenstein', '47d658a097d490e0d26650c77ff4bf755fa8a3d86acc5df95b3844f4b3c9cb80b20ac1fe7e5b67564d4c15798a1b9b4c5bcfd2f7b5a6eeeb585381c95221fc1c', 'CTO6DGUKUT44GWV5', b'1'),
-(66, 'Kimi', 'Kimi', 'esrr1979@hotmail.com', 'Straße der Einheit 45', 80983, 'Niederschwalben', '588d191ff5118b793a93bfe317ed53f77490923747c07eeb9924a7c1168f0cddc4289803d47abb44f1b57f14fc47cab399c61351dbdd932db9feddb6aedfa0ce', 'V7XSGPSBLERGODIY', b'1');
+(66, 'Kimi', 'Kimi', 'esrr1979@hotmail.com', 'Straße der Einheit 45', 80983, 'Niederschwalben', '588d191ff5118b793a93bfe317ed53f77490923747c07eeb9924a7c1168f0cddc4289803d47abb44f1b57f14fc47cab399c61351dbdd932db9feddb6aedfa0ce', 'V7XSGPSBLERGODIY', b'1'),
+(68, 'flo', 'titten', 'tittl.florian@gmail.com', 'penis', 18733, 'Lichtenstein', '47d658a097d490e0d26650c77ff4bf755fa8a3d86acc5df95b3844f4b3c9cb80b20ac1fe7e5b67564d4c15798a1b9b4c5bcfd2f7b5a6eeeb585381c95221fc1c', 'SBI3WF6DFXACOJ2E', b'1'),
+(69, 'Fabiän', 'Räiff', 'andre.reiff@online.de', 'Moltkestraße 32', 72805, 'Lichtenstein', '47d658a097d490e0d26650c77ff4bf755fa8a3d86acc5df95b3844f4b3c9cb80b20ac1fe7e5b67564d4c15798a1b9b4c5bcfd2f7b5a6eeeb585381c95221fc1c', 'YFMFJZDAE5BI6VGA', b'1'),
+(81, 'FLORIAN', 'Oswald', 'Andre.Reiff@Student.Reutlingen-University.DE', 'strasse 4', 72805, 'Lichtenstein', '47d658a097d490e0d26650c77ff4bf755fa8a3d86acc5df95b3844f4b3c9cb80b20ac1fe7e5b67564d4c15798a1b9b4c5bcfd2f7b5a6eeeb585381c95221fc1c', 'RXOE4NV6LNZSAMQU', b'1');
 
 --
 -- Trigger `user`
 --
 DELIMITER $$
 CREATE TRIGGER `plog_erster_eintrag` AFTER INSERT ON `user` FOR EACH ROW BEGIN
-	INSERT INTO punktelog (user_id, neuer_punktestand) VALUES (NEW.id, 100);
+	INSERT INTO punktelog (user_id, neuer_punktestand) VALUES (NEW.id, 250);
 END
 $$
 DELIMITER ;
@@ -595,7 +694,10 @@ CREATE TABLE `warenkorbkopf` (
 
 INSERT INTO `warenkorbkopf` (`id`, `kunde_id`, `erstellt_am`) VALUES
 (1, 65, '2025-12-11 23:02:55'),
-(2, 66, '2025-12-30 18:24:01');
+(2, 66, '2025-12-30 18:24:01'),
+(3, 68, '2026-01-04 17:17:30'),
+(4, 67, '2026-01-04 17:31:14'),
+(5, 69, '2026-01-04 18:43:48');
 
 -- --------------------------------------------------------
 
@@ -719,43 +821,43 @@ ALTER TABLE `artikel`
 -- AUTO_INCREMENT für Tabelle `bestellkopf`
 --
 ALTER TABLE `bestellkopf`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT für Tabelle `bestellposition`
 --
 ALTER TABLE `bestellposition`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT für Tabelle `logs`
 --
 ALTER TABLE `logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
 
 --
 -- AUTO_INCREMENT für Tabelle `punktelog`
 --
 ALTER TABLE `punktelog`
-  MODIFY `transaktions_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `transaktions_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
 
 --
 -- AUTO_INCREMENT für Tabelle `rechnungskopf`
 --
 ALTER TABLE `rechnungskopf`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT für Tabelle `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=82;
 
 --
 -- AUTO_INCREMENT für Tabelle `warenkorbkopf`
 --
 ALTER TABLE `warenkorbkopf`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

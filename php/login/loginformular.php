@@ -1,4 +1,3 @@
-<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="de">
 
@@ -158,17 +157,6 @@
       display: none;
     }
 
-    .server-error-msg {
-      color: #721c24;
-      background-color: #f8d7da;
-      border: 1px solid #f5c6cb;
-      text-align: center;
-      margin-bottom: 15px;
-      padding: 10px;
-      border-radius: 6px;
-      font-size: 14px;
-    }
-
     .btn {
       width: 100%;
       padding: 14px;
@@ -298,8 +286,7 @@
 
       <form id="formlogin" action="/Webprojekt/php/login/login.php" method="POST" class="needs-validation" novalidate>
 
-        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
-        
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
         <fieldset>
           <legend>In mein Kundenkonto einloggen</legend>
           
@@ -321,13 +308,6 @@
             <div class="invalid-feedback">Bitte geben Sie Ihren 6-stelligen 2FA-Code ein.</div>
           </div>
 
-          <?php if (isset($_SESSION['error_msg'])): ?>
-            <div class="server-error-msg">
-                ⚠️ <?= htmlspecialchars($_SESSION['error_msg']); ?>
-            </div>
-            <?php unset($_SESSION['error_msg']); // Nachricht nach dem Anzeigen löschen ?>
-          <?php endif; ?>
-
           <div id="form-error">
             Fehlerhafte Eingabe
           </div>
@@ -343,6 +323,7 @@
           <a href="/Webprojekt/php/registrierung/registrierung.php" class="btn btn-outline">Jetzt registrieren</a>
         </div>
 
+        <!-- Versteckte Felder -->
         <input type="hidden" id="screen_resolution" name="screen_resolution">
         <input type="hidden" id="operating_system" name="operating_system">
       </form>
