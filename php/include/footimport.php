@@ -28,7 +28,7 @@
                     <div class="social-media-icons">
                         <a href="https://facebook.com" target="_blank" aria-label="Facebook"><img src="/Webprojekt/images/pictures/socialmedia/facebook.png" alt=""</a>
                         <a href="https://instagram.com" target="_blank" aria-label="Instagram"><img src="/Webprojekt/images/pictures/socialmedia/instagram.png" alt=""</a>
-                        <a href="https://pinterest.com" target="_blank" aria-label="Pinterest"><img src="/Webprojekt/images/pictures/socialmedia/Linkedin.png" alt=""></a>
+                        <a href="https://linkedin.com" target="_blank" aria-label="Linkedin"><img src="/Webprojekt/images/pictures/socialmedia/Linkedin.png" alt=""></a>
                     </div>
                 </div>
             </div>

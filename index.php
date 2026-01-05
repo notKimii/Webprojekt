@@ -64,10 +64,10 @@
                         </p>
                         
                         <div class="hero-cta-group">
-                            <a href="/kategorie/neuheiten" class="cta-button-primary">
+                            <a href="/Webprojekt/php/kategorien/headsetskategorie.php" class="cta-button-primary">
                                 Jetzt Entdecken
                             </a>
-                            <a href="/angebote" class="cta-button-secondary">
+                            <a href="/Webprojekt/php/kategorien/saleskategorie.php" class="cta-button-secondary">
                                 Zu den Angeboten
                             </a>
                         </div>                
@@ -406,7 +406,7 @@
                         </a>
                     </div>
                     <div class="article-item">
-                        <a href="https://www.siebert.aero">
+                        <a href="https://www.aero.de/">
                             <img src="/Webprojekt/images/pictures/indexpics/ausbildung.jpeg" alt="Geschenkideen">
                             <h3>Flugausbildung im Wandel</h3>
                             <p>Was angehende Piloten heute über moderne Trainingsmethoden wissen sollten</p>
