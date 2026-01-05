@@ -430,15 +430,15 @@ if (session_status() === PHP_SESSION_NONE) {
                 <!-- Team Member 1 -->
                 <div class="team-card">
                     <div class="team-image-wrapper">
-                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="Florian Tittl" class="team-image">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Flo" alt="Florian Tittl" class="team-image">
                     </div>
                     <h3>Florian Tittl</h3>
                     <span class="team-role">Frontend & Design</span>
                     <p class="team-bio">
                         Sorgt für den perfekten Look. Er gestaltet die Benutzeroberfläche so, dass sich jeder Pilot sofort zurechtfindet.
                     </p>
-                    <a href="mailto:florian@example.com" class="team-contact-btn">
-                        ✉️ Kontaktieren
+                    <a href="mailto:Florian.tittl@Student.Reutlingen-University.DE" class="team-contact-btn">
+                        Florian.tittl@Student.Reutlingen-University.DE
                     </a>
                     <div class="team-skills">
                         <span class="skill-tag">HTML/CSS</span>
@@ -450,15 +450,15 @@ if (session_status() === PHP_SESSION_NONE) {
                 <!-- Team Member 2 -->
                 <div class="team-card">
                     <div class="team-image-wrapper">
-                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Julia" alt="Andre Reiff" class="team-image">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=andy" alt="Andre Reiff" class="team-image">
                     </div>
                     <h3>Andre Reiff</h3>
                     <span class="team-role">Backend & Datenbank</span>
                     <p class="team-bio">
                         Der Architekt im Hintergrund. Er sorgt für sichere Datenbankverbindungen und blitzschnelle Abfragen im System.
                     </p>
-                    <a href="mailto:andre@example.com" class="team-contact-btn">
-                        ✉️ Kontaktieren
+                    <a href="mailto:Andre.Reiff@Student.Reutlingen-University.DE" class="team-contact-btn">
+                        Andre.Reiff@Student.Reutlingen-University.DE
                     </a>
                     <div class="team-skills">
                         <span class="skill-tag">MySQL</span>
@@ -470,15 +470,15 @@ if (session_status() === PHP_SESSION_NONE) {
                 <!-- Team Member 3 -->
                 <div class="team-card">
                     <div class="team-image-wrapper">
-                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Tim" alt="Kimberly" class="team-image">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=kim" alt="Kimberly" class="team-image">
                     </div>
                     <h3>Kimberly Apassa Udongo Reyes</h3>
                     <span class="team-role">Fullstack & QA</span>
                     <p class="team-bio">
                         Verbindet Frontend mit Backend und sorgt dafür, dass alles reibungslos zusammenarbeitet.
                     </p>
-                    <a href="mailto:kimberly@example.com" class="team-contact-btn">
-                        ✉️ Kontaktieren
+                    <a href="mailto:Kimberly.reyes@Student.Reutlingen-University.DE" class="team-contact-btn">
+                        Kimberly.reyes@Student.Reutlingen-University.DE
                     </a>
                     <div class="team-skills">
                         <span class="skill-tag">JavaScript</span>
