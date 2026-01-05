@@ -19,8 +19,7 @@ $operating_system = $_POST['operating_system'] ?? 'Unbekannt';
 // 3. Eingaben validieren
 // Prüfung auf leere Felder
 if (strlen($email) < 5 || strpos($email, '@') === false || empty($passwordInput)) {
-    // Fehler optional in Session speichern
-    // $_SESSION['login_error'] = "Bitte füllen Sie alle Felder aus.";
+    $_SESSION['login_error'] = "Bitte füllen Sie alle Felder korrekt aus.";
     header("Location: loginformular.php");
     exit;
 }
@@ -30,6 +29,7 @@ if (strlen($passwordInput) < 9 ||
     !preg_match('/[A-Z]/', $passwordInput) || 
     !preg_match('/[a-z]/', $passwordInput) || 
     !preg_match('/\d/', $passwordInput)) {
+    $_SESSION['login_error'] = "E-Mail oder Passwort ist falsch.";
     header("Location: loginformular.php");
     exit;
 }
@@ -100,13 +100,14 @@ try {
             exit;
         } else {
             // 2FA Code falsch
-            // $_SESSION['login_error'] = "2FA Code falsch.";
+            $_SESSION['login_error'] = "Der 2FA-Code ist ungültig oder abgelaufen.";
             header("Location: loginformular.php");
             exit;
         }
 
     } else {
         // Passwort falsch oder User nicht gefunden
+        $_SESSION['login_error'] = "E-Mail oder Passwort ist falsch.";
         header("Location: loginformular.php");
         exit;
     }

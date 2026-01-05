@@ -1,3 +1,8 @@
+<?php
+session_start();
+$login_error = $_SESSION['login_error'] ?? '';
+unset($_SESSION['login_error']); // Fehlermeldung nach dem Auslesen löschen
+?>
 <!DOCTYPE html>
 <html lang="de">
 
@@ -123,37 +128,37 @@
       box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
     }
 
-    input[type="email"].invalid,
-    input[type="password"].invalid,
-    input[type="text"].invalid {
-      border-color: #dc3545;
+    input.input-error {
+      border-color: #dc3545 !important;
+      background-color: #fff8f8 !important;
     }
 
-    input[type="email"].invalid:focus,
-    input[type="password"].invalid:focus,
-    input[type="text"].invalid:focus {
-      box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+    input.input-error:focus {
+      box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.15) !important;
     }
 
-    .invalid-feedback {
-      display: none;
+    .error-message {
       color: #dc3545;
       font-size: 13px;
-      margin-top: 5px;
+      margin-top: 6px;
+      display: none;
+      padding-left: 2px;
     }
 
-    input.invalid + .invalid-feedback {
-      display: block;
+    #form-error,
+    .server-error {
+      color: #dc3545;
+      text-align: center;
+      margin-bottom: 20px;
+      padding: 12px 15px;
+      background-color: rgba(220, 53, 69, 0.1);
+      border: 1px solid rgba(220, 53, 69, 0.3);
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
     }
 
     #form-error {
-      color: #dc3545;
-      text-align: center;
-      margin-bottom: 15px;
-      padding: 10px;
-      background-color: rgba(220, 53, 69, 0.1);
-      border-radius: 6px;
-      font-size: 14px;
       display: none;
     }
 
@@ -284,38 +289,44 @@
   <main>
     <div class="login-box">
 
-      <form id="formlogin" action="/Webprojekt/php/login/login.php" method="POST" class="needs-validation" novalidate>
+      <form id="formlogin" action="/Webprojekt/php/login/login.php" method="POST" novalidate>
 
-        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
         <fieldset>
           <legend>In mein Kundenkonto einloggen</legend>
+
+          <?php if (!empty($login_error)): ?>
+          <div class="server-error">
+            ⚠️ <?= htmlspecialchars($login_error) ?>
+          </div>
+          <?php endif; ?>
+
+          <div id="form-error">
+            ⚠️ Bitte korrigieren Sie die markierten Felder.
+          </div>
           
           <div class="input-group">
             <label for="email">E-Mail</label>
-            <input type="email" id="email" name="email" pattern=".{5,}.*@.*" required>
-            <div class="invalid-feedback">Mindestens 5 Zeichen + @ erforderlich.</div>
+            <input type="email" id="email" name="email" required>
+            <div class="error-message" id="email-error">Bitte geben Sie eine gültige E-Mail-Adresse ein.</div>
           </div>
 
           <div class="input-group">
             <label for="password">Passwort</label>
-            <input type="password" id="password" name="password" pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{9,}" required>
-            <div class="invalid-feedback">Mindestens 9 Zeichen, Groß- und Kleinbuchstaben + Zahlen</div>
+            <input type="password" id="password" name="password" required>
+            <div class="error-message" id="password-error">Mindestens 9 Zeichen, Groß- und Kleinbuchstaben + Zahl erforderlich.</div>
           </div>
 
           <div class="input-group">
             <label for="2fa_code">2FA Code</label>
-            <input type="text" id="2fa_code" name="2fa_code" pattern="\d{6}" maxlength="6" placeholder="6-stelliger Code" required>
-            <div class="invalid-feedback">Bitte geben Sie Ihren 6-stelligen 2FA-Code ein.</div>
-          </div>
-
-          <div id="form-error">
-            Fehlerhafte Eingabe
+            <input type="text" id="2fa_code" name="2fa_code" maxlength="6" placeholder="6-stelliger Code" required>
+            <div class="error-message" id="2fa-error">Bitte geben Sie Ihren 6-stelligen 2FA-Code ein.</div>
           </div>
 
           <input type="submit" name="login" class="btn" value="Login">
 
           <div class="bottom-link">
-            <a href="/password-reset">Passwort vergessen?</a>
+            <a href="/Webprojekt/php/passwort_vergessen.php">Passwort vergessen?</a>
           </div>
         </fieldset>
 
@@ -333,53 +344,151 @@
   <?php include $_SERVER['DOCUMENT_ROOT'] . "/Webprojekt/php/include/footimport.php"; ?>
 
   <script>
-    (function () {
-      'use strict';
+    document.addEventListener('DOMContentLoaded', function() {
       
       var form = document.getElementById('formlogin');
-      var errorDiv = document.getElementById('form-error');
-      var inputs = form.querySelectorAll('input[required]');
+      var formError = document.getElementById('form-error');
+      
+      var emailInput = document.getElementById('email');
+      var emailError = document.getElementById('email-error');
+      
+      var passwordInput = document.getElementById('password');
+      var passwordError = document.getElementById('password-error');
+      
+      var tfaInput = document.getElementById('2fa_code');
+      var tfaError = document.getElementById('2fa-error');
 
-      // Validierung bei Submit
-      form.addEventListener('submit', function (event) {
+      // Validierungsfunktionen
+      function validateEmail(value) {
+        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return value.length >= 5 && emailRegex.test(value);
+      }
+
+      function validatePassword(value) {
+        // Mindestens 9 Zeichen, Groß- und Kleinbuchstaben + Zahl
+        var passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{9,}$/;
+        return passwordRegex.test(value);
+      }
+
+      function validate2FA(value) {
+        // Genau 6 Ziffern
+        var tfaRegex = /^\d{6}$/;
+        return tfaRegex.test(value);
+      }
+
+      // Fehler anzeigen/verstecken
+      function showError(input, errorDiv) {
+        input.classList.add('input-error');
+        errorDiv.style.display = 'block';
+      }
+
+      function hideError(input, errorDiv) {
+        input.classList.remove('input-error');
+        errorDiv.style.display = 'none';
+      }
+
+      // Formular-Submit
+      form.addEventListener('submit', function(e) {
         var isValid = true;
-        
-        inputs.forEach(function(input) {
-          if (!input.checkValidity()) {
-            isValid = false;
-            input.classList.add('invalid');
-          } else {
-            input.classList.remove('invalid');
-          }
-        });
 
-        if (!isValid) {
-          event.preventDefault();
-          errorDiv.style.display = 'block';
+        // E-Mail prüfen
+        if (!validateEmail(emailInput.value)) {
+          showError(emailInput, emailError);
+          isValid = false;
         } else {
-          errorDiv.style.display = 'none';
+          hideError(emailInput, emailError);
+        }
+
+        // Passwort prüfen
+        if (!validatePassword(passwordInput.value)) {
+          showError(passwordInput, passwordError);
+          isValid = false;
+        } else {
+          hideError(passwordInput, passwordError);
+        }
+
+        // 2FA prüfen
+        if (!validate2FA(tfaInput.value)) {
+          showError(tfaInput, tfaError);
+          isValid = false;
+        } else {
+          hideError(tfaInput, tfaError);
+        }
+
+        // Wenn ungültig, Formular nicht absenden
+        if (!isValid) {
+          e.preventDefault();
+          formError.style.display = 'block';
+          
+          // Zum ersten Fehler scrollen
+          var firstError = form.querySelector('.input-error');
+          if (firstError) {
+            firstError.focus();
+          }
+        } else {
+          formError.style.display = 'none';
         }
       });
 
-      // Live-Validierung beim Tippen
-      inputs.forEach(function(input) {
-        input.addEventListener('input', function() {
-          if (this.checkValidity()) {
-            this.classList.remove('invalid');
-          }
-        });
-
-        input.addEventListener('blur', function() {
-          if (!this.checkValidity() && this.value !== '') {
-            this.classList.add('invalid');
-          }
-        });
+      // Live-Validierung bei Eingabe
+      emailInput.addEventListener('input', function() {
+        if (validateEmail(this.value)) {
+          hideError(this, emailError);
+          checkAllValid();
+        }
       });
+
+      passwordInput.addEventListener('input', function() {
+        if (validatePassword(this.value)) {
+          hideError(this, passwordError);
+          checkAllValid();
+        }
+      });
+
+      tfaInput.addEventListener('input', function() {
+        // Nur Zahlen erlauben
+        this.value = this.value.replace(/[^0-9]/g, '');
+        
+        if (validate2FA(this.value)) {
+          hideError(this, tfaError);
+          checkAllValid();
+        }
+      });
+
+      // Validierung wenn Feld verlassen wird
+      emailInput.addEventListener('blur', function() {
+        if (this.value !== '' && !validateEmail(this.value)) {
+          showError(this, emailError);
+        }
+      });
+
+      passwordInput.addEventListener('blur', function() {
+        if (this.value !== '' && !validatePassword(this.value)) {
+          showError(this, passwordError);
+        }
+      });
+
+      tfaInput.addEventListener('blur', function() {
+        if (this.value !== '' && !validate2FA(this.value)) {
+          showError(this, tfaError);
+        }
+      });
+
+      // Prüfen ob alle Felder gültig sind
+      function checkAllValid() {
+        var allValid = validateEmail(emailInput.value) && 
+                       validatePassword(passwordInput.value) && 
+                       validate2FA(tfaInput.value);
+        
+        if (allValid) {
+          formError.style.display = 'none';
+        }
+      }
 
       // Bildschirmauflösung und Betriebssystem erfassen
       document.getElementById('screen_resolution').value = window.screen.width + 'x' + window.screen.height;
       document.getElementById('operating_system').value = navigator.platform;
-    })();
+    });
   </script>
 </body>
 </html>
