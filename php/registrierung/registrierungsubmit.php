@@ -375,7 +375,7 @@ try {
     // E-Mail senden
     $mailer->send();
 
-    header("Location: /Webprojekt/php/login/loginformular.php");
+    header("Location: /Webprojekt/php/login/FirstLogin.php");
 } catch (Exception $e) {
 
     $_SESSION['form_data'] = $_POST;
