@@ -811,21 +811,15 @@ include __DIR__ . '/connectcon.php';
                             <span>Online</span>
                             <span class="online-users">
                                 <span class="online-indicator"></span>
-                                <?php
-                                if (isset($_SESSION['user'])) {
-                                    if (isset($con) && !$con->connect_error) {
-                                        $result = $con->query("SELECT COUNT(*) AS anzahl FROM user WHERE online=1");
-                                        if ($result) {
-                                            $row = $result->fetch_assoc();
-                                            echo $row['anzahl'];
-                                        }
-                                    } else {
-                                        echo '0';
-                                    }
-                                } else {
-                                    echo '0';
-                                }
-                                ?>
+                                <span id="live-user-count">
+                                    <?php 
+                                        // Hier kannst du deinen bestehenden PHP-Code kurz einfügen oder einfach 0 
+                                        // anzeigen, bis das JS nach 1 Sekunde lädt.
+                                        // Am saubersten ist es, wenn du hier den PHP-Teil kurz drin lässt 
+                                        // oder einfach "..." schreibst.
+                                        echo "..."; 
+                                    ?>
+                                </span>
                             </span>
                         </a>
                     </div>
@@ -1036,6 +1030,26 @@ include __DIR__ . '/connectcon.php';
     </div>
 
 <script>
+    function updateOnlineCount() {
+        // Wir rufen deine existierende Datei auf
+        fetch('/Webprojekt/php/online.php')
+            .then(response => response.text()) // Wir holen die Antwort als Text (die Zahl)
+            .then(data => {
+                // Wir suchen das Element mit der ID und packen die neue Zahl rein
+                const counterElement = document.getElementById('live-user-count');
+                if (counterElement) {
+                    // Falls die session abgelaufen ist und "0" kommt, zeigen wir das auch an
+                    counterElement.innerText = data;
+                }
+            })
+            .catch(error => console.error('Fehler beim Update:', error));
+    }
+
+    // Führe die Funktion alle 3000 Millisekunden (3 Sekunden) aus
+    setInterval(updateOnlineCount, 3000);
+
+    // Einmal sofort beim Laden ausführen, damit nicht "..." dort steht
+    updateOnlineCount();
 // Mobile Menu Funktionalität
 document.addEventListener('DOMContentLoaded', function() {
     const burgerMenu = document.getElementById('burgerMenu');
