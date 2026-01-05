@@ -7,7 +7,7 @@
                 <div class="footer-column">
                     <h3>Cockpit Corner</h3>
                     <p style="text-align: left;">Deine erste Adresse für Pilotenequipment mit fairen Preisen.</p>
-                    <a style="color: #707784;" href="/ueber-uns">Mehr über uns</a>
+                    <a style="color: #707784;" href="php/kategorien/ueberuns.php">Mehr über uns</a>
                 </div>
 
                 <div class="footer-column">
@@ -20,17 +20,6 @@
                         <li><a href="/agb">AGB</a></li>
                         <li><a href="/datenschutz">Datenschutz</a></li>
                         <li><a href="/impressum">Impressum</a></li>
-                    </ul>
-                </div>
-
-                <div class="footer-column">
-                    <h3>Entdecken</h3>
-                    <ul>
-                        <li><a href="/kategorie/neuheiten">Neuheiten</a></li>
-                        <li><a href="/kategorie/bekleidung">Bekleidung</a></li>
-                        <li><a href="/kategorie/schuhe">Schuhe</a></li>
-                        <li><a href="/angebote">Angebote</a></li>
-                        <li><a href="/gutscheine">Gutscheine</a></li>
                     </ul>
                 </div>
 
