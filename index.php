@@ -114,9 +114,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="view-all-link">
-                    <a href="/kategorie/alle" class="button-secondary">Zu allen Kategorien</a>
-                </div>
+
             </div>
         </section>
 
@@ -206,9 +204,7 @@
                     </button>
                 </div>
                 <div class="carousel-dots"></div>
-                <div class="view-all-link">
-                    <a href="/kategorie/neuheiten" class="button-secondary">Zu den Neuheiten</a>
-                </div>
+
             </div>
         </section>
 
@@ -329,10 +325,7 @@
                         <button class="add-to-cart-button">In den Warenkorb</button>
                     </div>
                 </div>
-                <div class="view-all-link">
-                    <a href="/angebote" class="button-secondary">Zu den Angeboten</a>
-                </div>
-                
+
             </div>
         </section>
 
