@@ -117,11 +117,15 @@ $isAjax = isset($_POST['ajax']);
 // Kein Login
 if ($kundenId === null) {
     if ($isAjax) {
+        // Falls der Aufruf per JavaScript (AJAX) kam, senden wir JSON zurück
+        // Das Frontend kann dann entscheiden, ob es weiterleitet
         header('Content-Type: application/json');
-        echo json_encode(['success' => false, 'error' => 'no_login']);
+        echo json_encode(['success' => false, 'error' => 'no_login', 'redirect' => '/Webprojekt/php/login/loginformular.php']);
         exit;
     }
-    echo '<p>Fehler: Kein Kunde angemeldet.</p>';
+
+    // Normale Weiterleitung für den Browser
+    header("Location: /Webprojekt/php/login/loginformular.php");
     exit;
 }
 
