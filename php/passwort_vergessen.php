@@ -157,6 +157,7 @@ Cockpit Corner';
     <title>Passwort vergessen - Cockpit Corner</title>
 </head>
 <body>
+
     <header class="hero-section">
         <div class="hero-banner">
             <div class="hero-content">
@@ -178,5 +179,6 @@ Cockpit Corner';
             </div>
         </div>
     </header>
+
 </body>
 </html>

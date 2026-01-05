@@ -225,6 +225,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </style>
 </head>
 <body>
+
     <header class="hero-section">
         <div class="hero-banner">
             <div class="hero-content">
