@@ -22,21 +22,38 @@ $stmtPunkte->execute([$userID]);
 $punkteData = $stmtPunkte->fetch(PDO::FETCH_ASSOC);
 $punktestand = $punkteData['punktestand'] ?? 0;
 
-// Bestellungen abrufen
+// Bestellungen abrufen mit Versandart
 $sqlBestellungen = "SELECT * FROM bestellkopf WHERE user_id = ? ORDER BY bestelldatum DESC";
 $stmtBestellungen = $conPDO->prepare($sqlBestellungen);
 $stmtBestellungen->execute([$userID]);
 $bestellungen = $stmtBestellungen->fetchAll(PDO::FETCH_ASSOC);
 
-// Bestellpositionen für jede Bestellung abrufen
+// Versandarten-Namen
+$versandarten = [
+    1 => 'LPD',
+    2 => 'DHL',
+    3 => 'DHL Express'
+];
+
+// Bestellpositionen für jede Bestellung abrufen (mit Rabattartikeln)
 $bestellPositionen = [];
 foreach ($bestellungen as $bestellung) {
-    $sqlPositionen = "SELECT bp.*, a.name, a.preis FROM bestellposition bp 
-                      JOIN artikel a ON bp.artikel_id = a.id 
+    $sqlPositionen = "SELECT bp.*, a.name, a.preis, a.kategorie FROM bestellposition bp 
+                      LEFT JOIN artikel a ON bp.artikel_id = a.id 
                       WHERE bp.bestellung_id = ?";
     $stmtPositionen = $conPDO->prepare($sqlPositionen);
     $stmtPositionen->execute([$bestellung['id']]);
-    $bestellPositionen[$bestellung['id']] = $stmtPositionen->fetchAll(PDO::FETCH_ASSOC);
+    $positionen = $stmtPositionen->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Wenn Artikel gelöscht wurde (name ist NULL), ersetze durch "Rabatt"
+    foreach ($positionen as &$position) {
+        if ($position['name'] === null) {
+            $position['name'] = 'Rabatt';
+            $position['kategorie'] = 'Code';
+        }
+    }
+    
+    $bestellPositionen[$bestellung['id']] = $positionen;
 }
 
 // Benutzer als online markieren
@@ -406,6 +423,25 @@ unset($_SESSION['profile_success'], $_SESSION['profile_errors']);
             flex-wrap: wrap;
             gap: 10px;
         }
+        
+        .order-info-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .shipping-badge {
+            padding: 6px 12px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: #f1f5f9;
+            color: #475569;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
 
         .order-id {
             font-weight: 700;
@@ -490,9 +526,12 @@ unset($_SESSION['profile_success'], $_SESSION['profile_errors']);
         .order-total {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             padding: calc(var(--spacing-unit) * 1.25);
             background: var(--primary-color);
             color: white;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
         .order-total-label {
@@ -502,6 +541,28 @@ unset($_SESSION['profile_success'], $_SESSION['profile_errors']);
         .order-total-value {
             font-weight: 700;
             font-size: 1.1rem;
+        }
+        
+        .btn-reorder {
+            padding: 8px 16px;
+            background: white;
+            color: var(--primary-color);
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+        }
+        
+        .btn-reorder:hover {
+            background: #f8fafc;
+            transform: translateY(-1px);
+            color: var(--primary-color);
         }
 
         /* Empty State */
@@ -813,6 +874,13 @@ unset($_SESSION['profile_success'], $_SESSION['profile_errors']);
                                         <div class="order-date">
                                             📅 <?php echo date('d.m.Y H:i', strtotime($bestellung['bestelldatum'])); ?> Uhr
                                         </div>
+                                        <?php 
+                                        $versandartId = $bestellung['versandart'] ?? 2;
+                                        $versandartName = $versandarten[$versandartId] ?? 'DHL';
+                                        ?>
+                                        <div class="shipping-badge">
+                                            📦 Versand: <?php echo htmlspecialchars($versandartName); ?>
+                                        </div>
                                     </div>
                                     <span class="order-status <?php 
                                         $status = strtolower($bestellung['status'] ?? 'pending');
@@ -860,10 +928,15 @@ unset($_SESSION['profile_success'], $_SESSION['profile_errors']);
                                 <?php endif; ?>
 
                                 <div class="order-total">
-                                    <span class="order-total-label">Gesamtbetrag:</span>
-                                    <span class="order-total-value">
-                                        <?php echo number_format($bestellung['gesamtbetrag'], 2, ',', '.'); ?> €
-                                    </span>
+                                    <div>
+                                        <span class="order-total-label">Gesamtbetrag:</span>
+                                        <span class="order-total-value">
+                                            <?php echo number_format($bestellung['gesamtbetrag'], 2, ',', '.'); ?> €
+                                        </span>
+                                    </div>
+                                    <a href="/Webprojekt/php/bestellung/erneut_bestellen.php?bestellung_id=<?php echo $bestellung['id']; ?>" class="btn-reorder">
+                                        🔄 Erneut bestellen
+                                    </a>
                                 </div>
                             </div>
                         <?php endforeach; ?>

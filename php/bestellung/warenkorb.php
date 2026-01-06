@@ -63,16 +63,56 @@ function loadCartData(mysqli $con, int $kundenId, string $shippingMethod = 'dhl'
     $items = [];
     $maxQuantity = 0;
     $subtotalVorRabatt = 0;
+    $inaktiveCodeArtikel = []; // Artikel mit inaktiven Gutscheincodes zum Entfernen
     
     // Erste Iteration: Alle Items laden und maximale Menge ermitteln
     while ($row = $res->fetch_assoc()) {
         $row['name'] = $row['name'] ?? 'Unbekanntes Produkt';
         $row['preis'] = $row['preis'] ?? 0.0;
         $row['menge'] = $row['menge'] ?? 0;
+        $row['kategorie'] = $row['kategorie'] ?? '';
+        
+        // Bei Code-Artikeln (Gutscheincodes) prüfen, ob noch aktiv
+        if ($row['kategorie'] === 'Code') {
+            $stmtCheck = $con->prepare("SELECT aktiv FROM gutscheincodes WHERE gutscheinCode = ? AND aktiv = 1 LIMIT 1");
+            $stmtCheck->bind_param('s', $row['name']);
+            $stmtCheck->execute();
+            $checkResult = $stmtCheck->get_result();
+            
+            if ($checkResult->num_rows === 0) {
+                // Gutscheincode ist nicht mehr aktiv - zur Entfernung vormerken
+                $inaktiveCodeArtikel[] = (int)$row['artikel_id'];
+                $stmtCheck->close();
+                continue; // Überspringen, nicht zum Warenkorb hinzufügen
+            }
+            $stmtCheck->close();
+        }
         
         $items[(int)$row['artikel_id']] = $row;
         $maxQuantity = max($maxQuantity, (int)$row['menge']);
         $subtotalVorRabatt += $row['preis'] * $row['menge'];
+    }
+    
+    // Inaktive Code-Artikel aus Warenkorb entfernen
+    if (!empty($inaktiveCodeArtikel)) {
+        $warenkorb_id_for_delete = null;
+        $stmtWk = $con->prepare("SELECT id FROM warenkorbkopf WHERE kunde_id = ? LIMIT 1");
+        $stmtWk->bind_param('i', $kundenId);
+        $stmtWk->execute();
+        $resWk = $stmtWk->get_result();
+        if ($resWk->num_rows > 0) {
+            $warenkorb_id_for_delete = (int)$resWk->fetch_assoc()['id'];
+        }
+        $stmtWk->close();
+        
+        if ($warenkorb_id_for_delete) {
+            foreach ($inaktiveCodeArtikel as $inaktiver_artikel_id) {
+                $stmtDel = $con->prepare("DELETE FROM warenkorbposition WHERE warenkorb_id = ? AND artikel_id = ?");
+                $stmtDel->bind_param('ii', $warenkorb_id_for_delete, $inaktiver_artikel_id);
+                $stmtDel->execute();
+                $stmtDel->close();
+            }
+        }
     }
     
     // Rabattsatz basierend auf maximaler Menge ermitteln

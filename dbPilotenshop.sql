@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Erstellungszeit: 05. Jan 2026 um 04:07
--- Server-Version: 10.4.32-MariaDB
--- PHP-Version: 8.2.12
+-- Host: localhost
+-- Erstellungszeit: 06. Jan 2026 um 15:42
+-- Server-Version: 10.4.28-MariaDB
+-- PHP-Version: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -46,7 +46,7 @@ CREATE TABLE `artikel` (
 
 INSERT INTO `artikel` (`id`, `name`, `beschreibung`, `preis`, `groesse`, `lagerbestand`, `kategorie`, `bewertung`, `anzahl_bewertungen`, `rabatt`) VALUES
 (1, 'Punkte', 'CockpitCorner Punkte', 0.10, '', 0, 'Punkte', 0, 0, 0),
-(2, 'NeuJahr2026', 'Gutschein: NeuJahr2026', 0.00, '', 0, 'Code', NULL, 0, 26),
+(2, 'Neujahr', 'Gutschein: Neujahr', 0.00, 'O', 0, 'Code', NULL, 0, 26),
 (3, 'GutenRutsch', 'Gutschein: GutenRutsch', 0.00, 'O', 0, 'Code', NULL, 0, 10),
 (1001, 'Bose A30 Aviation Headset', 'Premium ANR-Headset mit hohem Tragekomfort und exzellenter Lärmreduzierung.', 1299.00, 'O', 25, 'Headsets', 5, 7, NULL),
 (1002, 'Lightspeed Zulu 3 ANR Headset', 'Beliebtes ANR-Headset, bekannt für Komfort, Haltbarkeit und klare Audioqualität.', 950.00, 'O', 30, 'Headsets', 4, 6, NULL),
@@ -102,33 +102,42 @@ CREATE TABLE `bestellkopf` (
   `user_id` int(11) DEFAULT NULL,
   `bestelldatum` datetime DEFAULT current_timestamp(),
   `gesamtbetrag` decimal(10,2) DEFAULT NULL,
-  `status` varchar(50) DEFAULT NULL
+  `status` varchar(50) DEFAULT NULL,
+  `versandart` int(1) DEFAULT 2 COMMENT '1=LPD, 2=DHL, 3=DHL Express'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Daten für Tabelle `bestellkopf`
 --
 
-INSERT INTO `bestellkopf` (`id`, `user_id`, `bestelldatum`, `gesamtbetrag`, `status`) VALUES
-(1, 66, '2025-12-31 15:47:19', 249.00, 'bezahlt'),
-(2, 66, '2026-01-02 20:49:27', 967.18, 'bezahlt'),
-(3, 66, '2026-01-02 21:15:55', 229.00, 'bezahlt'),
-(4, 66, '2026-01-02 21:24:38', 36.00, 'bezahlt'),
-(5, 66, '2026-01-02 21:25:40', 849.00, 'bezahlt'),
-(6, 66, '2026-01-02 21:27:40', 159.00, 'bezahlt'),
-(7, 66, '2026-01-02 21:29:57', 25.00, 'bezahlt'),
-(8, 66, '2026-01-02 21:34:14', 30.00, 'bezahlt'),
-(9, 66, '2026-01-02 21:39:01', 22.20, 'bezahlt'),
-(10, 66, '2026-01-02 21:44:24', 1299.00, 'bezahlt'),
-(11, 66, '2026-01-02 21:44:28', 0.00, 'bezahlt'),
-(12, 66, '2026-01-02 21:45:23', 25.00, 'bezahlt'),
-(13, 66, '2026-01-04 16:07:37', 9.40, 'bezahlt'),
-(14, 66, '2026-01-04 16:07:40', 0.00, 'bezahlt'),
-(15, 68, '2026-01-04 17:30:20', 2745.25, 'bezahlt'),
-(16, 67, '2026-01-04 17:33:10', 62.75, 'bezahlt'),
-(17, 69, '2026-01-04 18:46:35', 1199.00, 'bezahlt'),
-(18, 69, '2026-01-04 23:10:16', 25.00, 'bezahlt'),
-(19, 69, '2026-01-04 23:33:37', 1153.00, 'bezahlt');
+INSERT INTO `bestellkopf` (`id`, `user_id`, `bestelldatum`, `gesamtbetrag`, `status`, `versandart`) VALUES
+(1, 66, '2025-12-31 15:47:19', 249.00, 'bezahlt', 2),
+(2, 66, '2026-01-02 20:49:27', 967.18, 'bezahlt', 2),
+(3, 66, '2026-01-02 21:15:55', 229.00, 'bezahlt', 2),
+(4, 66, '2026-01-02 21:24:38', 36.00, 'bezahlt', 2),
+(5, 66, '2026-01-02 21:25:40', 849.00, 'bezahlt', 2),
+(6, 66, '2026-01-02 21:27:40', 159.00, 'bezahlt', 2),
+(7, 66, '2026-01-02 21:29:57', 25.00, 'bezahlt', 2),
+(8, 66, '2026-01-02 21:34:14', 30.00, 'bezahlt', 2),
+(9, 66, '2026-01-02 21:39:01', 22.20, 'bezahlt', 2),
+(10, 66, '2026-01-02 21:44:24', 1299.00, 'bezahlt', 2),
+(11, 66, '2026-01-02 21:44:28', 0.00, 'bezahlt', 2),
+(12, 66, '2026-01-02 21:45:23', 25.00, 'bezahlt', 2),
+(13, 66, '2026-01-04 16:07:37', 9.40, 'bezahlt', 2),
+(14, 66, '2026-01-04 16:07:40', 0.00, 'bezahlt', 2),
+(15, 66, '2026-01-05 21:56:52', 169.46, 'bezahlt', 2),
+(16, 66, '2026-01-05 21:56:55', 169.46, 'bezahlt', 2),
+(17, 66, '2026-01-05 21:57:38', 169.46, 'bezahlt', 2),
+(18, 66, '2026-01-05 22:05:05', 887.26, 'bezahlt', 2),
+(19, 66, '2026-01-05 22:07:17', 33.30, 'bezahlt', 2),
+(20, 66, '2026-01-05 22:10:46', 25.00, 'bezahlt', 2),
+(21, 66, '2026-01-05 22:11:16', 17.02, 'bezahlt', 2),
+(22, 66, '2026-01-05 22:17:08', 22.20, 'bezahlt', 2),
+(23, 66, '2026-01-06 15:38:17', 51.90, 'bezahlt', 2),
+(24, 66, '2026-01-06 15:38:54', 51.90, 'bezahlt', 2),
+(25, 66, '2026-01-06 15:39:07', 36.90, 'bezahlt', 2),
+(26, 66, '2026-01-06 15:40:52', 36.90, 'bezahlt', 2),
+(27, 66, '2026-01-06 15:41:41', 29.10, 'bezahlt', 2);
 
 --
 -- Trigger `bestellkopf`
@@ -136,8 +145,8 @@ INSERT INTO `bestellkopf` (`id`, `user_id`, `bestelldatum`, `gesamtbetrag`, `sta
 DELIMITER $$
 CREATE TRIGGER `Bezahlt - Insert` AFTER INSERT ON `bestellkopf` FOR EACH ROW BEGIN
     IF NEW.status = 'bezahlt' THEN
-        INSERT INTO rechnungskopf (bestellID, rechnungsdatum, betrag)
-        VALUES (New.id, NEW.bestelldatum, NEW.gesamtbetrag );
+        INSERT INTO rechnungskopf (bestellID, rechnungsdatum, betrag, versandart)
+        VALUES (NEW.id, NEW.bestelldatum, NEW.gesamtbetrag, COALESCE(NEW.versandart, 2));
     END IF;
 END
 $$
@@ -182,16 +191,27 @@ INSERT INTO `bestellposition` (`id`, `bestellung_id`, `artikel_id`, `menge`, `ei
 (14, 10, 1001, 1, 1299.00),
 (15, 12, 1008, 1, 25.00),
 (16, 13, 1026, 1, 13.00),
-(17, 15, 1014, 3, 1199.00),
-(18, 15, 1027, 1, 23.00),
-(19, 15, 1039, 2, 45.00),
-(20, 16, 1009, 2, 36.00),
-(21, 16, 1026, 1, 13.00),
-(22, 17, 1014, 1, 1199.00),
-(23, 18, 1008, 1, 25.00),
-(24, 19, 1002, 1, 950.00),
-(25, 19, 1008, 1, 25.00),
-(26, 19, 1036, 2, 89.00);
+(17, 15, 1021, 1, 229.00),
+(18, 15, 2, 1, -59.54),
+(19, 16, 1021, 1, 229.00),
+(20, 16, 2, 1, -59.54),
+(21, 17, 1021, 1, 229.00),
+(22, 17, 2, 1, -59.54),
+(23, 18, 1014, 1, 1199.00),
+(24, 18, 2, 1, -311.74),
+(25, 19, 1039, 1, 45.00),
+(26, 19, 2, 1, -11.70),
+(27, 20, 1008, 1, 25.00),
+(28, 21, 1027, 1, 23.00),
+(29, 21, 2, 1, -5.98),
+(30, 22, 1032, 1, 30.00),
+(31, 22, 2, 1, -7.80),
+(32, 23, 1039, 1, 45.00),
+(33, 24, 1039, 1, 45.00),
+(34, 25, 1032, 1, 30.00),
+(35, 26, 1032, 1, 30.00),
+(36, 27, 1032, 1, 30.00),
+(37, 27, 2, 1, -7.80);
 
 --
 -- Trigger `bestellposition`
@@ -303,7 +323,7 @@ CREATE TABLE `cart` (
 CREATE TABLE `gutscheincodes` (
   `gutscheinCode` varchar(11) NOT NULL,
   `erstelltAm` date NOT NULL DEFAULT current_timestamp(),
-  `aktiv` tinyint(1) NOT NULL,
+  `aktiv` tinyint(1) NOT NULL DEFAULT 1,
   `wert` int(3) NOT NULL,
   `art` int(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -314,14 +334,18 @@ CREATE TABLE `gutscheincodes` (
 
 INSERT INTO `gutscheincodes` (`gutscheinCode`, `erstelltAm`, `aktiv`, `wert`, `art`) VALUES
 ('GutenRutsch', '2025-12-30', 1, 10, 0),
-('NeuJahr2026', '2025-12-30', 1, 10, 0);
+('Neujahr', '2026-01-06', 1, 26, 0),
+('NEW100', '2026-01-06', 0, 15, 1);
 
 --
 -- Trigger `gutscheincodes`
 --
 DELIMITER $$
-CREATE TRIGGER `GutscheinCodes als Artikel` AFTER INSERT ON `gutscheincodes` FOR EACH ROW BEGIN
-    DECLARE next_id INT DEFAULT NULL;
+CREATE TRIGGER `Delete Article` AFTER UPDATE ON `gutscheincodes` FOR EACH ROW BEGIN
+    DECLARE next_id INT DEFAULT NULL;  -- ✅ Am Anfang deklarieren!
+    
+    -- Wenn Gutschein von inaktiv auf aktiv gesetzt wird: Artikel erstellen
+    IF OLD.aktiv = 0 AND NEW.aktiv = 1 THEN
         SELECT MIN(a1.id + 1) INTO next_id
         FROM artikel a1
         WHERE a1.id < 1000
@@ -330,24 +354,146 @@ CREATE TRIGGER `GutscheinCodes als Artikel` AFTER INSERT ON `gutscheincodes` FOR
             WHERE a2.id = a1.id + 1 AND a2.id < 1000
         );
    
-    IF next_id IS NULL OR next_id >= 1000 THEN
-        SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Keine freie ID unter 1000 verfügbar für Gutscheincode';
+        IF next_id IS NULL OR next_id >= 1000 THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Keine freie ID unter 1000 verfügbar für Gutscheincode';
+        END IF;
+        
+        -- art = 0: Prozent-Rabatt (wert in rabatt)
+        -- art >= 1: Fixer Betrag (wert in preis)
+        IF NEW.art = 0 THEN
+            INSERT INTO `artikel` (`id`, `name`, `beschreibung`, `groesse`, `preis`, `rabatt`, `lagerbestand`, `kategorie`, `bewertung`, `anzahl_bewertungen`)
+            VALUES (
+                next_id,
+                NEW.gutscheinCode,
+                CONCAT('Gutschein: ', NEW.gutscheinCode),
+                'O',
+                0,
+                NEW.wert,
+                0,
+                'Code',
+                NULL,
+                0
+            );
+        ELSE
+            INSERT INTO `artikel` (`id`, `name`, `beschreibung`, `groesse`, `preis`, `rabatt`, `lagerbestand`, `kategorie`, `bewertung`, `anzahl_bewertungen`)
+            VALUES (
+                next_id,
+                NEW.gutscheinCode,
+                CONCAT('Gutschein: ', NEW.gutscheinCode),
+                'O',
+                NEW.wert,
+                0,
+                0,
+                'Code',
+                NULL,
+                0
+            );
+        END IF;
     END IF;
     
-    INSERT INTO `artikel` (`id`, `name`, `beschreibung`, `groesse`, `preis`, `rabatt`, `lagerbestand`, `kategorie`, `bewertung`, `anzahl_bewertungen`)
-    VALUES (
-        next_id,
-        NEW.gutscheinCode,
-        CONCAT('Gutschein: ', NEW.gutscheinCode),
-        'O',
-        0,
-        NEW.wert,
-        0,
-        'Code',
-        NULL,
-        0
-    );
+    -- Wenn Gutschein von aktiv auf inaktiv gesetzt wird: Artikel löschen
+    IF OLD.aktiv = 1 AND NEW.aktiv = 0 THEN
+        DELETE FROM `artikel` 
+        WHERE `name` = OLD.gutscheinCode 
+        AND `kategorie` = 'Code';
+    END IF;
+
+    -- Wenn Gutscheincode umbenannt wird (nur bei aktiven Gutscheinen)
+    IF OLD.gutscheinCode != NEW.gutscheinCode AND NEW.aktiv = 1 THEN
+        UPDATE `artikel` 
+        SET `name` = NEW.gutscheinCode,
+            `beschreibung` = CONCAT('Gutschein: ', NEW.gutscheinCode)
+        WHERE `name` = OLD.gutscheinCode 
+        AND `kategorie` = 'Code';
+    END IF;
+    
+    -- Wenn Wert geändert wird (nur bei aktiven Gutscheinen)
+    IF OLD.wert != NEW.wert AND NEW.aktiv = 1 THEN
+        IF NEW.art = 0 THEN
+            -- Prozent-Rabatt: Update rabatt
+            UPDATE `artikel` 
+            SET `rabatt` = NEW.wert 
+            WHERE `name` = NEW.gutscheinCode 
+            AND `kategorie` = 'Code';
+        ELSE
+            -- Fixer Betrag: Update preis
+            UPDATE `artikel` 
+            SET `preis` = NEW.wert 
+            WHERE `name` = NEW.gutscheinCode 
+            AND `kategorie` = 'Code';
+        END IF;
+    END IF;
+    
+    -- Wenn Art geändert wird (nur bei aktiven Gutscheinen)
+    IF OLD.art != NEW.art AND NEW.aktiv = 1 THEN
+        IF NEW.art = 0 THEN
+            -- Wechsel zu Prozent-Rabatt: preis → 0, wert → rabatt
+            UPDATE `artikel` 
+            SET `preis` = 0,
+                `rabatt` = NEW.wert
+            WHERE `name` = NEW.gutscheinCode 
+            AND `kategorie` = 'Code';
+        ELSE
+            -- Wechsel zu fixem Betrag: wert → preis, rabatt → 0
+            UPDATE `artikel` 
+            SET `preis` = NEW.wert,
+                `rabatt` = 0
+            WHERE `name` = NEW.gutscheinCode 
+            AND `kategorie` = 'Code';
+        END IF;
+    END IF;
+END
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `GutscheinCodes als Artikel` AFTER INSERT ON `gutscheincodes` FOR EACH ROW BEGIN
+    DECLARE next_id INT DEFAULT NULL;
+    
+    IF NEW.aktiv = 1 THEN
+        SELECT MIN(a1.id + 1) INTO next_id
+        FROM artikel a1
+        WHERE a1.id < 1000
+        AND NOT EXISTS (
+            SELECT 1 FROM artikel a2 
+            WHERE a2.id = a1.id + 1 AND a2.id < 1000
+        );
+   
+        IF next_id IS NULL OR next_id >= 1000 THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Keine freie ID unter 1000 verfügbar für Gutscheincode';
+        END IF;
+      IF NEW.art = 0 THEN
+        
+        INSERT INTO `artikel` (`id`, `name`, `beschreibung`, `groesse`, `preis`, `rabatt`, `lagerbestand`, `kategorie`, `bewertung`, `anzahl_bewertungen`)
+        VALUES (
+            next_id,
+            NEW.gutscheinCode,
+            CONCAT('Gutschein: ', NEW.gutscheinCode),
+            'O',
+            0,
+            NEW.wert,
+            0,
+            'Code',
+            NULL,
+            0
+        );
+        ELSEIF NEW.art >= 1 THEN
+                INSERT INTO `artikel` (`id`, `name`, `beschreibung`, `groesse`, `preis`, `rabatt`, `lagerbestand`, `kategorie`, `bewertung`, `anzahl_bewertungen`)
+        VALUES (
+            next_id,
+            NEW.gutscheinCode,
+            CONCAT('Gutschein: ', NEW.gutscheinCode),
+            'O',
+            NEW.wert,
+            0,
+            0,
+            'Code',
+            NULL,
+            0
+        );
+        END IF;
+    END IF;
 END
 $$
 DELIMITER ;
@@ -437,7 +583,7 @@ INSERT INTO `punkte` (`user_id`, `punktestand`) VALUES
 (60, 100),
 (64, 114),
 (65, 115),
-(66, 5),
+(66, 255),
 (67, 10),
 (68, 5),
 (69, 210),
@@ -533,7 +679,12 @@ INSERT INTO `punktelog` (`transaktions_id`, `user_id`, `datum`, `art`, `punkte_a
 (40, 80, '2026-01-05 04:03:30', NULL, 0, 250, NULL),
 (41, 80, '2026-01-05 04:04:00', 'Automatisch', 5, 255, 'Änderung am Punktestand'),
 (42, 81, '2026-01-05 04:05:29', NULL, 0, 250, NULL),
-(43, 81, '2026-01-05 04:06:05', 'Automatisch', 5, 255, 'Änderung am Punktestand');
+(43, 81, '2026-01-05 04:06:05', 'Automatisch', 5, 255, 'Änderung am Punktestand'),
+(44, 66, '2026-01-06 15:38:17', 'Automatisch', 50, 55, 'Änderung am Punktestand'),
+(45, 66, '2026-01-06 15:38:54', 'Automatisch', 50, 105, 'Änderung am Punktestand'),
+(46, 66, '2026-01-06 15:39:07', 'Automatisch', 50, 155, 'Änderung am Punktestand'),
+(47, 66, '2026-01-06 15:40:52', 'Automatisch', 50, 205, 'Änderung am Punktestand'),
+(48, 66, '2026-01-06 15:41:41', 'Automatisch', 50, 255, 'Änderung am Punktestand');
 
 -- --------------------------------------------------------
 
@@ -572,7 +723,12 @@ INSERT INTO `rechnungskopf` (`id`, `bestellID`, `rechnungsdatum`, `betrag`, `ver
 (27, 16, '2026-01-04 17:33:10', 62.75, 1),
 (28, 17, '2026-01-04 18:46:35', 1199.00, 1),
 (29, 18, '2026-01-04 23:10:16', 25.00, 1),
-(30, 19, '2026-01-04 23:33:37', 1153.00, 1);
+(30, 19, '2026-01-04 23:33:37', 1153.00, 1),
+(34, 23, '2026-01-06 15:38:17', 51.90, 2),
+(35, 24, '2026-01-06 15:38:54', 51.90, 2),
+(36, 25, '2026-01-06 15:39:07', 36.90, 2),
+(37, 26, '2026-01-06 15:40:52', 36.90, 2),
+(38, 27, '2026-01-06 15:41:41', 29.10, 2);
 
 -- --------------------------------------------------------
 
@@ -617,7 +773,13 @@ INSERT INTO `rechnungsposition` (`rechnungsID`, `artikel_id`, `artikel_name`, `m
 (29, 1008, 'ICAO Karte Deutschland (Set)', 1, 25.00, 19.00),
 (30, 1002, 'Lightspeed Zulu 3 ANR Headset', 1, 950.00, 19.00),
 (30, 1008, 'ICAO Karte Deutschland (Set)', 1, 25.00, 19.00),
-(30, 1036, 'Tempest AA472 Oil Filter Cutter', 2, 89.00, 19.00);
+(30, 1036, 'Tempest AA472 Oil Filter Cutter', 2, 89.00, 19.00),
+(34, 1039, 'Lufthansa Erste-Hilfe-Set DIN 13157 erweitert', 1, 45.00, 19.00),
+(35, 1039, 'Lufthansa Erste-Hilfe-Set DIN 13157 erweitert', 1, 45.00, 19.00),
+(36, 1032, 'Flugzeug Radkeile, Gummi (Paar)', 1, 30.00, 19.00),
+(37, 1032, 'Flugzeug Radkeile, Gummi (Paar)', 1, 30.00, 19.00),
+(38, 2, 'Neujahr', 1, -7.80, 19.00),
+(38, 1032, 'Flugzeug Radkeile, Gummi (Paar)', 1, 30.00, 19.00);
 
 -- --------------------------------------------------------
 
@@ -716,7 +878,8 @@ CREATE TABLE `warenkorbposition` (
 --
 
 INSERT INTO `warenkorbposition` (`warenkorb_id`, `artikel_id`, `menge`) VALUES
-(1, 1001, 2);
+(1, 1001, 2),
+(2, 1009, 1);
 
 --
 -- Indizes der exportierten Tabellen
@@ -821,13 +984,13 @@ ALTER TABLE `artikel`
 -- AUTO_INCREMENT für Tabelle `bestellkopf`
 --
 ALTER TABLE `bestellkopf`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT für Tabelle `bestellposition`
 --
 ALTER TABLE `bestellposition`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- AUTO_INCREMENT für Tabelle `logs`
@@ -839,13 +1002,13 @@ ALTER TABLE `logs`
 -- AUTO_INCREMENT für Tabelle `punktelog`
 --
 ALTER TABLE `punktelog`
-  MODIFY `transaktions_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+  MODIFY `transaktions_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
 
 --
 -- AUTO_INCREMENT für Tabelle `rechnungskopf`
 --
 ALTER TABLE `rechnungskopf`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- AUTO_INCREMENT für Tabelle `user`

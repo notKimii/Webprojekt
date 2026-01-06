@@ -112,8 +112,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['promo_code']) && isse
       exit();
     }
     
-    // Prüfen ob Artikel existiert
-    $stmt = $con->prepare("SELECT id, name, rabatt FROM artikel WHERE name = ? AND kategorie = 'Code' LIMIT 1");
+    // Prüfen ob Gutscheincode in der gutscheincodes-Tabelle existiert und aktiv ist
+    $stmt = $con->prepare("SELECT aktiv, wert, art FROM gutscheincodes WHERE gutscheinCode = ? AND aktiv = 1 LIMIT 1");
     if (!$stmt) {
       echo json_encode(['success' => false, 'message' => 'Datenbankfehler: ' . $con->error]);
       exit();
@@ -121,53 +121,72 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['promo_code']) && isse
     
     $stmt->bind_param('s', $promoCode);
     $stmt->execute();
-    $result = $stmt->get_result();
+    $resultGutschein = $stmt->get_result();
     
-    if ($result->num_rows > 0) {
-      $artikel = $result->fetch_assoc();
-      $artikelId = (int)$artikel['id'];
-      $rabatt = (int)$artikel['rabatt'];
+    if ($resultGutschein->num_rows > 0) {
+      $gutschein = $resultGutschein->fetch_assoc();
+      $rabatt = (int)$gutschein['wert'];
+      
+      // Prüfen ob Artikel existiert
+      $stmt2 = $con->prepare("SELECT id, name, rabatt FROM artikel WHERE name = ? AND kategorie = 'Code' LIMIT 1");
+      if (!$stmt2) {
+        echo json_encode(['success' => false, 'message' => 'Datenbankfehler: ' . $con->error]);
+        exit();
+      }
+      
+      $stmt2->bind_param('s', $promoCode);
+      $stmt2->execute();
+      $result = $stmt2->get_result();
+      
+      if ($result->num_rows > 0) {
+        $artikel = $result->fetch_assoc();
+        $artikelId = (int)$artikel['id'];
+        $rabatt = (int)$artikel['rabatt'];
       
       // Warenkorb-ID ermitteln
       $stmt2 = $con->prepare("SELECT id FROM warenkorbkopf WHERE kunde_id = ? LIMIT 1");
       $stmt2->bind_param('i', $kundenId);
       $stmt2->execute();
       $res2 = $stmt2->get_result();
-      
-      if ($res2->num_rows > 0) {
-        $warenkorbRow = $res2->fetch_assoc();
-        $warenkorbId = (int)$warenkorbRow['id'];
         
-        // Prüfen ob Promocode bereits im Warenkorb
-        $stmt3 = $con->prepare("SELECT artikel_id FROM warenkorbposition WHERE warenkorb_id = ? AND artikel_id = ?");
-        $stmt3->bind_param('ii', $warenkorbId, $artikelId);
-        $stmt3->execute();
-        $res3 = $stmt3->get_result();
-        
-        if ($res3->num_rows > 0) {
-          echo json_encode(['success' => false, 'message' => 'Promocode bereits verwendet.']);
-        } else {
-          // Promocode zum Warenkorb hinzufügen
-          $stmt4 = $con->prepare("INSERT INTO warenkorbposition (warenkorb_id, artikel_id, menge) VALUES (?, ?, 1)");
+        if ($res2->num_rows > 0) {
+          $warenkorbRow = $res2->fetch_assoc();
+          $warenkorbId = (int)$warenkorbRow['id'];
+          
+          // Prüfen ob Promocode bereits im Warenkorb
+          $stmt4 = $con->prepare("SELECT artikel_id FROM warenkorbposition WHERE warenkorb_id = ? AND artikel_id = ?");
           $stmt4->bind_param('ii', $warenkorbId, $artikelId);
-          if ($stmt4->execute()) {
-            echo json_encode([
-              'success' => true, 
-              'message' => 'Promocode angewendet! ' . $rabatt . '% Rabatt',
-              'reload' => true
-            ]);
+          $stmt4->execute();
+          $res3 = $stmt4->get_result();
+          
+          if ($res3->num_rows > 0) {
+            echo json_encode(['success' => false, 'message' => 'Promocode bereits verwendet.']);
           } else {
-            echo json_encode(['success' => false, 'message' => 'Fehler beim Anwenden: ' . $con->error]);
+            // Promocode zum Warenkorb hinzufügen
+            $stmt5 = $con->prepare("INSERT INTO warenkorbposition (warenkorb_id, artikel_id, menge) VALUES (?, ?, 1)");
+            $stmt5->bind_param('ii', $warenkorbId, $artikelId);
+            if ($stmt5->execute()) {
+              echo json_encode([
+                'success' => true, 
+                'message' => 'Promocode angewendet! ' . $rabatt . '% Rabatt',
+                'reload' => true
+              ]);
+            } else {
+              echo json_encode(['success' => false, 'message' => 'Fehler beim Anwenden: ' . $con->error]);
+            }
+            $stmt5->close();
           }
           $stmt4->close();
+        } else {
+          echo json_encode(['success' => false, 'message' => 'Warenkorb nicht gefunden.']);
         }
         $stmt3->close();
       } else {
-        echo json_encode(['success' => false, 'message' => 'Warenkorb nicht gefunden.']);
+        echo json_encode(['success' => false, 'message' => 'Artikel nicht gefunden.']);
       }
       $stmt2->close();
     } else {
-      echo json_encode(['success' => false, 'message' => 'Ungültiger Promocode.']);
+      echo json_encode(['success' => false, 'message' => 'Ungültiger oder inaktiver Promocode.']);
     }
     
     $stmt->close();
@@ -386,6 +405,7 @@ function loadCartData(mysqli $con, int $kundenId, string $shippingMethod = 'dhl'
   $maxQuantity = 0;
   $subtotalVorRabatt = 0;
   $promoCodeItems = []; // Promocode-Artikel separat speichern
+  $inaktiveCodeArtikel = []; // Artikel mit inaktiven Gutscheincodes zum Entfernen
   
   // Erste Iteration: Alle Items laden und maximale Menge ermitteln
   while ($row = $res->fetch_assoc()) {
@@ -396,11 +416,49 @@ function loadCartData(mysqli $con, int $kundenId, string $shippingMethod = 'dhl'
     
     // Prüfen ob es ein Promocode-Artikel oder Punkte-Artikel ist
     if ($row['kategorie'] === 'Code' || $row['kategorie'] === 'Punkte') {
+      // Bei Code-Artikeln prüfen, ob Gutschein noch aktiv ist
+      if ($row['kategorie'] === 'Code') {
+        $stmtCheck = $con->prepare("SELECT aktiv FROM gutscheincodes WHERE gutscheinCode = ? AND aktiv = 1 LIMIT 1");
+        $stmtCheck->bind_param('s', $row['name']);
+        $stmtCheck->execute();
+        $checkResult = $stmtCheck->get_result();
+        
+        if ($checkResult->num_rows === 0) {
+          // Gutscheincode ist nicht mehr aktiv - zur Entfernung vormerken
+          $inaktiveCodeArtikel[] = (int)$row['artikel_id'];
+          $stmtCheck->close();
+          continue; // Überspringen, nicht zum Warenkorb hinzufügen
+        }
+        $stmtCheck->close();
+      }
+      
       $promoCodeItems[(int)$row['artikel_id']] = $row;
     } else {
       $items[(int)$row['artikel_id']] = $row;
       $maxQuantity = max($maxQuantity, (int)$row['menge']);
       $subtotalVorRabatt += $row['preis'] * $row['menge'];
+    }
+  }
+  
+  // Inaktive Code-Artikel aus Warenkorb entfernen
+  if (!empty($inaktiveCodeArtikel)) {
+    $warenkorb_id_for_delete = null;
+    $stmtWk = $con->prepare("SELECT id FROM warenkorbkopf WHERE kunde_id = ? LIMIT 1");
+    $stmtWk->bind_param('i', $kundenId);
+    $stmtWk->execute();
+    $resWk = $stmtWk->get_result();
+    if ($resWk->num_rows > 0) {
+      $warenkorb_id_for_delete = (int)$resWk->fetch_assoc()['id'];
+    }
+    $stmtWk->close();
+    
+    if ($warenkorb_id_for_delete) {
+      foreach ($inaktiveCodeArtikel as $inaktiver_artikel_id) {
+        $stmtDel = $con->prepare("DELETE FROM warenkorbposition WHERE warenkorb_id = ? AND artikel_id = ?");
+        $stmtDel->bind_param('ii', $warenkorb_id_for_delete, $inaktiver_artikel_id);
+        $stmtDel->execute();
+        $stmtDel->close();
+      }
     }
   }
   

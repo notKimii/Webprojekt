@@ -6,6 +6,10 @@ error_reporting(E_ALL);
 session_start();
 include "../include/connectcon.php";
 
+// Warnung für nicht verfügbare Artikel bei Wiederbestellung
+$reorderWarning = $_SESSION['reorder_warning'] ?? null;
+unset($_SESSION['reorder_warning']);
+
 // Rechnungs-E-Mail versenden, falls Bestellung-ID übergeben wurde
 if (isset($_GET['bestellung_id'])) {
     $bestellungId = (int)$_GET['bestellung_id'];
@@ -85,6 +89,12 @@ if (isset($_GET['bestellung_id'])) {
                 
                 <!-- Thank You Message -->
                 <h1 class="text-center mb-4">Vielen Dank für Ihre Bestellung!</h1>
+                
+                <?php if ($reorderWarning): ?>
+                <div class="alert alert-warning" role="alert">
+                    <strong>⚠️ Hinweis:</strong> <?php echo htmlspecialchars($reorderWarning); ?>
+                </div>
+                <?php endif; ?>
                 
                 <div class="text-center mb-4">
                     <p class="lead mb-3">Ihre Bestellung wurde erfolgreich aufgegeben.</p>
