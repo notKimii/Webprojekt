@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Erstellungszeit: 06. Jan 2026 um 15:42
+-- Erstellungszeit: 06. Jan 2026 um 16:25
 -- Server-Version: 10.4.28-MariaDB
 -- PHP-Version: 8.2.4
 
@@ -137,7 +137,9 @@ INSERT INTO `bestellkopf` (`id`, `user_id`, `bestelldatum`, `gesamtbetrag`, `sta
 (24, 66, '2026-01-06 15:38:54', 51.90, 'bezahlt', 2),
 (25, 66, '2026-01-06 15:39:07', 36.90, 'bezahlt', 2),
 (26, 66, '2026-01-06 15:40:52', 36.90, 'bezahlt', 2),
-(27, 66, '2026-01-06 15:41:41', 29.10, 'bezahlt', 2);
+(27, 66, '2026-01-06 15:41:41', 29.10, 'bezahlt', 2),
+(28, 66, '2026-01-06 15:45:29', 36.90, 'bezahlt', 2),
+(29, 66, '2026-01-06 15:48:03', 36.90, 'bezahlt', 2);
 
 --
 -- Trigger `bestellkopf`
@@ -211,7 +213,9 @@ INSERT INTO `bestellposition` (`id`, `bestellung_id`, `artikel_id`, `menge`, `ei
 (34, 25, 1032, 1, 30.00),
 (35, 26, 1032, 1, 30.00),
 (36, 27, 1032, 1, 30.00),
-(37, 27, 2, 1, -7.80);
+(37, 27, 2, 1, -7.80),
+(38, 28, 1032, 1, 30.00),
+(39, 29, 1032, 1, 30.00);
 
 --
 -- Trigger `bestellposition`
@@ -334,7 +338,7 @@ CREATE TABLE `gutscheincodes` (
 
 INSERT INTO `gutscheincodes` (`gutscheinCode`, `erstelltAm`, `aktiv`, `wert`, `art`) VALUES
 ('GutenRutsch', '2025-12-30', 1, 10, 0),
-('Neujahr', '2026-01-06', 1, 26, 0),
+('Neujahr', '2026-01-06', 0, 26, 0),
 ('NEW100', '2026-01-06', 0, 15, 1);
 
 --
@@ -342,64 +346,8 @@ INSERT INTO `gutscheincodes` (`gutscheinCode`, `erstelltAm`, `aktiv`, `wert`, `a
 --
 DELIMITER $$
 CREATE TRIGGER `Delete Article` AFTER UPDATE ON `gutscheincodes` FOR EACH ROW BEGIN
-    DECLARE next_id INT DEFAULT NULL;  -- ✅ Am Anfang deklarieren!
+    DECLARE next_id INT DEFAULT NULL;  
     
-    -- Wenn Gutschein von inaktiv auf aktiv gesetzt wird: Artikel erstellen
-    IF OLD.aktiv = 0 AND NEW.aktiv = 1 THEN
-        SELECT MIN(a1.id + 1) INTO next_id
-        FROM artikel a1
-        WHERE a1.id < 1000
-        AND NOT EXISTS (
-            SELECT 1 FROM artikel a2 
-            WHERE a2.id = a1.id + 1 AND a2.id < 1000
-        );
-   
-        IF next_id IS NULL OR next_id >= 1000 THEN
-            SIGNAL SQLSTATE '45000'
-            SET MESSAGE_TEXT = 'Keine freie ID unter 1000 verfügbar für Gutscheincode';
-        END IF;
-        
-        -- art = 0: Prozent-Rabatt (wert in rabatt)
-        -- art >= 1: Fixer Betrag (wert in preis)
-        IF NEW.art = 0 THEN
-            INSERT INTO `artikel` (`id`, `name`, `beschreibung`, `groesse`, `preis`, `rabatt`, `lagerbestand`, `kategorie`, `bewertung`, `anzahl_bewertungen`)
-            VALUES (
-                next_id,
-                NEW.gutscheinCode,
-                CONCAT('Gutschein: ', NEW.gutscheinCode),
-                'O',
-                0,
-                NEW.wert,
-                0,
-                'Code',
-                NULL,
-                0
-            );
-        ELSE
-            INSERT INTO `artikel` (`id`, `name`, `beschreibung`, `groesse`, `preis`, `rabatt`, `lagerbestand`, `kategorie`, `bewertung`, `anzahl_bewertungen`)
-            VALUES (
-                next_id,
-                NEW.gutscheinCode,
-                CONCAT('Gutschein: ', NEW.gutscheinCode),
-                'O',
-                NEW.wert,
-                0,
-                0,
-                'Code',
-                NULL,
-                0
-            );
-        END IF;
-    END IF;
-    
-    -- Wenn Gutschein von aktiv auf inaktiv gesetzt wird: Artikel löschen
-    IF OLD.aktiv = 1 AND NEW.aktiv = 0 THEN
-        DELETE FROM `artikel` 
-        WHERE `name` = OLD.gutscheinCode 
-        AND `kategorie` = 'Code';
-    END IF;
-
-    -- Wenn Gutscheincode umbenannt wird (nur bei aktiven Gutscheinen)
     IF OLD.gutscheinCode != NEW.gutscheinCode AND NEW.aktiv = 1 THEN
         UPDATE `artikel` 
         SET `name` = NEW.gutscheinCode,
@@ -408,7 +356,6 @@ CREATE TRIGGER `Delete Article` AFTER UPDATE ON `gutscheincodes` FOR EACH ROW BE
         AND `kategorie` = 'Code';
     END IF;
     
-    -- Wenn Wert geändert wird (nur bei aktiven Gutscheinen)
     IF OLD.wert != NEW.wert AND NEW.aktiv = 1 THEN
         IF NEW.art = 0 THEN
             -- Prozent-Rabatt: Update rabatt
@@ -425,17 +372,15 @@ CREATE TRIGGER `Delete Article` AFTER UPDATE ON `gutscheincodes` FOR EACH ROW BE
         END IF;
     END IF;
     
-    -- Wenn Art geändert wird (nur bei aktiven Gutscheinen)
     IF OLD.art != NEW.art AND NEW.aktiv = 1 THEN
         IF NEW.art = 0 THEN
-            -- Wechsel zu Prozent-Rabatt: preis → 0, wert → rabatt
+
             UPDATE `artikel` 
             SET `preis` = 0,
                 `rabatt` = NEW.wert
             WHERE `name` = NEW.gutscheinCode 
             AND `kategorie` = 'Code';
         ELSE
-            -- Wechsel zu fixem Betrag: wert → preis, rabatt → 0
             UPDATE `artikel` 
             SET `preis` = NEW.wert,
                 `rabatt` = 0
@@ -583,7 +528,7 @@ INSERT INTO `punkte` (`user_id`, `punktestand`) VALUES
 (60, 100),
 (64, 114),
 (65, 115),
-(66, 255),
+(66, 355),
 (67, 10),
 (68, 5),
 (69, 210),
@@ -684,7 +629,9 @@ INSERT INTO `punktelog` (`transaktions_id`, `user_id`, `datum`, `art`, `punkte_a
 (45, 66, '2026-01-06 15:38:54', 'Automatisch', 50, 105, 'Änderung am Punktestand'),
 (46, 66, '2026-01-06 15:39:07', 'Automatisch', 50, 155, 'Änderung am Punktestand'),
 (47, 66, '2026-01-06 15:40:52', 'Automatisch', 50, 205, 'Änderung am Punktestand'),
-(48, 66, '2026-01-06 15:41:41', 'Automatisch', 50, 255, 'Änderung am Punktestand');
+(48, 66, '2026-01-06 15:41:41', 'Automatisch', 50, 255, 'Änderung am Punktestand'),
+(49, 66, '2026-01-06 15:45:29', 'Automatisch', 50, 305, 'Änderung am Punktestand'),
+(50, 66, '2026-01-06 15:48:03', 'Automatisch', 50, 355, 'Änderung am Punktestand');
 
 -- --------------------------------------------------------
 
@@ -728,7 +675,9 @@ INSERT INTO `rechnungskopf` (`id`, `bestellID`, `rechnungsdatum`, `betrag`, `ver
 (35, 24, '2026-01-06 15:38:54', 51.90, 2),
 (36, 25, '2026-01-06 15:39:07', 36.90, 2),
 (37, 26, '2026-01-06 15:40:52', 36.90, 2),
-(38, 27, '2026-01-06 15:41:41', 29.10, 2);
+(38, 27, '2026-01-06 15:41:41', 29.10, 2),
+(39, 28, '2026-01-06 15:45:29', 36.90, 2),
+(40, 29, '2026-01-06 15:48:03', 36.90, 2);
 
 -- --------------------------------------------------------
 
@@ -779,7 +728,9 @@ INSERT INTO `rechnungsposition` (`rechnungsID`, `artikel_id`, `artikel_name`, `m
 (36, 1032, 'Flugzeug Radkeile, Gummi (Paar)', 1, 30.00, 19.00),
 (37, 1032, 'Flugzeug Radkeile, Gummi (Paar)', 1, 30.00, 19.00),
 (38, 2, 'Neujahr', 1, -7.80, 19.00),
-(38, 1032, 'Flugzeug Radkeile, Gummi (Paar)', 1, 30.00, 19.00);
+(38, 1032, 'Flugzeug Radkeile, Gummi (Paar)', 1, 30.00, 19.00),
+(39, 1032, 'Flugzeug Radkeile, Gummi (Paar)', 1, 30.00, 19.00),
+(40, 1032, 'Flugzeug Radkeile, Gummi (Paar)', 1, 30.00, 19.00);
 
 -- --------------------------------------------------------
 
@@ -797,30 +748,32 @@ CREATE TABLE `user` (
   `ort` varchar(100) NOT NULL,
   `passwort` varchar(200) NOT NULL,
   `google_secret` varchar(255) DEFAULT NULL,
-  `online` bit(1) NOT NULL DEFAULT b'0'
+  `online` bit(1) NOT NULL DEFAULT b'0',
+  `reset_token` varchar(255) DEFAULT NULL,
+  `reset_expiry` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Daten für Tabelle `user`
 --
 
-INSERT INTO `user` (`id`, `vorname`, `nachname`, `mail`, `adresse`, `plz`, `ort`, `passwort`, `google_secret`, `online`) VALUES
-(1, 'dndjd', 'djdjdn', 'dj@qdd.de', 'jdjdkik', 2234, 'djdjsnn', 'djdjj3jjns', NULL, b'0'),
-(46, 'monty', 'miner', 'monty.isid@h.de', 'Moltkestraße 32', 72805, 'Lichtenstein', '40e235dd0c7c50a3af4019e342f6046fd5bef9c96c2150f556238fd5d3977fd25b819ec7391178ed62da388f0bf979d90d566056e2808aaa57ce1c880d2aec0b', NULL, b'0'),
-(47, 'hadfasd', 'dasdasas', 'monty.isisdd@hs.de', 'sasd 2', 31231, 'Lichtenstein', 'eb4872b5f8a88fe7bdbd52ee5ef10f9a74e937d061ec014be7eedb99f71921ed6e9983772e3dc16ec876b72f7cbdba49b2ce84c635b4d8a93f7ce92c1753e82d', NULL, b'0'),
-(49, 'awawe', 'weae', 'montwey.isisdd@hs.de', 'seeasd 2', 31211, 'Lichtenstein', '71244f86f9e78b572b692bda0f11e010dda7930ff4097d331f243955d593779d5473e04de6853003923b2f49cd3df1726a77b3bcfce2bdd60db61fb07c1d3eb9', NULL, b'0'),
-(53, 'Max', 'Mustermann', 'max.muster@example.com', 'Musterstraße 1', 10115, 'Berlin', '8c405ae1daf2575440a037284f934421', NULL, b'0'),
-(54, 'Lisa', 'Müller', 'lisa.mueller@web.de', 'Bahnhofsweg 4', 20095, 'Hamburg', '8c405ae1daf2575440a037284f934421', NULL, b'0'),
-(55, 'Johannes', 'Schmidt', 'j.schmidt@gmx.net', 'Schulstraße 12', 80331, 'München', '8c405ae1daf2575440a037284f934421', NULL, b'1'),
-(56, 'Sarah', 'Weber', 'sarah.w@outlook.com', 'Gartenweg 7', 50667, 'Köln', '8c405ae1daf2575440a037284f934421', NULL, b'0'),
-(57, 'Michael', 'Klein', 'm.klein@test.de', 'Hauptstraße 88', 60311, 'Frankfurt', '8c405ae1daf2575440a037284f934421', NULL, b'1'),
-(58, 'Anna', 'Wagner', 'anna.wagner@pilot.com', 'Flughafenring 2', 70173, 'Stuttgart', '8c405ae1daf2575440a037284f934421', NULL, b'0'),
-(59, 'Tom', 'Becker', 'tom.becker@aviation.org', 'Lindenallee 45', 4109, 'Leipzig', '8c405ae1daf2575440a037284f934421', NULL, b'0'),
-(60, 'Laura', 'Hoffmann', 'laura.h@student.de', 'Uniplatz 1', 69117, 'Heidelberg', '8c405ae1daf2575440a037284f934421', NULL, b'0'),
-(66, 'Kimi', 'Kimi', 'esrr1979@hotmail.com', 'Straße der Einheit 45', 80983, 'Niederschwalben', '588d191ff5118b793a93bfe317ed53f77490923747c07eeb9924a7c1168f0cddc4289803d47abb44f1b57f14fc47cab399c61351dbdd932db9feddb6aedfa0ce', 'V7XSGPSBLERGODIY', b'1'),
-(68, 'flo', 'titten', 'tittl.florian@gmail.com', 'penis', 18733, 'Lichtenstein', '47d658a097d490e0d26650c77ff4bf755fa8a3d86acc5df95b3844f4b3c9cb80b20ac1fe7e5b67564d4c15798a1b9b4c5bcfd2f7b5a6eeeb585381c95221fc1c', 'SBI3WF6DFXACOJ2E', b'1'),
-(69, 'Fabiän', 'Räiff', 'andre.reiff@online.de', 'Moltkestraße 32', 72805, 'Lichtenstein', '47d658a097d490e0d26650c77ff4bf755fa8a3d86acc5df95b3844f4b3c9cb80b20ac1fe7e5b67564d4c15798a1b9b4c5bcfd2f7b5a6eeeb585381c95221fc1c', 'YFMFJZDAE5BI6VGA', b'1'),
-(81, 'FLORIAN', 'Oswald', 'Andre.Reiff@Student.Reutlingen-University.DE', 'strasse 4', 72805, 'Lichtenstein', '47d658a097d490e0d26650c77ff4bf755fa8a3d86acc5df95b3844f4b3c9cb80b20ac1fe7e5b67564d4c15798a1b9b4c5bcfd2f7b5a6eeeb585381c95221fc1c', 'RXOE4NV6LNZSAMQU', b'1');
+INSERT INTO `user` (`id`, `vorname`, `nachname`, `mail`, `adresse`, `plz`, `ort`, `passwort`, `google_secret`, `online`, `reset_token`, `reset_expiry`) VALUES
+(1, 'dndjd', 'djdjdn', 'dj@qdd.de', 'jdjdkik', 2234, 'djdjsnn', 'djdjj3jjns', NULL, b'0', NULL, NULL),
+(46, 'monty', 'miner', 'monty.isid@h.de', 'Moltkestraße 32', 72805, 'Lichtenstein', '40e235dd0c7c50a3af4019e342f6046fd5bef9c96c2150f556238fd5d3977fd25b819ec7391178ed62da388f0bf979d90d566056e2808aaa57ce1c880d2aec0b', NULL, b'0', NULL, NULL),
+(47, 'hadfasd', 'dasdasas', 'monty.isisdd@hs.de', 'sasd 2', 31231, 'Lichtenstein', 'eb4872b5f8a88fe7bdbd52ee5ef10f9a74e937d061ec014be7eedb99f71921ed6e9983772e3dc16ec876b72f7cbdba49b2ce84c635b4d8a93f7ce92c1753e82d', NULL, b'0', NULL, NULL),
+(49, 'awawe', 'weae', 'montwey.isisdd@hs.de', 'seeasd 2', 31211, 'Lichtenstein', '71244f86f9e78b572b692bda0f11e010dda7930ff4097d331f243955d593779d5473e04de6853003923b2f49cd3df1726a77b3bcfce2bdd60db61fb07c1d3eb9', NULL, b'0', NULL, NULL),
+(53, 'Max', 'Mustermann', 'max.muster@example.com', 'Musterstraße 1', 10115, 'Berlin', '8c405ae1daf2575440a037284f934421', NULL, b'0', NULL, NULL),
+(54, 'Lisa', 'Müller', 'lisa.mueller@web.de', 'Bahnhofsweg 4', 20095, 'Hamburg', '8c405ae1daf2575440a037284f934421', NULL, b'0', NULL, NULL),
+(55, 'Johannes', 'Schmidt', 'j.schmidt@gmx.net', 'Schulstraße 12', 80331, 'München', '8c405ae1daf2575440a037284f934421', NULL, b'1', NULL, NULL),
+(56, 'Sarah', 'Weber', 'sarah.w@outlook.com', 'Gartenweg 7', 50667, 'Köln', '8c405ae1daf2575440a037284f934421', NULL, b'0', NULL, NULL),
+(57, 'Michael', 'Klein', 'm.klein@test.de', 'Hauptstraße 88', 60311, 'Frankfurt', '8c405ae1daf2575440a037284f934421', NULL, b'1', NULL, NULL),
+(58, 'Anna', 'Wagner', 'anna.wagner@pilot.com', 'Flughafenring 2', 70173, 'Stuttgart', '8c405ae1daf2575440a037284f934421', NULL, b'0', NULL, NULL),
+(59, 'Tom', 'Becker', 'tom.becker@aviation.org', 'Lindenallee 45', 4109, 'Leipzig', '8c405ae1daf2575440a037284f934421', NULL, b'0', NULL, NULL),
+(60, 'Laura', 'Hoffmann', 'laura.h@student.de', 'Uniplatz 1', 69117, 'Heidelberg', '8c405ae1daf2575440a037284f934421', NULL, b'0', NULL, NULL),
+(66, 'Kimi', 'Kimi', 'esrr1979@hotmail.com', 'Straße der Einheit 45', 80983, 'Niederschwalben', '588d191ff5118b793a93bfe317ed53f77490923747c07eeb9924a7c1168f0cddc4289803d47abb44f1b57f14fc47cab399c61351dbdd932db9feddb6aedfa0ce', 'V7XSGPSBLERGODIY', b'1', NULL, NULL),
+(68, 'flo', 'titten', 'tittl.florian@gmail.com', 'penis', 18733, 'Lichtenstein', '47d658a097d490e0d26650c77ff4bf755fa8a3d86acc5df95b3844f4b3c9cb80b20ac1fe7e5b67564d4c15798a1b9b4c5bcfd2f7b5a6eeeb585381c95221fc1c', 'SBI3WF6DFXACOJ2E', b'1', NULL, NULL),
+(69, 'Fabiän', 'Räiff', 'andre.reiff@online.de', 'Moltkestraße 32', 72805, 'Lichtenstein', '47d658a097d490e0d26650c77ff4bf755fa8a3d86acc5df95b3844f4b3c9cb80b20ac1fe7e5b67564d4c15798a1b9b4c5bcfd2f7b5a6eeeb585381c95221fc1c', 'YFMFJZDAE5BI6VGA', b'1', NULL, NULL),
+(81, 'FLORIAN', 'Oswald', 'Andre.Reiff@Student.Reutlingen-University.DE', 'strasse 4', 72805, 'Lichtenstein', '47d658a097d490e0d26650c77ff4bf755fa8a3d86acc5df95b3844f4b3c9cb80b20ac1fe7e5b67564d4c15798a1b9b4c5bcfd2f7b5a6eeeb585381c95221fc1c', 'RXOE4NV6LNZSAMQU', b'1', NULL, NULL);
 
 --
 -- Trigger `user`
@@ -984,13 +937,13 @@ ALTER TABLE `artikel`
 -- AUTO_INCREMENT für Tabelle `bestellkopf`
 --
 ALTER TABLE `bestellkopf`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT für Tabelle `bestellposition`
 --
 ALTER TABLE `bestellposition`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT für Tabelle `logs`
@@ -1002,13 +955,13 @@ ALTER TABLE `logs`
 -- AUTO_INCREMENT für Tabelle `punktelog`
 --
 ALTER TABLE `punktelog`
-  MODIFY `transaktions_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
+  MODIFY `transaktions_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 
 --
 -- AUTO_INCREMENT für Tabelle `rechnungskopf`
 --
 ALTER TABLE `rechnungskopf`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT für Tabelle `user`
