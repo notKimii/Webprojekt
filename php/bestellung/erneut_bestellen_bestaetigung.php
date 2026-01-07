@@ -301,7 +301,7 @@ $gesamtbetrag += $versandkosten;
                             <span><?php echo number_format($subtotal, 2, ',', '.'); ?> €</span>
                         </div>
                         <div class="total-row">
-                            <span>Versandkosten (<?php echo htmlspecialchars($versandartName); ?>):</span>
+                            <span>Versandkosten (<?php echo htmlspecialchars($versandartName); ?> - <?php echo number_format($versandkosten, 2, ',', '.'); ?> €):</span>
                             <span><?php echo number_format($versandkosten, 2, ',', '.'); ?> €</span>
                         </div>
                         <div class="total-row final">

@@ -63,6 +63,7 @@ try {
     $rabattArtikel = [];
     $nichtVerfuegbareNormale = [];
     $nichtVerfuegbareRabatte = [];
+    $ignoriertePunkte = [];
     $gesamtbetrag = 0;
     
     // Versandkosten
@@ -79,40 +80,31 @@ try {
         $rabatt = (int)($artikel['rabatt'] ?? 0);
         
         // Unterscheidung zwischen normalen Artikeln und Rabattartikeln
-        if ($kategorie === 'Code' || $kategorie === 'Punkte') {
-            // Rabattartikel - prüfen ob noch verfügbar
-            if ($kategorie === 'Code') {
-                // Prüfe in gutscheincodes-Tabelle ob noch aktiv
-                $stmtGutschein = $con->prepare("SELECT aktiv, wert, art FROM gutscheincodes WHERE gutscheinCode = ? AND aktiv = 1");
-                $stmtGutschein->bind_param('s', $name);
-                $stmtGutschein->execute();
-                $gutscheinResult = $stmtGutschein->get_result();
-                
-                if ($gutscheinResult->num_rows > 0) {
-                    $gutschein = $gutscheinResult->fetch_assoc();
-                    $rabattArtikel[] = [
-                        'artikel_id' => $artikelId,
-                        'menge' => $menge,
-                        'preis' => $aktuellerPreis,
-                        'name' => $name,
-                        'rabatt' => (int)$gutschein['wert'],
-                        'art' => (int)$gutschein['art']
-                    ];
-                } else {
-                    $nichtVerfuegbareRabatte[] = $name . ' (nicht mehr aktiv)';
-                }
-                $stmtGutschein->close();
-            } elseif ($kategorie === 'Punkte') {
-                // Punkte sind immer verfügbar (wenn User genug hat)
+        if ($kategorie === 'Punkte') {
+            // Punkteartikel ignorieren: diese dürfen nicht erneut bestellt werden
+            $ignoriertePunkte[] = $name . ' (' . $menge . ' Einheiten)';
+            continue;
+        } elseif ($kategorie === 'Code') {
+            // Prüfe in gutscheincodes-Tabelle ob noch aktiv
+            $stmtGutschein = $con->prepare("SELECT aktiv, wert, art FROM gutscheincodes WHERE gutscheinCode = ? AND aktiv = 1");
+            $stmtGutschein->bind_param('s', $name);
+            $stmtGutschein->execute();
+            $gutscheinResult = $stmtGutschein->get_result();
+            
+            if ($gutscheinResult->num_rows > 0) {
+                $gutschein = $gutscheinResult->fetch_assoc();
                 $rabattArtikel[] = [
                     'artikel_id' => $artikelId,
                     'menge' => $menge,
                     'preis' => $aktuellerPreis,
                     'name' => $name,
-                    'rabatt' => 0,
-                    'art' => 0
+                    'rabatt' => (int)$gutschein['wert'],
+                    'art' => (int)$gutschein['art']
                 ];
+            } else {
+                $nichtVerfuegbareRabatte[] = $name . ' (nicht mehr aktiv)';
             }
+            $stmtGutschein->close();
         } else {
             // Normale Artikel - Lagerbestand prüfen
             if ($lagerbestand > 0 && $lagerbestand >= $menge) {
@@ -139,7 +131,7 @@ try {
     }
     
     // Wenn Artikel fehlen und noch nicht bestätigt wurde, zur Bestätigungsseite
-    $artikelFehlen = (count($nichtVerfuegbareNormale) > 0 || count($nichtVerfuegbareRabatte) > 0);
+    $artikelFehlen = (count($nichtVerfuegbareNormale) > 0 || count($nichtVerfuegbareRabatte) > 0 || count($ignoriertePunkte) > 0);
     
     if ($artikelFehlen && $bestaetigt !== 1) {
         // Daten in Session speichern für Bestätigungsseite
@@ -149,6 +141,7 @@ try {
             'rabatt_artikel' => $rabattArtikel,
             'nicht_verfuegbar_normal' => $nichtVerfuegbareNormale,
             'nicht_verfuegbar_rabatt' => $nichtVerfuegbareRabatte,
+            'ignorierte_punkte' => $ignoriertePunkte,
             'versandart_id' => $versandartId,
             'versandkosten' => $versandkostenBetrag
         ];
@@ -158,14 +151,11 @@ try {
         exit();
     }
     
-    // Berechne Gesamtbetrag mit Rabatten
+    // Berechne Gesamtbetrag mit Rabatten (Punkteartikel wurden bereits ausgeschlossen)
     $subtotal = $gesamtbetrag;
     
     foreach ($rabattArtikel as $rabatt) {
-        if ($rabatt['artikel_id'] == 1) {
-            // Punkte-Artikel (negative 0.10€ pro Punkt)
-            $gesamtbetrag += $rabatt['menge'] * $rabatt['preis'];
-        } elseif ($rabatt['rabatt'] > 0) {
+        if ($rabatt['rabatt'] > 0) {
             // Prozent-Rabatt
             $rabattBetrag = $subtotal * ($rabatt['rabatt'] / 100);
             $gesamtbetrag -= $rabattBetrag;
@@ -193,34 +183,15 @@ try {
         $stmtPos->execute();
     }
     
-    // Rabattartikel mit berechneten negativen Preisen einfügen
+    // Rabattartikel mit berechneten negativen Preisen einfügen (nur Gutscheine, keine Punkte)
     $aktuellerSubtotal = $subtotal;
     
-    // Punkte vom User abziehen, falls Punkte-Artikel verwendet werden
-    $verwendetePunkte = 0;
-    foreach ($rabattArtikel as $rabatt) {
-        if ($rabatt['artikel_id'] == 1) {
-            $verwendetePunkte += $rabatt['menge'] * 50; // Für je 50 Punkte gibt es 0.10 Euro Rabatt
-        }
-    }
-    
-    if ($verwendetePunkte > 0) {
-        $stmtPunkte = $con->prepare("UPDATE punkte SET punktestand = punktestand - ? WHERE user_id = ?");
-        $stmtPunkte->bind_param('ii', $verwendetePunkte, $userID);
-        $stmtPunkte->execute();
-        $stmtPunkte->close();
-    }
+    // Keine Punkte mehr abziehen beim erneuten Bestellen
     
     foreach ($rabattArtikel as $rabatt) {
         $artikelId_var = $rabatt['artikel_id'];
         
-        if ($artikelId_var == 1) {
-            // Punkte-Artikel - negativer Preis ist bereits in DB (-0.10 pro Punkt)
-            $menge_var = $rabatt['menge'];
-            $einzelpreis_var = $rabatt['preis']; // z.B. -0.10 (Preis pro Einheit)
-            $stmtPos->bind_param('iiid', $neueBestellungId, $artikelId_var, $menge_var, $einzelpreis_var);
-            $stmtPos->execute();
-        } elseif (isset($rabatt['rabatt']) && $rabatt['rabatt'] > 0) {
+        if (isset($rabatt['rabatt']) && $rabatt['rabatt'] > 0) {
             // Prozent-Rabatt - berechne negativen Preis basierend auf aktuellem Subtotal
             $rabattProzent = $rabatt['rabatt'];
             $rabattBetrag = $aktuellerSubtotal * ($rabattProzent / 100);
@@ -242,6 +213,9 @@ try {
         }
         if (count($nichtVerfuegbareRabatte) > 0) {
             $warnungen[] = 'Folgende Rabatte waren nicht mehr verfügbar: ' . implode(', ', $nichtVerfuegbareRabatte);
+        }
+        if (count($ignoriertePunkte) > 0) {
+            $warnungen[] = 'Punkteartikel können bei erneuten Bestellungen nicht berücksichtigt werden: ' . implode(', ', $ignoriertePunkte);
         }
         $_SESSION['reorder_warning'] = implode(' ', $warnungen);
     }

@@ -877,9 +877,11 @@ unset($_SESSION['profile_success'], $_SESSION['profile_errors']);
                                         <?php 
                                         $versandartId = $bestellung['versandart'] ?? 2;
                                         $versandartName = $versandarten[$versandartId] ?? 'DHL';
+                                        $versandkostenMap = [1 => 11.90, 2 => 6.90, 3 => 16.90];
+                                        $versandkostenBetrag = $versandkostenMap[$versandartId] ?? 6.90;
                                         ?>
                                         <div class="shipping-badge">
-                                            📦 Versand: <?php echo htmlspecialchars($versandartName); ?>
+                                            📦 Versand: <?php echo htmlspecialchars($versandartName); ?> (<?php echo number_format($versandkostenBetrag, 2, ',', '.'); ?> €)
                                         </div>
                                     </div>
                                     <span class="order-status <?php 

@@ -142,12 +142,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['promo_code']) && isse
         $artikel = $result->fetch_assoc();
         $artikelId = (int)$artikel['id'];
         $rabatt = (int)$artikel['rabatt'];
-      
-      // Warenkorb-ID ermitteln
-      $stmt2 = $con->prepare("SELECT id FROM warenkorbkopf WHERE kunde_id = ? LIMIT 1");
-      $stmt2->bind_param('i', $kundenId);
-      $stmt2->execute();
-      $res2 = $stmt2->get_result();
+        $stmt2->close();
+        
+        // Warenkorb-ID ermitteln
+        $stmt3 = $con->prepare("SELECT id FROM warenkorbkopf WHERE kunde_id = ? LIMIT 1");
+        $stmt3->bind_param('i', $kundenId);
+        $stmt3->execute();
+        $res2 = $stmt3->get_result();
         
         if ($res2->num_rows > 0) {
           $warenkorbRow = $res2->fetch_assoc();
@@ -183,8 +184,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['promo_code']) && isse
         $stmt3->close();
       } else {
         echo json_encode(['success' => false, 'message' => 'Artikel nicht gefunden.']);
+        $stmt2->close();
       }
-      $stmt2->close();
     } else {
       echo json_encode(['success' => false, 'message' => 'Ungültiger oder inaktiver Promocode.']);
     }
@@ -234,22 +235,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['firstName']) && !isse
         $stmt2->close();
         
         // 2. Warenkorbpositionen in Bestellpositionen kopieren
-        // 2a. Normale Artikel (ohne Code/Punkte)
-        $stmt3 = $con->prepare("
-          INSERT INTO bestellposition (bestellung_id, artikel_id, menge, einzelpreis)
-          SELECT ?, wp.artikel_id, wp.menge, a.preis
+        // 2a. Normale Artikel (ohne Code/Punkte) - mit Berücksichtigung von Artikelrabatten
+        $stmtNormaleArtikel = $con->prepare("
+          SELECT wp.artikel_id, wp.menge, a.preis, a.rabatt
           FROM warenkorbposition wp
           JOIN artikel a ON wp.artikel_id = a.id
           WHERE wp.warenkorb_id = ? AND a.kategorie != 'Code' AND a.kategorie != 'Punkte'
         ");
-        $stmt3->bind_param('ii', $bestellungId, $warenkorbId);
-        $stmt3->execute();
-        $stmt3->close();
+        $stmtNormaleArtikel->bind_param('i', $warenkorbId);
+        $stmtNormaleArtikel->execute();
+        $resNormaleArtikel = $stmtNormaleArtikel->get_result();
+        
+        $stmtInsertArtikel = $con->prepare("
+          INSERT INTO bestellposition (bestellung_id, artikel_id, menge, einzelpreis)
+          VALUES (?, ?, ?, ?)
+        ");
+        
+        while ($artikel = $resNormaleArtikel->fetch_assoc()) {
+          $artikelId = (int)$artikel['artikel_id'];
+          $menge = (int)$artikel['menge'];
+          $preis = (float)$artikel['preis'];
+          $rabatt = floatval($artikel['rabatt'] ?? 0);
+          
+          // Effektiven Preis nach Artikelrabatt berechnen
+          $effektiverPreis = $preis;
+          if ($rabatt > 0) {
+            $effektiverPreis = $preis * (1 - $rabatt / 100);
+          }
+          
+          $stmtInsertArtikel->bind_param('iiid', $bestellungId, $artikelId, $menge, $effektiverPreis);
+          $stmtInsertArtikel->execute();
+        }
+        
+        $stmtInsertArtikel->close();
+        $stmtNormaleArtikel->close();
         
         // 2b. Rabatt-Artikel (Code & Punkte) mit berechnetem negativen Preis
-        // Zuerst Subtotal der normalen Artikel berechnen
+        // Zuerst Subtotal der normalen Artikel berechnen (mit Artikelrabatten)
         $stmtSubtotal = $con->prepare("
-          SELECT SUM(wp.menge * a.preis) as subtotal
+          SELECT wp.menge, a.preis, a.rabatt
           FROM warenkorbposition wp
           JOIN artikel a ON wp.artikel_id = a.id
           WHERE wp.warenkorb_id = ? AND a.kategorie != 'Code' AND a.kategorie != 'Punkte'
@@ -258,9 +282,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['firstName']) && !isse
         $stmtSubtotal->execute();
         $resSubtotal = $stmtSubtotal->get_result();
         $subtotalArtikel = 0;
-        if ($resSubtotal->num_rows > 0) {
-          $rowSubtotal = $resSubtotal->fetch_assoc();
-          $subtotalArtikel = (float)$rowSubtotal['subtotal'];
+        while ($rowSub = $resSubtotal->fetch_assoc()) {
+          $preis = (float)$rowSub['preis'];
+          $rabatt = floatval($rowSub['rabatt'] ?? 0);
+          $menge = (int)$rowSub['menge'];
+          
+          // Effektiven Preis nach Artikelrabatt berechnen
+          $effektiverPreis = $preis;
+          if ($rabatt > 0) {
+            $effektiverPreis = $preis * (1 - $rabatt / 100);
+          }
+          
+          $subtotalArtikel += $effektiverPreis * $menge;
         }
         $stmtSubtotal->close();
         
@@ -465,16 +498,28 @@ function loadCartData(mysqli $con, int $kundenId, string $shippingMethod = 'dhl'
   // Rabattsatz basierend auf maximaler Menge ermitteln
   $discountRate = getDiscountRate($maxQuantity);
   
-  // Zweite Iteration: Mengenrabatt auf alle normalen Items anwenden
+  // Zweite Iteration: Artikelrabatt und Mengenrabatt auf alle normalen Items anwenden
   $subtotal = 0;
   $totalDiscount = 0;
   
   foreach ($items as &$item) {
-    $zeilensummeVorRabatt = $item['preis'] * $item['menge'];
+    // Effektiver Preis nach Artikelrabatt
+    $artikelRabatt = floatval($item['rabatt'] ?? 0);
+    $effektiverPreis = $item['preis'];
+    
+    if ($artikelRabatt > 0) {
+      $effektiverPreis = $item['preis'] * (1 - $artikelRabatt / 100);
+      $item['hat_artikel_rabatt'] = true;
+      $item['original_preis'] = $item['preis'];
+      $item['artikel_rabatt_prozent'] = $artikelRabatt;
+    }
+    
+    $zeilensummeVorRabatt = $effektiverPreis * $item['menge'];
     $rabattBetrag = $zeilensummeVorRabatt * $discountRate;
     $item['zeilensumme'] = $zeilensummeVorRabatt - $rabattBetrag;
     $item['rabatt_prozent'] = $discountRate * 100;
     $item['rabatt_betrag'] = $rabattBetrag;
+    $item['effektiver_preis'] = $effektiverPreis;
     
     $subtotal += $item['zeilensumme'];
     $totalDiscount += $rabattBetrag;

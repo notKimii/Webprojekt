@@ -3,8 +3,35 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Navigation - Cockpit Corner</title>
+  <title>Sale - Cockpit Corner</title>
   <link rel="stylesheet" href="/Webprojekt/produkt.css">
+  <style>
+    .price-container {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin: 10px 0;
+    }
+    .old-price {
+      text-decoration: line-through;
+      color: #999;
+      font-size: 0.9em;
+    }
+    .new-price {
+      color: #e53935;
+      font-weight: bold;
+      font-size: 1.2em;
+    }
+    .discount-badge {
+      background: #e53935;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-weight: bold;
+      display: inline-block;
+      margin-bottom: 5px;
+    }
+  </style>
 
 </head>
 <body>
@@ -13,19 +40,24 @@
   <?php include "../include/headimport.php"; ?>
 <main>
   <div class="container">
-    <h1>Navigation</h1>
-    <p>Hier findest du unsere Auswahl an Artikel zur Navigation.</p>
+    <h1>🔥 Sale - Reduzierte Artikel</h1>
+    <p>Hier findest du unsere Artikel mit Sonderpreisen und Rabatten.</p>
 
     <div class="product-grid">
       <?php
-      $sql = "SELECT * FROM artikel WHERE kategorie = 'Navigation'";
+      $sql = "SELECT * FROM artikel WHERE rabatt IS NOT NULL AND rabatt > 0 AND kategorie != 'Code' AND kategorie != 'Punkte'";
       $result = $con->query($sql);
 
       if ($result->num_rows > 0) {
         while($row = $result->fetch_assoc()) {
           $produktId = $row['id'];
           $produktName = htmlspecialchars($row['name']);
-          $preis = number_format($row['preis'], 2, ',', '.');
+          $alterPreis = $row['preis'];
+          $rabatt = $row['rabatt'];
+          $neuerPreis = $alterPreis * (1 - $rabatt / 100);
+          
+          $alterPreisFormatiert = number_format($alterPreis, 2, ',', '.');
+          $neuerPreisFormatiert = number_format($neuerPreis, 2, ',', '.');
 
           // Bilder aus dem Ordner laden
           $bilderOrdner = "../../images/pictures/productids/$produktId/";
@@ -52,7 +84,11 @@
           }
 
           echo   '<h3>' . $produktName . '</h3>';
-          echo   '<p class="price">' . $preis . ' €</p>';
+          echo   '<div class="price-container">';
+          echo     '<span class="discount-badge">-' . $rabatt . '%</span>';
+          echo     '<span class="old-price">' . $alterPreisFormatiert . ' €</span>';
+          echo     '<span class="new-price">' . $neuerPreisFormatiert . ' €</span>';
+          echo   '</div>';
           echo   '<button class="add-to-cart-button">In den Warenkorb</button>';
 
           // Bilderliste als versteckte JSON-Data
@@ -64,7 +100,7 @@
           echo '</div>';
         }
       } else {
-        echo "<p>Keine Produkte in der Kategorie Navigation gefunden.</p>";
+        echo "<p>Aktuell keine reduzierten Artikel verfügbar.</p>";
       }
 
       $con->close();

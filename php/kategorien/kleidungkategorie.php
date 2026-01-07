@@ -5,6 +5,33 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Headsets - Cockpit Corner</title>
   <link rel="stylesheet" href="/Webprojekt/produkt.css">
+  <style>
+    .price-container {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin: 10px 0;
+    }
+    .old-price {
+      text-decoration: line-through;
+      color: #999;
+      font-size: 0.9em;
+    }
+    .new-price {
+      color: #e53935;
+      font-weight: bold;
+      font-size: 1.2em;
+    }
+    .discount-badge {
+      background: #e53935;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-weight: bold;
+      display: inline-block;
+      margin-bottom: 5px;
+    }
+  </style>
 
   
 </head>
@@ -26,7 +53,17 @@
         while($row = $result->fetch_assoc()) {
           $produktId = $row['id'];
           $produktName = htmlspecialchars($row['name']);
-          $preis = number_format($row['preis'], 2, ',', '.');
+          $alterPreis = $row['preis'];
+          $rabatt = $row['rabatt'];
+          $hatRabatt = ($rabatt !== null && $rabatt > 0);
+          
+          if ($hatRabatt) {
+            $neuerPreis = $alterPreis * (1 - $rabatt / 100);
+            $alterPreisFormatiert = number_format($alterPreis, 2, ',', '.');
+            $neuerPreisFormatiert = number_format($neuerPreis, 2, ',', '.');
+          } else {
+            $preis = number_format($alterPreis, 2, ',', '.');
+          }
 
           // Bilder aus dem Ordner laden
           $bilderOrdner = "../../images/pictures/productids/$produktId/";
@@ -45,7 +82,17 @@
           echo   '</a>';
 
           echo   '<h3>' . $produktName . '</h3>';
-          echo   '<p class="price">' . $preis . ' €</p>';
+          
+          if ($hatRabatt) {
+            echo   '<div class="price-container">';
+            echo     '<span class="discount-badge">-' . $rabatt . '%</span>';
+            echo     '<span class="old-price">' . $alterPreisFormatiert . ' €</span>';
+            echo     '<span class="new-price">' . $neuerPreisFormatiert . ' €</span>';
+            echo   '</div>';
+          } else {
+            echo   '<p class="price">' . $preis . ' €</p>';
+          }
+          
           echo   '<button class="add-to-cart-button">In den Warenkorb</button>';
           
 
