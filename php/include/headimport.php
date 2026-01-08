@@ -691,7 +691,7 @@ include __DIR__ . '/connectcon.php';
     </style>
 
     <div class="announcement-bar">
-        <p>🎉 Sommer Sale: Bis zu 25% Rabatt auf ausgewählte Artikel! Nur für kurze Zeit! <span class="extra-text">| Rabattcode: SOMMER25 🎉</span></p>
+        <p>🎉 Neujahr Sale: Bis zu 26% Rabatt auf ausgewählte Artikel! Nur für kurze Zeit! <span class="extra-text">| Rabattcode: Neujahr 🎉</span></p>
     </div>
 
     <header>
