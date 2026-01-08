@@ -172,6 +172,34 @@ if (is_dir($absoluterPfad)) {
         margin-top: 5px;
         margin-bottom: 5px;
     }
+    .price-container-detail {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }
+    .discount-badge-detail {
+        background: #e53935;
+        color: white;
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        display: inline-block;
+        width: fit-content;
+    }
+    .old-price-detail {
+        text-decoration: line-through;
+        color: #999;
+        font-size: 1.8rem;
+        font-weight: 500;
+    }
+    .new-price-detail {
+        color: #e53935;
+        font-weight: 700;
+        font-size: 2.5rem;
+    }
     .tax-info { font-size: 0.85rem; color: var(--text-color-secondary); margin-bottom: 25px; }
     .product-short-description { margin-bottom: 25px; font-size: 1rem; line-height: 1.7; }
     .product-short-description p { margin-bottom: 1em; }
@@ -422,7 +450,23 @@ if (is_dir($absoluterPfad)) {
                     <span class="reviews-count" style="color: #999; text-decoration: none;">(Noch keine Bewertungen)</span>
                 <?php endif; ?>
             </div>
-            <p class="product-price"><?php echo number_format(floatval($produkt['preis']), 2, ',', '.'); ?> €</p>
+            
+            <?php 
+            $rabatt = isset($produkt['rabatt']) ? floatval($produkt['rabatt']) : 0;
+            $hatRabatt = ($rabatt > 0);
+            $alterPreis = floatval($produkt['preis']);
+            
+            if ($hatRabatt) {
+                $neuerPreis = $alterPreis * (1 - $rabatt / 100);
+                echo '<div class="price-container-detail">';
+                echo '  <span class="discount-badge-detail">-' . number_format($rabatt, 0) . '% RABATT</span>';
+                echo '  <span class="old-price-detail">' . number_format($alterPreis, 2, ',', '.') . ' €</span>';
+                echo '  <span class="new-price-detail">' . number_format($neuerPreis, 2, ',', '.') . ' €</span>';
+                echo '</div>';
+            } else {
+                echo '<p class="product-price">' . number_format($alterPreis, 2, ',', '.') . ' €</p>';
+            }
+            ?>
             <p class="tax-info">Inkl. MwSt., zzgl. Versandkosten</p>
 
             <div class="product-bestand">

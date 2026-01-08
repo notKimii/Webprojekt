@@ -50,7 +50,7 @@ function getDiscountRate($maxQuantity) {
 function loadCartData(mysqli $con, int $kundenId, string $shippingMethod = 'dhl'): array {
     global $shippingMethods;
     
-    $sql = "SELECT wp.*, p.name, p.preis FROM warenkorbposition wp
+    $sql = "SELECT wp.*, p.name, p.preis, p.kategorie, p.rabatt FROM warenkorbposition wp
             LEFT JOIN artikel p ON wp.artikel_id = p.id
             WHERE wp.warenkorb_id = (
                 SELECT id FROM warenkorbkopf WHERE kunde_id = ? LIMIT 1
@@ -64,6 +64,7 @@ function loadCartData(mysqli $con, int $kundenId, string $shippingMethod = 'dhl'
     $maxQuantity = 0;
     $subtotalVorRabatt = 0;
     $inaktiveCodeArtikel = []; // Artikel mit inaktiven Gutscheincodes zum Entfernen
+    $rabattArtikelItems = []; // Separate Liste für Code/Punkte Artikel
     
     // Erste Iteration: Alle Items laden und maximale Menge ermitteln
     while ($row = $res->fetch_assoc()) {
@@ -71,6 +72,7 @@ function loadCartData(mysqli $con, int $kundenId, string $shippingMethod = 'dhl'
         $row['preis'] = $row['preis'] ?? 0.0;
         $row['menge'] = $row['menge'] ?? 0;
         $row['kategorie'] = $row['kategorie'] ?? '';
+        $row['artikel_rabatt'] = $row['rabatt'] ?? 0;
         
         // Bei Code-Artikeln (Gutscheincodes) prüfen, ob noch aktiv
         if ($row['kategorie'] === 'Code') {
@@ -88,9 +90,14 @@ function loadCartData(mysqli $con, int $kundenId, string $shippingMethod = 'dhl'
             $stmtCheck->close();
         }
         
-        $items[(int)$row['artikel_id']] = $row;
-        $maxQuantity = max($maxQuantity, (int)$row['menge']);
-        $subtotalVorRabatt += $row['preis'] * $row['menge'];
+        // Rabattartikel (Code/Punkte) separat behandeln
+        if ($row['kategorie'] === 'Code' || $row['kategorie'] === 'Punkte') {
+            $rabattArtikelItems[(int)$row['artikel_id']] = $row;
+        } else {
+            $items[(int)$row['artikel_id']] = $row;
+            $maxQuantity = max($maxQuantity, (int)$row['menge']);
+            $subtotalVorRabatt += $row['preis'] * $row['menge'];
+        }
     }
     
     // Inaktive Code-Artikel aus Warenkorb entfernen
@@ -121,16 +128,44 @@ function loadCartData(mysqli $con, int $kundenId, string $shippingMethod = 'dhl'
     // Zweite Iteration: Rabatt auf alle Items anwenden
     $subtotal = 0;
     $totalDiscount = 0;
+    $totalArtikelRabatt = 0;
     
     foreach ($items as &$item) {
-        $zeilensummeVorRabatt = $item['preis'] * $item['menge'];
+        // Effektiver Preis nach Artikelrabatt
+        $artikelRabatt = floatval($item['artikel_rabatt'] ?? 0);
+        $effektiverPreis = $item['preis'];
+        
+        if ($artikelRabatt > 0) {
+            $artikelRabattBetrag = ($item['preis'] - ($item['preis'] * (1 - $artikelRabatt / 100))) * $item['menge'];
+            $totalArtikelRabatt += $artikelRabattBetrag;
+            
+            $effektiverPreis = $item['preis'] * (1 - $artikelRabatt / 100);
+            $item['hat_artikel_rabatt'] = true;
+            $item['original_preis'] = $item['preis'];
+            $item['artikel_rabatt_prozent'] = $artikelRabatt;
+        }
+        
+        $zeilensummeVorRabatt = $effektiverPreis * $item['menge'];
         $rabattBetrag = $zeilensummeVorRabatt * $discountRate;
         $item['zeilensumme'] = $zeilensummeVorRabatt - $rabattBetrag;
         $item['rabatt_prozent'] = $discountRate * 100;
         $item['rabatt_betrag'] = $rabattBetrag;
+        $item['effektiver_preis'] = $effektiverPreis;
         
         $subtotal += $item['zeilensumme'];
         $totalDiscount += $rabattBetrag;
+    }
+    
+    // Gesamtersparnis = Mengenrabatte + Artikelrabatte
+    $totalDiscount += $totalArtikelRabatt;
+    
+    // Rabattartikel wieder zu items hinzufügen (ohne Mengenrabatt)
+    foreach ($rabattArtikelItems as $rabattId => $rabattItem) {
+        // Rabattartikel haben Zeilensumme = 0 (sie reduzieren nur den Gesamtbetrag)
+        $rabattItem['zeilensumme'] = 0;
+        $rabattItem['rabatt_betrag'] = 0;
+        $rabattItem['rabatt_prozent'] = 0;
+        $items[$rabattId] = $rabattItem;
     }
     
     // Versandkosten basierend auf Versandart
@@ -296,6 +331,17 @@ $total = $cartData['total'];
         $totalDiscount = $cartData['totalDiscount'];
         $shipping = $cartData['shipping'];
         $total = $cartData['total'];
+        
+        // Artikel in normale und Rabattartikel aufteilen
+        $normaleArtikel = [];
+        $rabattArtikel = [];
+        foreach ($result as $position) {
+            if ($position['kategorie'] === 'Code' || $position['kategorie'] === 'Punkte') {
+                $rabattArtikel[] = $position;
+            } else {
+                $normaleArtikel[] = $position;
+            }
+        }
         ?>
                 <section class="h-100 gradient-custom" style="background:#f5f5f5;">
                     <div class="container py-5">
@@ -307,9 +353,9 @@ $total = $cartData['total'];
                                     </div>
                                     <div class="card-body">
                                         <p class="mb-0 <?php echo empty($result) ? '' : 'd-none'; ?>" id="cart-empty">Dein Warenkorb ist leer.</p>
-                                        <?php if (!empty($result)): ?>
+                                        <?php if (!empty($normaleArtikel)): ?>
                                             <div id="cart-items">
-                                            <?php foreach ($result as $position): ?>
+                                            <?php foreach ($normaleArtikel as $position): ?>
                                                 <?php $id = $position['artikel_id']; $img = getImg($id); ?>
                                                 <div class="row align-items-center mb-4" data-artikel-id="<?php echo $id; ?>">
                                                     <div class="col-lg-3 col-md-12 mb-3 mb-lg-0">
@@ -346,15 +392,73 @@ $total = $cartData['total'];
                                                                 <button type="submit" class="btn btn-primary px-3 ms-2"><i class="fas fa-plus"></i></button>
                                                             </form>
                                                         </div>
-                                                        <p class="text-start text-md-center mb-0 price-text"><strong><?php echo number_format($position['preis'], 2, ',', '.'); ?> €</strong></p>
+                                                        
+                                                        <?php if (isset($position['hat_artikel_rabatt']) && $position['hat_artikel_rabatt']): ?>
+                                                            <p class="text-start text-md-center mb-0"><span class="badge bg-danger">-<?php echo number_format($position['artikel_rabatt_prozent'], 0); ?>%</span></p>
+                                                            <p class="text-start text-md-center mb-0 text-decoration-line-through text-muted"><small><?php echo number_format($position['original_preis'], 2, ',', '.'); ?> €</small></p>
+                                                            <p class="text-start text-md-center mb-0 price-text text-danger"><strong><?php echo number_format($position['effektiver_preis'], 2, ',', '.'); ?> €</strong></p>
+                                                            <p class="text-start text-md-center mb-1 text-success"><small>Ersparnis: <?php echo number_format($position['original_preis'] - $position['effektiver_preis'], 2, ',', '.'); ?> €</small></p>
+                                                        <?php else: ?>
+                                                            <p class="text-start text-md-center mb-0 price-text"><strong><?php echo number_format($position['preis'], 2, ',', '.'); ?> €</strong></p>
+                                                        <?php endif; ?>
+                                                        
                                                         <?php if ($position['rabatt_betrag'] > 0): ?>
-                                                            <p class="text-start text-md-center mb-1 text-danger discount-line"><small>-<?php echo number_format($position['rabatt_betrag'], 2, ',', '.'); ?> € (<?php echo (int)$position['rabatt_prozent']; ?>%)</small></p>
+                                                            <p class="text-start text-md-center mb-1 text-danger discount-line"><small>Mengenrabatt: -<?php echo number_format($position['rabatt_betrag'], 2, ',', '.'); ?> € (<?php echo (int)$position['rabatt_prozent']; ?>%)</small></p>
                                                         <?php endif; ?>
                                                         <p class="text-start text-md-center">Gesamt: <strong id="line-<?php echo $id; ?>"><?php echo number_format($position['zeilensumme'], 2, ',', '.'); ?> €</strong></p>
                                                     </div>
                                                 </div>
                                                 <hr class="my-4" />
                                             <?php endforeach; ?>
+                                            </div>
+                                        <?php endif; ?>
+                                        
+                                        <?php if (!empty($rabattArtikel)): ?>
+                                            <div class="alert alert-success" style="background-color: #d4edda; border: 2px solid #28a745;">
+                                                <h6 class="mb-3"><i class="fas fa-tag"></i> Angewendete Rabatte</h6>
+                                                <?php 
+                                                // Berechne Subtotal ohne Rabattartikel für Prozentberechnung
+                                                $subtotalFuerRabatt = 0;
+                                                foreach ($normaleArtikel as $normPos) {
+                                                    $effPreis = $normPos['effektiver_preis'] ?? $normPos['preis'];
+                                                    $subtotalFuerRabatt += $effPreis * $normPos['menge'];
+                                                }
+                                                
+                                                foreach ($rabattArtikel as $position): 
+                                                    $id = $position['artikel_id'];
+                                                    $rabattBetrag = 0;
+                                                    
+                                                    // Prüfe zuerst ob rabatt-Spalte gesetzt ist (Prozentsatz)
+                                                    $rabattProzent = floatval($position['artikel_rabatt'] ?? 0);
+                                                    $fixerBetrag = floatval($position['preis'] ?? 0);
+                                                    
+                                                    if ($rabattProzent > 0) {
+                                                        // Prozentsatz auf Subtotal anwenden
+                                                        $rabattBetrag = $subtotalFuerRabatt * ($rabattProzent / 100);
+                                                    } elseif ($fixerBetrag != 0) {
+                                                        // Fixer Betrag (meist negativ, also absoluter Wert)
+                                                        $rabattBetrag = abs($fixerBetrag * $position['menge']);
+                                                    }
+                                                    ?>
+                                                    <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                                                        <div>
+                                                            <strong><?php echo htmlspecialchars($position['name']); ?></strong>
+                                                            <?php if ($position['kategorie'] === 'Code'): ?>
+                                                                <span class="badge bg-success ms-2">Gutscheincode</span>
+                                                            <?php elseif ($position['kategorie'] === 'Punkte'): ?>
+                                                                <span class="badge bg-warning ms-2">Punkte</span>
+                                                            <?php endif; ?>
+                                                        </div>
+                                                        <div class="text-end">
+                                                            <strong class="text-success">-<?php echo number_format($rabattBetrag, 2, ',', '.'); ?> €</strong>
+                                                            <form method="post" class="m-0 ajax-cart d-inline ms-2">
+                                                                <input type="hidden" name="artikel_id" value="<?php echo $id; ?>">
+                                                                <input type="hidden" name="action" value="delete_item">
+                                                                <button type="submit" class="btn btn-outline-danger btn-sm" title="Entfernen"><i class="fas fa-times"></i></button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                <?php endforeach; ?>
                                             </div>
                                         <?php endif; ?>
                                     </div>
