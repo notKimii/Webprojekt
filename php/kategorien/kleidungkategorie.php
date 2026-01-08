@@ -82,11 +82,6 @@
           echo   '</a>';
 
           echo   '<h3>' . $produktName . '</h3>';
-<<<<<<< HEAD
-          echo   '<p class="price">' . $preis . ' €</p>';
-          
-=======
-          
           if ($hatRabatt) {
             echo   '<div class="price-container">';
             echo     '<span class="discount-badge">-' . $rabatt . '%</span>';
@@ -98,7 +93,6 @@
           }
           
           echo   '<button class="add-to-cart-button">In den Warenkorb</button>';
->>>>>>> a9510a56538f981c401603750b038bed382058b1
           
 
           // Bilderliste als versteckte JSON-Data
