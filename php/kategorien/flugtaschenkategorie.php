@@ -45,7 +45,7 @@
 
           echo   '<h3>' . $produktName . '</h3>';
           echo   '<p class="price">' . $preis . ' €</p>';
-          echo   '<button class="add-to-cart-button">In den Warenkorb</button>';
+          
 
           // Bilderliste als versteckte JSON-Data
           if (!empty($bilder)) {

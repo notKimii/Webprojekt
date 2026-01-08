@@ -838,7 +838,6 @@ include __DIR__ . '/connectcon.php';
         <nav class="desktop-navigation">
             <div class="container">
                 <ul>
-                    <li><a href="/Webprojekt/php/kategorien/saleskategorie.php">🔥 Sales</a></li>
                     <li><a href="/Webprojekt/php/kategorien/headsetskategorie.php">Headsets</a></li>
                     <li><a href="/Webprojekt/php/kategorien/navigationkategorie.php">Navigation</a></li>
                     <li><a href="/Webprojekt/php/kategorien/kleidungkategorie.php">Kleidung & Accessoires</a></li>
