@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Erstellungszeit: 06. Jan 2026 um 16:25
+-- Erstellungszeit: 08. Jan 2026 um 22:26
 -- Server-Version: 10.4.28-MariaDB
 -- PHP-Version: 8.2.4
 
@@ -11,7 +11,7 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
 
-
+/*Test1 */;
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
@@ -50,11 +50,11 @@ INSERT INTO `artikel` (`id`, `name`, `beschreibung`, `preis`, `groesse`, `lagerb
 (3, 'GutenRutsch', 'Gutschein: GutenRutsch', 0.00, 'O', 0, 'Code', NULL, 0, 10),
 (1001, 'Bose A30 Aviation Headset', 'Premium ANR-Headset mit hohem Tragekomfort und exzellenter Lärmreduzierung.', 1299.00, 'O', 25, 'Headsets', 5, 7, NULL),
 (1002, 'Lightspeed Zulu 3 ANR Headset', 'Beliebtes ANR-Headset, bekannt für Komfort, Haltbarkeit und klare Audioqualität.', 950.00, 'O', 30, 'Headsets', 4, 6, NULL),
-(1003, 'David Clark H10-13.4 Aviation Headset', 'Klassisches, robustes PNR-Headset, ein Standard in der Allgemeinen Luftfahrt.', 389.00, 'O', 50, 'Headsets', 4, 4, NULL),
+(1003, 'David Clark H10-13.4 Aviation Headset', 'Klassisches, robustes PNR-Headset, ein Standard in der Allgemeinen Luftfahrt.', 389.00, 'O', 50, 'Headsets', 4, 4, 55),
 (1004, 'Yaesu FTA-550L Pro-X', 'Luftfahrt-Handfunkgerät mit NAV/COM und GPS-Empfänger.', 299.00, 'O', 15, 'Headsets', NULL, 0, NULL),
-(1005, 'Sennheiser S1 Digital Aviation Headset', 'ANR-Headset mit adaptiver Lärmkompensation und individuell einstellbarem Anpressdruck.', 1050.00, 'O', 18, 'Headsets', NULL, 0, NULL),
+(1005, 'Sennheiser S1 Digital Aviation Headset', 'ANR-Headset mit adaptiver Lärmkompensation und individuell einstellbarem Anpressdruck.', 1050.00, 'O', 18, 'Headsets', NULL, 0, 5),
 (1006, 'Icom IC-A25NE (8.33/25 kHz)', 'Leistungsstarkes Handfunkgerät mit Navigation (VOR, GPS) und Bluetooth.', 489.00, 'O', 22, 'Headsets', 4, 1, NULL),
-(1007, 'Garmin aera 660 Portable Aviation GPS', 'Tragbares GPS mit Touchscreen, 3D Vision und umfangreichen Navigationsfunktionen.', 849.00, 'O', 20, 'Navigation', NULL, 0, NULL),
+(1007, 'Garmin aera 660 Portable Aviation GPS', 'Tragbares GPS mit Touchscreen, 3D Vision und umfangreichen Navigationsfunktionen.', 849.00, 'O', 20, 'Navigation', NULL, 0, 10),
 (1008, 'ICAO Karte Deutschland (Set)', 'Offizielles Kartenset der Deutschen Flugsicherung für VFR-Flüge in Deutschland.', 25.00, 'O', 150, 'Navigation', NULL, 0, NULL),
 (1009, 'Jeppesen CR-3 Circular Flight Computer', 'Klassischer mechanischer Flugrechner für Flugplanungsberechnungen.', 36.00, 'O', 70, 'Navigation', 1, 1, NULL),
 (1010, 'ASA KB-3 Tri-Fold Kneeboard', 'Dreifach faltbares Kniebrett mit Klemmbrett, Stifthaltern und Kartentaschen.', 50.00, 'O', 40, 'Navigation', NULL, 0, NULL),
@@ -139,7 +139,9 @@ INSERT INTO `bestellkopf` (`id`, `user_id`, `bestelldatum`, `gesamtbetrag`, `sta
 (26, 66, '2026-01-06 15:40:52', 36.90, 'bezahlt', 2),
 (27, 66, '2026-01-06 15:41:41', 29.10, 'bezahlt', 2),
 (28, 66, '2026-01-06 15:45:29', 36.90, 'bezahlt', 2),
-(29, 66, '2026-01-06 15:48:03', 36.90, 'bezahlt', 2);
+(29, 66, '2026-01-06 15:48:03', 36.90, 'bezahlt', 2),
+(30, 66, '2026-01-07 21:28:16', 35.30, 'bezahlt', 2),
+(31, 66, '2026-01-07 21:28:29', 42.90, 'bezahlt', 2);
 
 --
 -- Trigger `bestellkopf`
@@ -215,7 +217,10 @@ INSERT INTO `bestellposition` (`id`, `bestellung_id`, `artikel_id`, `menge`, `ei
 (36, 27, 1032, 1, 30.00),
 (37, 27, 2, 1, -7.80),
 (38, 28, 1032, 1, 30.00),
-(39, 29, 1032, 1, 30.00);
+(39, 29, 1032, 1, 30.00),
+(40, 30, 1009, 1, 36.00),
+(41, 30, 1, 7, -0.10),
+(42, 31, 1009, 1, 36.00);
 
 --
 -- Trigger `bestellposition`
@@ -338,7 +343,7 @@ CREATE TABLE `gutscheincodes` (
 
 INSERT INTO `gutscheincodes` (`gutscheinCode`, `erstelltAm`, `aktiv`, `wert`, `art`) VALUES
 ('GutenRutsch', '2025-12-30', 1, 10, 0),
-('Neujahr', '2026-01-06', 0, 26, 0),
+('Neujahr', '2026-01-06', 1, 26, 0),
 ('NEW100', '2026-01-06', 0, 15, 1);
 
 --
@@ -485,7 +490,8 @@ INSERT INTO `logs` (`id`, `user_id`, `login_time`, `screen_resolution`, `operati
 (50, 70, '2026-01-05 01:34:07', '1920x1080', 'Win32'),
 (51, 71, '2026-01-05 01:39:26', '1920x1080', 'Win32'),
 (52, 80, '2026-01-05 04:04:00', '1920x1080', 'Win32'),
-(53, 81, '2026-01-05 04:06:05', '1920x1080', 'Win32');
+(53, 81, '2026-01-05 04:06:05', '1920x1080', 'Win32'),
+(54, 66, '2026-01-07 21:27:31', '1440x932', 'MacIntel');
 
 --
 -- Trigger `logs`
@@ -528,7 +534,7 @@ INSERT INTO `punkte` (`user_id`, `punktestand`) VALUES
 (60, 100),
 (64, 114),
 (65, 115),
-(66, 355),
+(66, 110),
 (67, 10),
 (68, 5),
 (69, 210),
@@ -631,7 +637,11 @@ INSERT INTO `punktelog` (`transaktions_id`, `user_id`, `datum`, `art`, `punkte_a
 (47, 66, '2026-01-06 15:40:52', 'Automatisch', 50, 205, 'Änderung am Punktestand'),
 (48, 66, '2026-01-06 15:41:41', 'Automatisch', 50, 255, 'Änderung am Punktestand'),
 (49, 66, '2026-01-06 15:45:29', 'Automatisch', 50, 305, 'Änderung am Punktestand'),
-(50, 66, '2026-01-06 15:48:03', 'Automatisch', 50, 355, 'Änderung am Punktestand');
+(50, 66, '2026-01-06 15:48:03', 'Automatisch', 50, 355, 'Änderung am Punktestand'),
+(51, 66, '2026-01-07 21:27:31', 'Automatisch', 5, 360, 'Änderung am Punktestand'),
+(52, 66, '2026-01-07 21:28:16', 'Automatisch', 50, 410, 'Änderung am Punktestand'),
+(53, 66, '2026-01-07 21:28:16', 'Automatisch', -350, 60, 'Änderung am Punktestand'),
+(54, 66, '2026-01-07 21:28:29', 'Automatisch', 50, 110, 'Änderung am Punktestand');
 
 -- --------------------------------------------------------
 
@@ -677,7 +687,9 @@ INSERT INTO `rechnungskopf` (`id`, `bestellID`, `rechnungsdatum`, `betrag`, `ver
 (37, 26, '2026-01-06 15:40:52', 36.90, 2),
 (38, 27, '2026-01-06 15:41:41', 29.10, 2),
 (39, 28, '2026-01-06 15:45:29', 36.90, 2),
-(40, 29, '2026-01-06 15:48:03', 36.90, 2);
+(40, 29, '2026-01-06 15:48:03', 36.90, 2),
+(41, 30, '2026-01-07 21:28:16', 35.30, 2),
+(42, 31, '2026-01-07 21:28:29', 42.90, 2);
 
 -- --------------------------------------------------------
 
@@ -730,7 +742,10 @@ INSERT INTO `rechnungsposition` (`rechnungsID`, `artikel_id`, `artikel_name`, `m
 (38, 2, 'Neujahr', 1, -7.80, 19.00),
 (38, 1032, 'Flugzeug Radkeile, Gummi (Paar)', 1, 30.00, 19.00),
 (39, 1032, 'Flugzeug Radkeile, Gummi (Paar)', 1, 30.00, 19.00),
-(40, 1032, 'Flugzeug Radkeile, Gummi (Paar)', 1, 30.00, 19.00);
+(40, 1032, 'Flugzeug Radkeile, Gummi (Paar)', 1, 30.00, 19.00),
+(41, 1, 'Punkte', 7, -0.10, 19.00),
+(41, 1009, 'Jeppesen CR-3 Circular Flight Computer', 1, 36.00, 19.00),
+(42, 1009, 'Jeppesen CR-3 Circular Flight Computer', 1, 36.00, 19.00);
 
 -- --------------------------------------------------------
 
@@ -832,7 +847,9 @@ CREATE TABLE `warenkorbposition` (
 
 INSERT INTO `warenkorbposition` (`warenkorb_id`, `artikel_id`, `menge`) VALUES
 (1, 1001, 2),
-(2, 1009, 1);
+(2, 2, 1),
+(2, 1005, 1),
+(2, 1027, 1);
 
 --
 -- Indizes der exportierten Tabellen
@@ -937,31 +954,31 @@ ALTER TABLE `artikel`
 -- AUTO_INCREMENT für Tabelle `bestellkopf`
 --
 ALTER TABLE `bestellkopf`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT für Tabelle `bestellposition`
 --
 ALTER TABLE `bestellposition`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- AUTO_INCREMENT für Tabelle `logs`
 --
 ALTER TABLE `logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
 
 --
 -- AUTO_INCREMENT für Tabelle `punktelog`
 --
 ALTER TABLE `punktelog`
-  MODIFY `transaktions_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+  MODIFY `transaktions_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
 
 --
 -- AUTO_INCREMENT für Tabelle `rechnungskopf`
 --
 ALTER TABLE `rechnungskopf`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- AUTO_INCREMENT für Tabelle `user`
