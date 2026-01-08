@@ -472,7 +472,7 @@ if (session_status() === PHP_SESSION_NONE) {
                     <div class="team-image-wrapper">
                         <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=kim" alt="Kimberly" class="team-image">
                     </div>
-                    <h3>Kimberly Apassa Udongo Reyes</h3>
+                    <h3>Kimberly Apaza Reyes</h3>
                     <span class="team-role">Fullstack & QA</span>
                     <p class="team-bio">
                         Verbindet Frontend mit Backend und sorgt dafür, dass alles reibungslos zusammenarbeitet.

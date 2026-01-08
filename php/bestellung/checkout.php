@@ -772,10 +772,7 @@ $moeglicheRabattBetrag = $moeglicheGutscheinMenge * 0.1;
                   </div>
                 </div>
 
-                <div class="col-12">
-                  <label for="address2" class="form-label">Adresszusatz <span class="text-muted">(Optional)</span></label>
-                  <input type="text" class="form-control" id="address2" name="address2" placeholder="Wohnung, Stockwerk, etc.">
-                </div>
+                
 
                 <div class="col-md-4">
                   <label for="zip" class="form-label">PLZ</label>
